@@ -1,0 +1,9 @@
+http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/1/sharpirox/
+http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/1/4611686018432239086/0/
+http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Triumphs/
+http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/
+http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/2303881503/
+
+itemHash=2303881503
+2e8096204c0176107d25f5a86a35ed09
+2e8096204c0176107d25f5a86a35ed09
