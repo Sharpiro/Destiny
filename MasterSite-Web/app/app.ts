@@ -13,7 +13,7 @@ masterSite.config(["$stateProvider", "$urlRouterProvider", function ($stateProvi
         templateUrl: "app/destiny/templates/destinyHomeTemplate.html",
         controller: "destinyHomeController"
     }).state("destinyDetails", {
-        url: "/destinydetails/:platform/:displayName",
+        url: "/destiny/details/:platform/:displayName/:characterNumber",
         templateUrl: "app/destiny/templates/destinyDetailsTemplate.html",
         controller: "destinyDetailsController",
     });

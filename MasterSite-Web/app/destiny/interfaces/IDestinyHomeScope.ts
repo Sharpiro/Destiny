@@ -1,7 +1,8 @@
 ﻿interface IDestinyHomeScope
 {
     message: string;
-    platform: number;
+    platformRadio: number;
     displayName: string;
+    characterNumber: number;
     VM: DestinyHomeController;
 }

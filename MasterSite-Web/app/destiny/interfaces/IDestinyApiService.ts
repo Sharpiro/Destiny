@@ -1,5 +1,5 @@
 ﻿interface IDestinyApiService
 {
-    test(): ng.IPromise<any>;
+    getAccountInfo(platform: number, displayName: number): ng.IPromise<any>;
     searchPlayer(platform: number, displayName: string): ng.IPromise<any>;
 }

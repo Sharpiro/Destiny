@@ -13,7 +13,7 @@ namespace MasterSite_Web
     public class DestinyApiController : ApiController
     {
         [HttpGet]
-        public IHttpActionResult One(int platform, string displayName)
+        public IHttpActionResult SearchDestinyPlayer(int platform, string displayName)
         {
             string content;
             using (HttpClient client = new HttpClient())
@@ -30,6 +30,19 @@ namespace MasterSite_Web
                 Four = 4,
                 Five = 5
             };
+            return Json(content);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetAccountInfo(int platform, string membershipId)
+        {
+            string content;
+            using (HttpClient client = new HttpClient())
+            {
+                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/";
+                var request = client.GetAsync(url);
+                content = request.Result.Content.ReadAsStringAsync().Result;
+            }
             return Json(content);
         }
 

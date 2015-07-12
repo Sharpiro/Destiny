@@ -9,7 +9,7 @@ masterSite.config(["$stateProvider", "$urlRouterProvider", function ($stateProvi
             templateUrl: "app/destiny/templates/destinyHomeTemplate.html",
             controller: "destinyHomeController"
         }).state("destinyDetails", {
-            url: "/destinydetails/:platform/:displayName",
+            url: "/destiny/details/:platform/:displayName/:characterNumber",
             templateUrl: "app/destiny/templates/destinyDetailsTemplate.html",
             controller: "destinyDetailsController",
         });
@@ -23,15 +23,22 @@ var DestinyDetailsController = (function () {
         this.destinyApiService = destinyApiService;
         this.handleSearchPlayerResponse = function (data) {
             var dataObject = JSON.parse(data).Response[0];
-            console.log(dataObject);
-            _this.scope.message = dataObject;
+            _this.membershipId = dataObject.membershipId;
+            _this.scope.playerSearchData = dataObject;
+            _this.destinyApiService.getAccountInfo(_this.platform, _this.membershipId).then(function (data) { return _this.handleGetAccountInfoResponse(data.data); }, function () { return _this.scope.errorMessage = "An Error has occured"; });
         };
         scope.VM = this;
-        var platform = $stateParams.platform;
+        this.platform = $stateParams.platform;
         ;
-        var displayName = $stateParams.displayName;
-        destinyApiService.searchPlayer(platform, displayName).then(function (data) { return _this.handleSearchPlayerResponse(data.data); }, function () { return _this.scope.errorMessage = "An Error has occured"; });
+        this.displayName = $stateParams.displayName;
+        this.characterNumber = $stateParams.characterNumber;
+        destinyApiService.searchPlayer(this.platform, this.displayName).then(function (data) { return _this.handleSearchPlayerResponse(data.data); }, function () { return _this.scope.errorMessage = "An Error has occured"; });
     }
+    DestinyDetailsController.prototype.handleGetAccountInfoResponse = function (data) {
+        var dataObject = JSON.parse(data).Response.data;
+        console.log(dataObject);
+        this.scope.equipmentData = dataObject.characters[this.characterNumber].characterBase.peerView.equipment;
+    };
     return DestinyDetailsController;
 })();
 masterSite.controller("destinyDetailsController", ["$scope", "destinyApiService", "$stateParams", DestinyDetailsController]);
@@ -43,10 +50,12 @@ var DestinyHomeController = (function () {
         this.destinyApiService = destinyApiService;
         this.$state = $state;
         scope.VM = this;
-        scope.platform = 1;
+        this.scope.platformRadio = 1;
+        this.scope.characterNumber = 0;
     }
     DestinyHomeController.prototype.searchPlayer = function (platform, displayName) {
-        this.$state.go('destinyDetails', { platform: this.scope.platform, displayName: this.scope.displayName });
+        console.log("Platform: " + this.scope.platformRadio);
+        this.$state.go('destinyDetails', { platform: this.scope.platformRadio, displayName: this.scope.displayName, characterNumber: this.scope.characterNumber });
     };
     return DestinyHomeController;
 })();
@@ -58,14 +67,16 @@ var DestinyApiService = (function () {
         this.$http = $http;
         this.$q = $q;
     }
-    DestinyApiService.prototype.test = function () {
-        var deferred = this.$q.defer();
-        deferred.resolve();
-        return deferred.promise;
-    };
     DestinyApiService.prototype.searchPlayer = function (platform, displayName) {
         if (platform && displayName)
-            return this.$http.get("/api/DestinyApi/One?platform=" + platform + "&displayName=" + displayName);
+            return this.$http.get("/api/DestinyApi/SearchDestinyPlayer?platform=" + platform + "&displayName=" + displayName);
+        var dfd = this.$q.defer();
+        dfd.reject();
+        return dfd.promise;
+    };
+    DestinyApiService.prototype.getAccountInfo = function (platform, membershipId) {
+        if (platform && membershipId)
+            return this.$http.get("/api/DestinyApi/GetAccountInfo?platform=" + platform + "&membershipId=" + membershipId);
         var dfd = this.$q.defer();
         dfd.reject();
         return dfd.promise;

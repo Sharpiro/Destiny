@@ -1,7 +1,27 @@
 ﻿<div class="container">
     <div class="row">
         <p>{{errorMessage}}</p>
-        <p>{{message}}</p>
     </div>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="http://www.bungie.net/{{playerSearchData.iconPath}}" />
+        </div>
+        <div class="col-md-4">
+            <label>Display Name: </label> {{playerSearchData.displayName}}
+        </div>
+        <div class="col-md-4">
+            <label>Membership Id: </label> {{playerSearchData.membershipId}}
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <table>
+                <tr ng-repeat="item in equipmentData">
+                    <td>{{item.itemHash}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {{message}}
 </div>
 
