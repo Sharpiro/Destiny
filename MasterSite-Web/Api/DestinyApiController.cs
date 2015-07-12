@@ -10,7 +10,7 @@ using MasterSite_Web.Models;
 
 namespace MasterSite_Web
 {
-    public class HomeController : ApiController
+    public class DestinyApiController : ApiController
     {
         [HttpGet]
         public IHttpActionResult One(int platform, string displayName)

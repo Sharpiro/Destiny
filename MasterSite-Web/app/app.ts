@@ -3,15 +3,18 @@
 
 var masterSite = angular.module("masterSite", ["ui.router"]);
 
-masterSite.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider: any, $urlRouterProvider: any)
-{
+masterSite.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider: any, $urlRouterProvider: any) {
     $urlRouterProvider.otherwise("/destiny");
 
     //Destiny Routes
     $stateProvider
         .state("destinyHome", {
         url: "/destiny",
-        templateUrl: "app/destiny/templates/homeTemplate.html",
+        templateUrl: "app/destiny/templates/destinyHomeTemplate.html",
         controller: "destinyHomeController"
+    }).state("destinyDetails", {
+        url: "/destinydetails/:platform/:displayName",
+        templateUrl: "app/destiny/templates/destinyDetailsTemplate.html",
+        controller: "destinyDetailsController",
     });
 }]);
