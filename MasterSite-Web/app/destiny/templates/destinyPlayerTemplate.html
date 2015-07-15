@@ -2,31 +2,22 @@
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
-            <li>
+            <li ng-class="{active: VM.isCharacterActive(0)}">
                 <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 1})">{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</a>
             </li>
-            <li class="active">
+            <li ng-class="{active: VM.isCharacterActive(1)}">
                 <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 2})">{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</a>
             </li>
-            <li>
+            <li ng-class="{active: VM.isCharacterActive(2)}">
                 <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 3})">{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</a>
             </li>
         </ul>
     </div>
     <!-- End Sidebar -->
-    <div class="sidebar-row">
-        <button ng-click="VM.toggleState()">Toggle</button>
-    </div>
+
     <!-- Main Content -->
     <div class="sidebar-row">
         <span class="col-md-4 col-md-offset-4 col-md-offset-4" style="font-size: 200%; color: red; font-family: Comic Sans MS">{{errorMessage}}</span>
-    </div>
-    <div class="sidebar-row">
-        <div class="col-md-4">
-            <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 1})">{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</a>
-            <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 2})">{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</a>
-            <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 3})">{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</a>
-        </div>
     </div>
     <div class="sidebar-row">
         <div class="col-md-4">
@@ -49,7 +40,7 @@
             <h4>Gear Hashes</h4>
             <table>
                 <tr ng-repeat="item in characterData.equipmentData">
-                    <td>{{item.itemHash}}</td>
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}">{{item.itemName}}</a></td>
                 </tr>
             </table>
         </div>

@@ -14,7 +14,7 @@
 interface ICharacterData
 {
     charactersOverview: Array<ICharacterOverview>;
-    equipmentData: Array<Object>;
+    equipmentData: Array<IEquipmentData>;
     className: string;
     raceName: string;
     level: number;
@@ -23,4 +23,9 @@ interface ICharacterData
 interface ICharacterOverview {
     level: number;
     className: string;
+}
+
+interface IEquipmentData
+{
+    itemHash: number;
 }

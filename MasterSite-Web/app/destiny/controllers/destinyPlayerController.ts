@@ -20,13 +20,6 @@ class DestinyPlayerController
             () => this.scope.errorMessage = "An Error has occured while searching for player");
     }
 
-    private toggleState = () =>
-    {
-        this.scope.state = !this.scope.state;
-        console.log(this.scope.state);
-        menubar.visible = false;
-    }
-
     private handleSearchPlayerResponse = (data: any) =>
     {
         const dataResponse = JSON.parse(data).Response[0];
@@ -56,11 +49,29 @@ class DestinyPlayerController
             this.scope.errorMessage = "Error: Character not found";
             return;
         }
-        const equipmentData = fullCharacterData.characterBase.peerView.equipment;
+        const equipmentData: Array<IEquipmentData> = fullCharacterData.characterBase.peerView.equipment;
         const className = this.matchDestinyHashes(this.destinyDataService.getClassHashes(), fullCharacterData.characterBase.classHash);
         const raceName = this.matchDestinyHashes(this.destinyDataService.getRaceHashes(), fullCharacterData.characterBase.raceHash);
         const level: number = fullCharacterData.characterLevel;
         this.scope.characterData = { charactersOverview: charactersOverview, equipmentData: equipmentData, className: className, raceName: raceName, level: level };
+        this.getEquipmentInfo(equipmentData);
+    }
+
+    private handleGetItemResponse = (data: any) =>
+    {
+        let dataObject = JSON.parse(data);
+        let responseId = dataObject.ListPosition;
+        let itemData = dataObject.Response.Response.data.inventoryItem;
+        this.scope.characterData.equipmentData.splice(responseId, 1, itemData);
+        console.log(`Name: ${itemData.itemName}, Position: ${responseId}`);
+    }
+
+    private getEquipmentInfo = (equipmentList: Array<IEquipmentData>) =>
+    {
+        for (let i = 0; i < equipmentList.length; i++)
+        {
+            this.destinyApiService.getItem(equipmentList[i].itemHash, i).then((data: any) => this.handleGetItemResponse(data.data));
+        }
     }
 
     private matchDestinyHashes = (hashArray: Array<IHash>, classHash: number): string =>
@@ -78,6 +89,8 @@ class DestinyPlayerController
     {
         return this.scope.platform === PLATFORM[1] ? PLATFORM.xbox : PLATFORM.playstation;
     }
+
+    private isCharacterActive = (number: number) => this.scope.characterNumber === number;
 }
 
 masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService", "destinyDataService", "$stateParams", DestinyPlayerController]); 

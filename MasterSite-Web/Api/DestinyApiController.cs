@@ -35,7 +35,7 @@ namespace MasterSite_Web
         }
 
         [HttpGet]
-        public IHttpActionResult GetAccountInfo(int platform, string membershipId)
+        public IHttpActionResult GetAccountInfo(int platform, ulong membershipId)
         {
             string content;
             using (var client = new HttpClient())
@@ -53,6 +53,35 @@ namespace MasterSite_Web
                 };
             }
             return Json(content);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetItem(uint itemId, int? listPosition = null)
+        {
+            string content;
+            using (var client = new HttpClient())
+            {
+                var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{itemId}/";
+                try
+                {
+                    var request = client.GetAsync(url);
+                    content = request.Result.Content.ReadAsStringAsync().Result;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Async Request Failed...");
+                    return InternalServerError(ex);
+                };
+            }
+            var tempContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+            var testModel = new TestModel
+            {
+                Response = tempContent,
+                ListPosition = listPosition
+            };
+            var testModelJson = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
+            //return Ok(testModelJson);
+            return Json(testModelJson);
         }
 
         [HttpPost]

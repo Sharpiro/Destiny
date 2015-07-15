@@ -26,6 +26,27 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
+    public getItem(itemId: number, listPosition?: number): ng.IPromise<any>
+    {
+        if (itemId !== undefined)
+            return this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemId}&listPosition=${listPosition}`);
+        let dfd = this.$q.defer();
+        dfd.reject();
+        return dfd.promise;
+    }
 
+    public getAllItems(itemList: Array<IEquipmentData>): ng.IPromise<any>
+    {
+        if (itemList.length <= 0)
+            return;
+
+        for (let i = 0; i < 1; i++)
+        {
+            this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemList[i].itemHash}`).then((data) =>
+            {
+            });
+        }
+        return null;
+    }
 }
 masterSite.service("destinyApiService", ["$http", "$q", DestinyApiService]); 
