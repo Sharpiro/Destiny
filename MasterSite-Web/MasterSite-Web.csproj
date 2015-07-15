@@ -182,12 +182,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\destiny\templates\destinyDetailsTemplate.html" />
+    <Content Include="appCombined.js" />
+    <Content Include="app\destiny\templates\destinyPlayerTemplate.html" />
     <Content Include="app\index.html" />
     <Content Include="app\destiny\templates\destinyHomeTemplate.html" />
+    <Content Include="Content\css\sidebar\simple-sidebar.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\css\Site.css" />
+    <Content Include="Scripts\angular\angular-animate.min.js" />
     <Content Include="Scripts\angular\angular-ui-router.min.js" />
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\bootstrap\css\bootstrap-theme.css" />
@@ -208,12 +211,17 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\app.ts" />
-    <TypeScriptCompile Include="app\destiny\controllers\destinyDetailsController.ts" />
+    <TypeScriptCompile Include="app\destiny\controllers\destinyPlayerController.ts" />
     <TypeScriptCompile Include="app\destiny\controllers\destinyHomeController.ts" />
+    <TypeScriptCompile Include="app\destiny\controllers\destinyHeaderController.ts" />
+    <TypeScriptCompile Include="app\destiny\directives\sidebarDirective.ts" />
+    <TypeScriptCompile Include="app\destiny\enumerations\destinyEnums.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyApiService.ts" />
-    <TypeScriptCompile Include="app\destiny\interfaces\IDestinyDetailsScope.ts" />
+    <TypeScriptCompile Include="app\destiny\interfaces\IDestinyDataService.ts" />
+    <TypeScriptCompile Include="app\destiny\interfaces\IDestinyPlayerScope.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyHomeScope.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyApiService.ts" />
+    <TypeScriptCompile Include="app\destiny\services\destinyDataService.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\angular-ui-router.d.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\jquery.d.ts" />
@@ -230,7 +238,9 @@
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\sharpiro-mastersite.pubxml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

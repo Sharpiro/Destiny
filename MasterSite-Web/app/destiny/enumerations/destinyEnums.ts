@@ -1,0 +1,1 @@
+﻿enum PLATFORM { xbox = 1, playstation = 2 }

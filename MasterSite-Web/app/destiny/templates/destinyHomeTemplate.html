@@ -1,16 +1,18 @@
 ﻿<div class="container">
     <div class="row">
         <div class="col-md-4 col-lg-offset-4 destiny-mainDiv">
-            <h2>Search Player</h2>
+            <h2>Search</h2>
             <form role="form">
                 <div class="form-group">
-                    <label class="radio-inline"><input type="radio" ng-model="platformRadio" value=1>XBL</label>
-                    <label class="radio-inline"><input type="radio" ng-model="platformRadio" value=2>PSN</label>
+                    <label style="display: block">Platform</label>
+                    <label class="radio-inline"><input type="radio" ng-model="platform" value=1>Xbox</label>
+                    <label class="radio-inline"><input type="radio" ng-model="platform" value=2>PlayStation</label>
                 </div>
                 <div class="form-group">
-                    <label class="radio-inline"><input type="radio" ng-model="characterNumber" value=0>0</label>
+                    <label style="display: block">Character Number</label>
                     <label class="radio-inline"><input type="radio" ng-model="characterNumber" value=1>1</label>
                     <label class="radio-inline"><input type="radio" ng-model="characterNumber" value=2>2</label>
+                    <label class="radio-inline"><input type="radio" ng-model="characterNumber" value=3>3</label>
                 </div>
                 <div class="form-group">
                     <label for="displayName">Username:</label>
@@ -23,6 +25,4 @@
             <p>{{message}}</p>
         </div>
     </div>
-    <!--<a ui-sref="destinyDetails({displayName: message})">Click Meee</a>-->
 </div>
-
