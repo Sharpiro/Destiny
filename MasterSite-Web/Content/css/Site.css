@@ -4,5 +4,19 @@
     word-wrap: break-word;
 }
 
+.destiny-details-search-li{
+    width: 200px;
+    padding-bottom: 20px;
+}
+
+.destiny-details-submit{
+    position:absolute;
+    visibility:hidden;
+}
+
+.destiny-details-search{
+}
+
+
 
 /*#endregion*/

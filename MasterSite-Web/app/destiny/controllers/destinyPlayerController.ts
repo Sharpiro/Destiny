@@ -6,7 +6,7 @@ class DestinyPlayerController
 {
     private membershipId: number;
 
-    constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService, $stateParams: any)
+    constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService, $stateParams: any, private $state: any)
     {
         scope.VM = this;
         scope.platform = $stateParams.platform;
@@ -18,6 +18,14 @@ class DestinyPlayerController
         destinyApiService.searchPlayer(this.getPlatformNumber(scope.platform), scope.displayName).then(
             (data: any) => this.handleSearchPlayerResponse(data.data),
             () => this.scope.errorMessage = "An Error has occured while searching for player");
+    }
+
+    private test = (testValue: any) =>
+    {
+        console.log(testValue);
+        this.scope.displayName = testValue;
+        this.$state.go('destinyPlayer', { platform: this.scope.platform, displayName: this.scope.displayName, characterNumber: 1 });
+
     }
 
     private handleSearchPlayerResponse = (data: any) =>
@@ -93,4 +101,4 @@ class DestinyPlayerController
     private isCharacterActive = (number: number) => this.scope.characterNumber === number;
 }
 
-masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService", "destinyDataService", "$stateParams", DestinyPlayerController]); 
+masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService", "destinyDataService", "$stateParams", "$state", DestinyPlayerController]); 
