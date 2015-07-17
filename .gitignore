@@ -9,6 +9,7 @@ MasterSite-Web/app/**/*.map
 MasterSite-Web/app/**/*.js
 MasterSite-Web/appCombined.js
 MasterSite-Web/appCombined.js.map
+.vs/config/applicationhost.config
 
 # User-specific files
 *.suo
