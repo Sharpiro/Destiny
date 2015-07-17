@@ -36,16 +36,20 @@
         </div>
     </div>
     <div class="sidebar-row">
-        <div class="col-md-4">
-            <label style="display: block">Level:</label> {{characterData.level}}
-            <label style="display: block">Race:</label> {{characterData.raceName}}
-            <label style="display: block">Class:</label> {{characterData.className}}
+        <div class="col-md-2 col-md-offset-5">
+            <h3>
+                {{characterData.level}}
+                {{characterData.raceName}}
+                {{characterData.className}}
+            </h3>
         </div>
-        <div class="col-md-4">
+    </div>
+    <div class="sidebar-row">
+        <div id="equipment" class="col-md-4">
             <h4>Gear Hashes</h4>
             <table>
                 <tr ng-repeat="item in characterData.equipmentData">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}">{{item.itemName}}</a></td>
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
                 </tr>
             </table>
         </div>

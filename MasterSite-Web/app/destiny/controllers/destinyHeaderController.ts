@@ -1,5 +1,4 @@
 ﻿///<reference path="../../app.ts"/>
-///<reference path="../interfaces/IDestinyHomeScope.ts"/>
 
 class DestinyHeaderController
 {
