@@ -1,4 +1,4 @@
-﻿///<reference path="../../app.ts"/>
+﻿///<reference path="../app.ts"/>
 ///<reference path="../interfaces/IDestinyPlayerScope.ts"/>
 /////<reference path="../services/destinyDataService.ts"/>
 

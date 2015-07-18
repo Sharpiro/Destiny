@@ -1,4 +1,4 @@
-﻿///<reference path="../../app.ts"/>
+﻿///<reference path="../app.ts"/>
 
 
 class SidebarDirective implements ng.IDirective
@@ -26,11 +26,13 @@ class SidebarDirective implements ng.IDirective
 
     public static factory()
     {
-        const directive = () =>
+
+        const directive = () =>
         {
             return new SidebarDirective(/*list of dependencies*/);
         };
-        directive["$inject"] = [];
+
+        directive["$inject"] = [];
 
         return directive;
     }

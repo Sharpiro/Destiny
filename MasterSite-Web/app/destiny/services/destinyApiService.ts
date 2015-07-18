@@ -1,4 +1,4 @@
-﻿///<reference path="../../app.ts"/>
+﻿///<reference path="../app.ts"/>
 ///<reference path="../interfaces/IDestinyApiService.ts"/>
 
 class DestinyApiService implements IDestinyApiService
