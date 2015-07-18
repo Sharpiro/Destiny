@@ -1,4 +1,4 @@
-﻿///<reference path="../../app.ts"/>
+﻿///<reference path="../app.ts"/>
 ///<reference path="../interfaces/IDestinyHomeScope.ts"/>
 
 class DestinyHomeController
@@ -11,12 +11,13 @@ class DestinyHomeController
         this.scope.displayName = "sharpirox";
         this.scope.platform = PLATFORM.xbox;
         this.scope.characterNumber = 1;
+        this.scope.message = "who wins?";
         //Service API Calls
     }
 
     private searchPlayer(platform: number, displayName: string)
     {
-        this.$state.go('destinyPlayer', { platform: PLATFORM[this.scope.platform], displayName: this.scope.displayName, characterNumber: this.scope.characterNumber });
+        this.$state.go("destinyPlayer", { platform: PLATFORM[this.scope.platform], displayName: this.scope.displayName, characterNumber: this.scope.characterNumber });
     }
 }
 
