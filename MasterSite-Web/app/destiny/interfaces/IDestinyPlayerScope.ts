@@ -8,20 +8,17 @@
     platform: string;
     displayName: string;
     characterNumber: number;
-    state: boolean;
 }
 
 interface ICharacterData
 {
-    charactersOverview: Array<ICharacterOverview>;
+    charactersOverview: Array<string>;//Array<ICharacterOverview>;
     equipmentData: Array<Array<IEquipmentData>>;
-    className: string;
-    raceName: string;
-    level: number;
 }
 
 interface ICharacterOverview {
     level: number;
+    race: string;
     className: string;
 }
 
