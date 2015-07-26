@@ -3,18 +3,15 @@
 
 var masterSite = angular.module("masterSite", ["ui.router", "ngAnimate"]);
 
-masterSite.config(["$stateProvider", "$urlRouterProvider", ($stateProvider: any, $urlRouterProvider: any) => {
-    $urlRouterProvider.otherwise("/");
+masterSite.config(["$stateProvider", "$urlRouterProvider", ($stateProvider: any, $urlRouterProvider: any) =>
+{
+    $urlRouterProvider.otherwise("/player/xbox/sharpirox/1");
 
     //Destiny Routes
     $stateProvider
-        .state("destinyHome", {
-            url: "/",
-            templateUrl: "/app/destiny/templates/destinyHomeTemplate.html",
-            controller: "destinyHomeController"
-        }).state("destinyPlayer", {
-            url: "/player/:platform/:displayName/:characterNumber",
-            templateUrl: "/app/destiny/templates/destinyPlayerTemplate.html",
-            controller: "destinyPlayerController"
-        });
+        .state("destinyPlayer", {
+        url: "/player/:platform/:displayName/:characterNumber",
+        templateUrl: "/app/destiny/templates/destinyPlayerTemplate.html",
+        controller: "destinyPlayerController"
+    });
 }]);

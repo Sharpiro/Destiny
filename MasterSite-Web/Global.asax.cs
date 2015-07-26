@@ -13,6 +13,9 @@ namespace MasterSite_Web
     {
         protected void Application_Start()
         {
+#if !DEBUG
+            GlobalFilters.Filters.Add(new RequireHttpsAttribute());
+#endif
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

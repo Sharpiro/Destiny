@@ -1,11 +1,38 @@
-http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/1/sharpirox/
-http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/1/4611686018432239086/0/
-http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Triumphs/
-http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/
-http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/2303881503/
-
-
-
-
-
-http://localhost:64449/api/DestinyApi/GetItem?itemId=2520286396
+//public
+	//find player by display name / get membership id
+		http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/1/sharpirox/
+	//get account data by membership id
+		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/
+	//get character information / get character ids
+		https://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086
+	//get detailed inventory data per character via character id
+		https://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/Inventory/?definitions=false
+	//get a summary of character data per character id
+		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/
+	//get the progression of a character via charcter id
+		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/progression/
+	//get activity stats
+		http://www.bungie.net/Platform/Destiny/Stats/AggregateActivityStats/1/4611686018432239086/2305843009241596279/
+	//show player triumphs
+		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Triumphs/
+	//find item by item hash
+		http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/2303881503/
+	//find item info per player
+		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/Inventory/6917529054549503332/
+//private
+	//get vault info
+		https://www.bungie.net/Platform/Destiny/1/MyAccount/Vault/?definitions=false
+	//equip an item
+		https://www.bungie.net/Platform/Destiny/EquipItem/
+	//get bungie.net user data
+		https://www.bungie.net/Platform/User/GetBungieNetUser/
+	//request format
+		User-Agent: Fiddler
+		Host: www.bungie.net
+		headers: {
+		'X-API-Key': 106c3e8ee80248b5bd0514c7f966dc47
+		x-csrf: 2023452938406189705
+		cookie: bungled=2023452938406189705; bungleatk=wa=rPWCXdj89D1OHbhDBkOcniD2O7GpyLSuqPkhew-2btNgCQAAalEFJcSRhPHDnY-kAOOLwS1zPMyoUX9VLQgKsAA87ESmWJHQpXYirB0EwKHnKR9TcAV9WY3Qk2jOz.K0Bh3VqRyBos0hNiqXXPxamo8nzo0TwwwL-4dqD.Ivwn3ll4TxVGM9QzueWX5ipwqRcPr7Wj2Dz7SO46BL1AhcSAGKJuMDAmA1QbFiBfNToap5QfRrWsIXcewRF7sTdyCIqImTClr72ccjN3yw0lXWSaeSlfha1qdG9iruNYXiopXmxuihN5vhdDDBN299d28gEEQhPd5Am8TuFbwLWcR17ZH0Kg9R-FE7ePMy6XXdUn77MRkVOCDcdbhZWC442CF6154Dr8AlbpSW6GzcRHHn0dUZfgK.vn8a-e460zSFIgPsT9enp3oAYuEyVhDlLhmKbOOqH0GRYggXedUHboEh3quPhgK-tgrLqtCcTX3caMslBL-STYF4bhaFWS4Dgx6z8.RNRj4lVq9wrgGOt.6WisfiGROUtwjbqkRexwY8ejoWQedCtMoAIy-tmpMCvdSZt5RW7AXnceJyzYR4BDl-9.7OeKwy0D58ZyT9Rtbx.D6.VBOdViHpYxl48FDBT3XtOVzX6Qb.R5xBaGyQYk6w8wKgybuT2yQLeSLP18ZMvzMc9gakJvKClD4k1NhGHJO-gK5YDAnqiOOOlCHPN2uJ3AjWGyeKDvGlJ7g5R6aXzIIfWEbqO70aOR03-64AYCBatUYKodibxQC0wZVt6ddZDtqgC2jwjMneELOuv48YT.pohgjnQNTK2zTGmBZRvgLqyZ.72PXAS0N7D-5qgaGxTRT0Ey58bgiZQJ1duH3vhUh1UWXG2c20k4oFq5gWRBHkjkKVfi3eg961yvQ-dO-eCrazZA1Vru6YupKwyrHVR0eiE64aWsWjtQNbkEg5pXmP98ab3jqUc6BcGAkRa9.ehvVDlaFFXhwMAnl61ZJamOTtOKkbOQkZWJgNV9zG5Sj8Ojk4uKSh5mHzvy4arIekf8qrql1KaN1-TVggvCYOys2HrWq6r33d9yBkJgeVcHKXxX1T1857h.lBUGz.vbx2n1rbK2Mw5V4YsLaisN9LxE5yZdNldiSCUReoTdcWJGILIpLqzWCGScxVFQAbDkpvDsmSBO1wMqzfxTE8SD-uDWeBW77hdeqFMxw1i1VpQjkfnRJ391c6BTBIAL23Iy2YD-EvWBQSw2ZTJfQu1Swbk8nHIrjgGuo9h5w-SZOdA9jVTVmRzN27Q1q5aTbGQ65N9vdaQRpuMYf-AqW3v20GxpEpvQbd1ImwHLI3kJ0uKOmsBasdZ48Adp9RDj.5F574UMI.anyr2d1BRPiuqV6DidGeSl-j1IM36Mo83UkYT4wK3Vx-5q7CdmMmpbBtDPKNRF99YZ4lQygZ8pLToTNUqnQxGhsbiCGUEaJh-nlf86usbgVABCrQivl6Wh7IG-D24BacKPfQ5J0HutwviZlKqji6X1-pBGkbzdL0Q3rabB6Ovn2VJZxcfe6FSr-8T0KrPeG7cI9DSuweuwg.ih9WBX01u9iJX.969ufld.wecoM6srnxm5e.WA4TnoTKs5IhYhmNcOyrxTluawUy7ej35prQvF1L4Kt-f11bpwCWdTW0wQxMLSkC1xDGzDqJ6gOjh6fTWLBZcjNPhPPwDbXGsBsfYu3LrOk8ieaB65zqn05rKeeKFWSp55EIBR413sGq4dvfIPvX8pl6HXwkO0GXk78TgA8OGVSuz4a39EhrakbPRg4K6y1Hbcr8NPtLnA1cu8bR0D96cvlKIw5agsPxZSwL7CN48lJJHRrv03J7x-JYHL8qHcvd91P7M2AOW-y5PdEwvt4YhA4fLsA1WaFrdi83n6d1dZfZ-vwW8oEm5JLuT8es2948QYyKPyKwOT9hXrehg2EQsQoQxbbatiRMbkdBe84leuL3jLix-VfwEmn.KQQ7adK6mLgdKGf9arhROhzKbr5tHDh6F.oVjHkANXccw93NCbV9h75K4Bo9CYt6iFd0nwNVOjpSMw9cDq0fxh1Je5PAsh9uyxwSVivsWSuWolZy6vB-KAKT9i9gQlC3I2Fw3ZhCtyatMcim-QshTVQRSfDvnLZPdDluU7gf5vWjuUItbxV-fyJJFfb7kj.GWis29oM5.ylPk1x.i6-ymWYltwUiP-tum.ysx5peQWSaTsw3rgXBPWsRT9PDx7w.5vwvJdeLgokjxb-FelPh-9tRJL4V85iw9RMCWk.STTLViYGLw.Ci7WIPJQ9eN-z5Adra6AsY8mUOEhyriB-s1BYqyeF.w.zrdqFyus6RUL4-rL4VvRJ1x-dvSMLVASqPUHaLlOlV3HJLxAAWzbY0NYK.2BJDUwS4M7LbU90XDHs1Qy8qvlXpSuAbbZL8aXX1KizDKs3pJIiBtk83tIH4WZ1xIFm2cILY5URSVIwc8zm62Ofwqlxr5zNuaYtEfJUGHC8On8zle3rpahCTWwGzD-FskpOzVVqHYw3VAMLEgsPf.O87rlrmkzgnsxkJcD3iel24IE80q1kONaXE4fYSuSNBhE4CwTNKj8xdXQirL5YkjKen2gl6l9.rKQITBFG8J.F1FuLN0Vfg48SkqPXZhj3PvBH1hl2UL8BUYodoqORo6DVs960-Xq7jYfo0AAzD.BMidIKy0-pdrQDF7-Yc5MBR02lRPviiC5ECxUt53cZoNEk11wlZ9rcdHa8JE1srImMYZtoQWV2wOyYKHC..CqGClDGkO8L5iMaeLjL.FwjXQZKdEbsH-IUOOtq95oT8IxFDUmM5gCVPPfmJhtwgc-ytfOqF21Ca1SMc5BFpl5yehMJVzqyr4yOGKQlB97PA.MlQKaav3mt5o9bdCNV0C-Nl-9dy6WTbcyYA3I-5V.h5vKmN2biadpumHDWE3UJPVrypyAjb39X9hP1xq7g9amRj0cu.OYe0Y1hP3PLKgDo8Lm4Ep6NXcbtahV6blvMGW46MhQfZ4m-wsBS-D6GwnVU8C..Stp6PPXpAXxGqN-73jicZumJXRCvESOMNI8kgSDLds47lMn9m7p76pxUednRKvk0xGU4z9bPBdkr10xfg.IcROlsPFKjRSx22Ss04dSFTG3djrBwWPXQrzgIEEYOMJOXD4O4-1kNqTk5-Proa3diR0bAGDZu2gYDjaP8YgvVTR.XblV7ne8lAop58Yu8mLZFty3lofHAddAETuGcQ8mNu&tk=YAAAAOo4H5rtQZ9UL.-V7sl8h5ClcO..drZ6D3g.QbXTQNNQ3TTnp9dLCC0yK5M2hPm7vo0OID-6WiPAzC1.zYocAJBOBTehkaEz0KAeLObCj4CTK4GcJKQfM5BHIaXj4on7ViAAAABoEyWXI2d-xyJYJF4tltBL5XqBKJ3D4E.wcIzhaoYTCA__;
+//unknown
+	http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/1/4611686018432239086/0/
+	

@@ -13,7 +13,7 @@
                 <li class="destiny-details-search-li">
                     <form role="form">
                         <input class="form-control destiny-details-search" type="text" ng-model="searchText" placeholder="Search Player">
-                        <input class="destiny-details-submit" ng-click="VM.test(searchText)" type="submit" value="Search" />
+                        <input class="destiny-details-submit" ng-click="VM.searchPlayer(searchText)" type="submit" value="Search" />
                     </form>
                 </li>
                 <li ng-class="{active: vm.isActive('/destiny')}"><a href="#/destiny">Search</a></li>
@@ -25,19 +25,19 @@
             </ul>
         </div>
     </div>
-</nav>    
+</nav>
 
+<div id="page-wrapper">
 
-<a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 1})">{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</a>
-    <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 2})">{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</a>
-    <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 3})">{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</a>
-
+    <!--<a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 1})">{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</a>
+        <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 2})">{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</a>
+        <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 3})">{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</a>-->
     <!-- End Sidebar -->
     <!-- Main Content -->
-    <div class="sidebar-row">
-        <span class="col-md-4 col-md-offset-4 col-md-offset-4" style="font-size: 200%; color: red; font-family: Comic Sans MS">{{errorMessage}}</span>
+    <!--<div class="row">
+        <span class="col-md-4 col-md-offset-4" style="font-size: 200%; color: red; font-family: Comic Sans MS">{{errorMessage}}</span>
     </div>
-    <div class="sidebar-row">
+    <div class="row">
         <div class="col-md-4">
             <img src="http://www.bungie.net/{{playerSearchData.iconPath}}" />
         </div>
@@ -48,7 +48,7 @@
             <label>Membership Id: </label> {{playerSearchData.membershipId}}
         </div>
     </div>
-    <div class="sidebar-row">
+    <div class="row">
         <div class="col-md-2 col-md-offset-5">
             <h3>
                 {{characterData.level}}
@@ -56,13 +56,29 @@
                 {{characterData.className}}
             </h3>
         </div>
-    </div>
-    <div class="sidebar-row">
-        <div id="equipment" class="col-md-4">
-            <h4>Gear Hashes</h4>
+    </div>-->
+    <div class="row">
+        <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
+            <h4>{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</h4>
             <table>
-                <tr ng-repeat="item in characterData.equipmentData">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                <tr ng-repeat="item in characterData.equipmentData[0]">
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}"  target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                </tr>
+            </table>
+        </div>
+        <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
+            <h4>{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</h4>
+            <table>
+                <tr ng-repeat="item in characterData.equipmentData[1]">
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                </tr>
+            </table>
+        </div>
+        <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
+            <h4>{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</h4>
+            <table>
+                <tr ng-repeat="item in characterData.equipmentData[2]">
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
                 </tr>
             </table>
         </div>
@@ -70,3 +86,4 @@
     <div>
         {{message}}
     </div>
+</div>
