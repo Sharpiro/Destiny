@@ -11,7 +11,6 @@ class DestinyPlayerController
         scope.platform = $stateParams.platform;
         scope.displayName = $stateParams.displayName;
         scope.characterNumber = $stateParams.characterNumber - 1;
-        scope.state = true;
         
         //Service API Calls
         destinyApiService.searchPlayer(this.getPlatformNumber(scope.platform), scope.displayName).then(
@@ -22,7 +21,11 @@ class DestinyPlayerController
     private searchPlayer = (testValue: any) =>
     {
         this.scope.displayName = testValue;
-        this.$state.go("destinyPlayer", { platform: this.scope.platform, displayName: this.scope.displayName, characterNumber: 1 });
+        this.$state.go("destinyPlayer", {
+            platform: this.scope.platform,
+            displayName: this.scope.displayName,
+            characterNumber: 1
+        });
 
     }
 
@@ -45,27 +48,20 @@ class DestinyPlayerController
     private handleGetAccountInfoResponse = (data: any) =>
     {
         const accountInfoData = JSON.parse(data).Response.data;
-        const charactersOverview: Array<ICharacterOverview> = [
-            { "level": accountInfoData.characters[0].characterLevel, "className": this.matchDestinyHashes(this.destinyDataService.getClassHashes(), accountInfoData.characters[0].characterBase.classHash) },
-            { "level": accountInfoData.characters[1].characterLevel, "className": this.matchDestinyHashes(this.destinyDataService.getClassHashes(), accountInfoData.characters[1].characterBase.classHash) },
-            { "level": accountInfoData.characters[2].characterLevel, "className": this.matchDestinyHashes(this.destinyDataService.getClassHashes(), accountInfoData.characters[2].characterBase.classHash) }];
-        const characterOneData = accountInfoData.characters[0];
-        const characterTwoData = accountInfoData.characters[1];
-        const characterThreeData = accountInfoData.characters[2];
-        if (!characterOneData)
+        const charactersDataList = [accountInfoData.characters[0], accountInfoData.characters[1], accountInfoData.characters[2]];
+        if (!charactersDataList[0])
         {
             this.scope.errorMessage = "Error: Character not found";
             return;
         }
-        const charOneEquipmentData: Array<IEquipmentData> = characterOneData.characterBase.peerView.equipment;
-        const charTwoEquipmentData: Array<IEquipmentData> = characterTwoData.characterBase.peerView.equipment;
-        const charThrEeequipmentData: Array<IEquipmentData> = characterThreeData.characterBase.peerView.equipment;
-        const equipmentData: Array<Array<IEquipmentData>> = [charOneEquipmentData, charTwoEquipmentData, charThrEeequipmentData];
-        const className = this.matchDestinyHashes(this.destinyDataService.getClassHashes(), characterOneData.characterBase.classHash);
-        const raceName = this.matchDestinyHashes(this.destinyDataService.getRaceHashes(), characterOneData.characterBase.raceHash);
-        const level: number = characterOneData.characterLevel;
-        this.scope.characterData = { charactersOverview: charactersOverview, equipmentData: equipmentData, className: className, raceName: raceName, level: level };
+        const charactersOverviewTwo: Array<string> = this.getCharacterOverviewObject(charactersDataList);
+        const equipmentData: Array<Array<IEquipmentData>> = this.getEquipmentDataObject(charactersDataList);
+        this.scope.characterData = { charactersOverview: charactersOverviewTwo, equipmentData: equipmentData };
+
+        //get generic equipment data
         this.getEquipmentInfo(equipmentData);
+        //get inventory data for characters
+        this.getCharactersInventory(charactersDataList);
     }
 
     private handleGetItemResponse = (data: any) =>
@@ -85,9 +81,30 @@ class DestinyPlayerController
             let currentEquipmentList = equipmentList[i];
             for (let j = 0; j < equipmentList[i].length; j++)
             {
-                this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) => this.handleGetItemResponse(data.data));
+                this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) =>
+                {
+                    this.handleGetItemResponse(data.data);
+                });
             }
         }
+    }
+
+    private getCharactersInventory = (charactersDataList: any) =>
+    {
+        for (let i = 0; i < charactersDataList.length; i++)
+        {
+            let characterId = charactersDataList[i].characterBase.characterId;
+            this.destinyApiService.getCharacterInventory(this.getPlatformNumber(this.scope.platform),
+                this.membershipId, characterId, i).then((data: any) =>
+            {
+                this.handleGetCharactersInventoryResponse(data.data);
+            });
+        }
+    }
+
+    private handleGetCharactersInventoryResponse = (data: any) =>
+    {
+        let dataObject = JSON.parse(data);
     }
 
     private matchDestinyHashes = (hashArray: Array<IHash>, classHash: number): string =>
@@ -107,6 +124,37 @@ class DestinyPlayerController
     }
 
     private isCharacterActive = (number: number) => this.scope.characterNumber === number;
+
+    private getCharacterOverviewObject = (charactersDataList: Array<any>) =>
+    {
+        const raceHashes = this.destinyDataService.getRaceHashes();
+        const classHashes = this.destinyDataService.getClassHashes();
+        const genderHashes = this.destinyDataService.getGenderHashes();
+        let match = this.matchDestinyHashes;
+        let characterOneRace = match(raceHashes, charactersDataList[0].characterBase.raceHash);
+        let characterTwoRace = match(raceHashes, charactersDataList[1].characterBase.raceHash);
+        let characterThreeRace = match(raceHashes, charactersDataList[2].characterBase.raceHash);
+        let characterOneClass = match(classHashes, charactersDataList[0].characterBase.classHash);
+        let characterTwoClass = match(classHashes, charactersDataList[1].characterBase.classHash);
+        let characterThreeClass = match(classHashes, charactersDataList[2].characterBase.classHash);
+        let characterOneGender = match(genderHashes, charactersDataList[0].characterBase.genderHash);
+        let characterTwoGender = match(genderHashes, charactersDataList[1].characterBase.genderHash);
+        let characterThreeGender = match(genderHashes, charactersDataList[2].characterBase.genderHash);
+        return [
+            `${charactersDataList[0].characterLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`,
+            `${charactersDataList[1].characterLevel} ${characterTwoRace} ${characterTwoClass} - ${characterTwoGender}`,
+            `${charactersDataList[2].characterLevel} ${characterThreeRace} ${characterThreeClass} - ${characterThreeGender}`
+        ];
+    }
+
+    private getEquipmentDataObject = (charactersDataList: Array<any>): Array<Array<IEquipmentData>> =>
+    {
+        return [
+            charactersDataList[0].characterBase.peerView.equipment,
+            charactersDataList[1].characterBase.peerView.equipment,
+            charactersDataList[2].characterBase.peerView.equipment
+        ];
+    }
 }
 
 masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",

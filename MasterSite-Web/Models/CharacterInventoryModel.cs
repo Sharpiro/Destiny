@@ -5,10 +5,9 @@ using System.Web;
 
 namespace MasterSite_Web.Models
 {
-    public class TestModel
+    public class CharacterInventoryModel
     {
         public object Response { get; set; }
-        public int? ListNumber { get; set; }
-        public int? ListPosition { get; set; }
+        public int? CharacterNumber { get; set; }
     }
 }
