@@ -26,10 +26,10 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public getItem(itemId: number, listPosition?: number): ng.IPromise<any>
+    public getItem(itemId: number, listNumber?: number, listPosition?: number): ng.IPromise<any>
     {
         if (itemId !== undefined)
-            return this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemId}&listPosition=${listPosition}`);
+            return this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemId}&listNumber=${listNumber}&listPosition=${listPosition}`);
         let dfd = this.$q.defer();
         dfd.reject();
         return dfd.promise;

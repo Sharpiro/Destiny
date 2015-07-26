@@ -56,7 +56,7 @@ namespace MasterSite_Web
         }
 
         [HttpGet]
-        public IHttpActionResult GetItem(uint itemId, int? listPosition = null)
+        public IHttpActionResult GetItem(uint itemId, int? listNumber = null, int? listPosition = null)
         {
             string content;
             using (var client = new HttpClient())
@@ -73,15 +73,16 @@ namespace MasterSite_Web
                     return InternalServerError(ex);
                 };
             }
-            var tempContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+            var jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
             var testModel = new TestModel
             {
-                Response = tempContent,
+                Response = jsonContent,
+                ListNumber = listNumber,
                 ListPosition = listPosition
             };
-            var testModelJson = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
+            var returnModel = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
             //return Ok(testModelJson);
-            return Json(testModelJson);
+            return Json(returnModel);
         }
 
         [HttpPost]
