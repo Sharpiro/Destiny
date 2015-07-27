@@ -25,4 +25,5 @@ interface ICharacterOverview {
 interface IEquipmentData
 {
     itemHash: number;
+    details: any;
 }

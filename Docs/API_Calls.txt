@@ -3,8 +3,8 @@
 		http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/1/sharpirox/
 	//get character information / get character ids
 		https://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086
-	//get detailed inventory data per character via character id
-		https://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/Inventory/?definitions=false
+	//get detailed equipped data per character via character id
+		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/Inventory/?definitions=false
 	//get a summary of character data per character id
 		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/
 	//get the progression of a character via charcter id
@@ -18,6 +18,8 @@
 	//find item info per player
 		http://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/Inventory/6917529054549503332/
 //private
+	//get detailed inventory data per character via character id
+		https://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086/Character/2305843009241596279/Inventory/?definitions=false
 	//get vault info
 		https://www.bungie.net/Platform/Destiny/1/MyAccount/Vault/?definitions=false
 	//equip an item
