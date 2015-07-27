@@ -32,6 +32,25 @@ class DestinyDataService implements IDestinyDataService
         { "hash": -100, "value": "Charge Rate" }
     ];
 
+    //spec-guns-gear-misc
+    public itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
+
+    //account triumphs
+    public accountTriumphs: IStaticTriumphsData = {
+        yearOne: [
+            { title: "Apprentice of Light", description: "A character reached the maximum level" },
+            { title: "Light of the Garden", description: "Defeated the dark heart of the Black Garden" },
+            { title: "Light in the Dark", description: "Prevented the summoning of Crota's Soul" },
+            { title: "Light of the Reef", description: "Captured Skolas in the Vex Citadel" },
+            { title: "Bane of Skolas", description: "Defeated Prison of Elders on Hard Difficulty" },
+            { title: "Bane of Atheon", description: "Defeated Atheon on Hard Difficulty" },
+            { title: "Bane of Crota", description: "Defeated Crota on Hard Difficulty" },
+            { title: "Public Servant", description: "Completed 50 Public Events" },
+            { title: "Crucible Gladiator", description: "Won 100 Crucible Matches" },
+            { title: "Chest Hunter", description: "Found all Golden Chests" }
+        ]
+    };
+
     constructor(private $http: ng.IHttpService, private $q: ng.IQService)
     {
     }
@@ -53,7 +72,17 @@ class DestinyDataService implements IDestinyDataService
 
     public getStatHashes = (): Array<IHash> =>
     {
-        return this.genderHashes;
+        return this.statHashes;
+    }
+
+    public getItemOrderValue = (inputNumber: number): number =>
+    {
+        return this.itemOrder[inputNumber];
+    }
+
+    public getAccountTriumphs = (): IStaticTriumphsData =>
+    {
+        return this.accountTriumphs;
     }
 }
 
@@ -61,6 +90,17 @@ interface IHash
 {
     hash: number;
     value: string;
+}
+
+interface IStaticTriumphsData
+{
+    yearOne: Array<IYearOneTriumph>
+}
+
+interface IYearOneTriumph
+{
+    title: string,
+    description: string
 }
 
 masterSite.service("destinyDataService", ["$http", "$q", DestinyDataService]); 

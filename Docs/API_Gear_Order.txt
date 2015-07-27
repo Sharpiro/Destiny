@@ -1,0 +1,31 @@
+//get item
+	spec
+	head
+	hands
+	chest
+	legs
+	class Item
+	primary
+	special
+	heavy
+	ship
+	sparrow
+	ghost shell
+	emblem
+	shader
+
+//get inventory details
+	spec
+	primary
+	special
+	heavy
+	head
+	hands
+	chest
+	legs
+	class item
+	ghost shell
+	sparrow
+	ship
+	shader
+	emblem

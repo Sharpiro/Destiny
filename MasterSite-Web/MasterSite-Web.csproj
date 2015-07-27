@@ -287,7 +287,14 @@
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptOutFile>appCombined.js</TypeScriptOutFile>
+    <TypeScriptOutFile>C:\Users\U403598\Documents\_Work\Learning\Development\C#\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

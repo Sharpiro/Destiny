@@ -8,6 +8,7 @@
     platform: string;
     displayName: string;
     characterNumber: number;
+    triumphs: Array<ITriumphs>;
 }
 
 interface ICharacterData
@@ -26,4 +27,10 @@ interface IEquipmentData
 {
     itemHash: number;
     details: any;
+}
+
+interface ITriumphs
+{
+    title: string,
+    complete: boolean;
 }
