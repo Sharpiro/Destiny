@@ -114,6 +114,30 @@ namespace MasterSite_Web
             return Json(returnModel);
         }
 
+        [HttpGet]
+        public IHttpActionResult GetAccountTriumphs(int platform, ulong membershipId)
+        {
+            string content;
+            object jsonContent;
+            using (var client = new HttpClient())
+            {
+                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Triumphs/";
+                try
+                {
+                    var request = client.GetAsync(url);
+                    content = request.Result.Content.ReadAsStringAsync().Result;
+                    jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Async Request Failed...");
+                    return InternalServerError(ex);
+                };
+            }
+            //var returnModel = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
+            return Json(jsonContent);
+        }
+
         [HttpPost]
         public IHttpActionResult Post()
         {

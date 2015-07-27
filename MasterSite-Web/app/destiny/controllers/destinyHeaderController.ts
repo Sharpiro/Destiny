@@ -11,7 +11,6 @@ class DestinyHeaderController
     constructor(private scope: IDestinyHeaderScope, private location: ng.ILocationService, stateParams: any)
     {
         scope.vm = this;
-        scope.message = "testing angular stuff";
     }
 
     private slideOut = () =>

@@ -12,8 +12,8 @@
             <ul class="nav navbar-nav">
                 <li class="destiny-details-search-li">
                     <form role="form">
-                        <input class="form-control destiny-details-search" type="text" ng-model="searchText" placeholder="Search Player">
-                        <input class="destiny-details-submit" ng-click="VM.searchPlayer(searchText)" type="submit" value="Search" />
+                        <input class="form-control destiny-details-search" type="text" ng-model="searchValue" placeholder="Search Player">
+                        <input class="destiny-details-submit" ng-click="VM.searchPlayer(searchValue)" type="submit" value="Search" />
                     </form>
                 </li>
                 <li ng-class="{active: vm.isActive('/destiny')}"><a href="#/destiny">Search</a></li>
@@ -26,9 +26,7 @@
         </div>
     </div>
 </nav>
-
 <div id="page-wrapper">
-
     <!--<a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 1})">{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</a>
         <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 2})">{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</a>
         <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 3})">{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</a>-->
@@ -62,7 +60,7 @@
             <h4>{{characterData.charactersOverview[0]}}</h4>
             <table>
                 <tr ng-repeat="item in characterData.equipmentData[0]">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}"  target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat.value}}</td>
                 </tr>
             </table>
@@ -86,7 +84,21 @@
             </table>
         </div>
     </div>
-    <div>
-        {{message}}
+    <div class="row">
+        <h4>Year 1 Triumphs</h4>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Complete</th>
+            </tr>
+            <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
+                <td>{{triumph.title}}</td>
+                <td>{{triumph.complete}}</td>
+            </tr>
+            <tr>
+                <td>{{triumphs[9].title}}</td>
+                <td>{{triumphs[9].complete}}</td>
+            </tr>
+        </table>
     </div>
 </div>

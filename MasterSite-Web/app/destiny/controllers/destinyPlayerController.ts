@@ -10,7 +10,6 @@ class DestinyPlayerController
         scope.VM = this;
         scope.platform = $stateParams.platform;
         scope.displayName = $stateParams.displayName;
-        scope.characterNumber = $stateParams.characterNumber - 1;
         
         //Service API Calls
         destinyApiService.searchPlayer(this.getPlatformNumber(scope.platform), scope.displayName).then(
@@ -18,16 +17,40 @@ class DestinyPlayerController
             () => this.scope.errorMessage = "An Error has occured while searching for player");
     }
 
-    private searchPlayer = (testValue: any) =>
-    {
-        this.scope.displayName = testValue;
-        this.$state.go("destinyPlayer", {
-            platform: this.scope.platform,
-            displayName: this.scope.displayName,
-            characterNumber: 1
-        });
+    //#region API Call Wrappers
 
+    private getEquipmentInfo = (equipmentList: Array<Array<IEquipmentData>>) =>
+    {
+        for (let i = 0; i < 3; i++)
+        {
+            let currentEquipmentList = equipmentList[i];
+            for (let j = 0; j < equipmentList[i].length; j++)
+            {
+                let test = this.destinyDataService.getItemOrderValue(j);
+                this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) =>
+                {
+                    this.handleGetItemResponse(data.data);
+                });
+            }
+        }
     }
+
+    private getCharactersInventory = (charactersDataList: any) =>
+    {
+        for (let i = 0; i < charactersDataList.length; i++)
+        {
+            let characterId = charactersDataList[i].characterBase.characterId;
+            this.destinyApiService.getCharacterInventory(this.getPlatformNumber(this.scope.platform),
+                this.membershipId, characterId, i).then((data: any) =>
+                {
+                    this.handleGetCharactersInventoryResponse(data.data);
+                });
+        }
+    }
+
+    //#endregion API Call Wrappers
+
+    //#region Callback Functions
 
     private handleSearchPlayerResponse = (data: any) =>
     {
@@ -40,8 +63,13 @@ class DestinyPlayerController
         this.membershipId = dataResponse.membershipId || null;
         this.scope.playerSearchData = dataResponse;
 
+        //get general account information
         this.destinyApiService.getAccountInfo(this.getPlatformNumber(this.scope.platform), this.membershipId).then(
             (innerData: any) => this.handleGetAccountInfoResponse(innerData.data),
+            () => this.scope.errorMessage = "An Error has occured while getting account info");
+        //get Account triumphs
+        this.destinyApiService.GetAccountTriumphs(this.getPlatformNumber(this.scope.platform), this.membershipId).then(
+            (innerData: any) => this.handleGetAccountTriumphsResponse(innerData.data),
             () => this.scope.errorMessage = "An Error has occured while getting account info");
     }
 
@@ -59,9 +87,21 @@ class DestinyPlayerController
         this.scope.characterData = { charactersOverview: charactersOverviewTwo, equipmentData: equipmentData };
 
         //get generic equipment data
-        this.getEquipmentInfo(equipmentData);
+        //this.getEquipmentInfo(equipmentData);
         //get inventory data for characters
-        this.getCharactersInventory(charactersDataList);
+        //this.getCharactersInventory(charactersDataList);
+    }
+
+    private handleGetAccountTriumphsResponse = (data: any) =>
+    {
+        const triumphs = data.Response.data.triumphSets[0].triumphs;
+        const staticTriumphData = this.destinyDataService.getAccountTriumphs().yearOne;
+        this.scope.triumphs = [];
+        for (let i = 0; i < triumphs.length; i++)
+        {
+            this.scope.triumphs[i] = { title: staticTriumphData[i].title, complete: triumphs[i].complete };
+            console.log(`${staticTriumphData[i].title}: ${triumphs[i].complete}`);
+        }
     }
 
     private handleGetItemResponse = (data: any) =>
@@ -70,47 +110,40 @@ class DestinyPlayerController
         let listNumber = dataObject.ListNumber;
         let listPosition = dataObject.ListPosition;
         let itemData = dataObject.Response.Response.data.inventoryItem;
-        this.scope.characterData.equipmentData[listNumber].splice(listPosition, 1, itemData);
+        let temp = this.destinyDataService.getItemOrderValue(listPosition)
+        this.scope.characterData.equipmentData[listNumber].splice(this.destinyDataService.getItemOrderValue(listPosition), 1, itemData);
         console.log(`List Number: ${listNumber}, Position: ${listPosition}, Name: ${itemData.itemName}`);
-    }
-
-    private getEquipmentInfo = (equipmentList: Array<Array<IEquipmentData>>) =>
-    {
-        for (let i = 0; i < 3; i++)
-        {
-            let currentEquipmentList = equipmentList[i];
-            for (let j = 0; j < equipmentList[i].length; j++)
-            {
-                this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) =>
-                {
-                    this.handleGetItemResponse(data.data);
-                });
-            }
-        }
-    }
-
-    private getCharactersInventory = (charactersDataList: any) =>
-    {
-        for (let i = 0; i < charactersDataList.length; i++)
-        {
-            let characterId = charactersDataList[i].characterBase.characterId;
-            this.destinyApiService.getCharacterInventory(this.getPlatformNumber(this.scope.platform),
-                this.membershipId, characterId, i).then((data: any) =>
-            {
-                this.handleGetCharactersInventoryResponse(data.data);
-            });
-        }
     }
 
     private handleGetCharactersInventoryResponse = (data: any) =>
     {
-        let dataObject = JSON.parse(data);
-        const characterNumber = dataObject.CharacterNumber;
-        let characterInventoryData = dataObject.Response.Response.data.buckets.Equippable
-        for (let i = 0; i < characterInventoryData.length; i++)
+        let dataResponse = JSON.parse(data);
+        const characterNumberResponse = dataResponse.CharacterNumber;
+        let inventoryDataResponse = dataResponse.Response.Response.data.buckets.Equippable
+        for (let i = 0; i < inventoryDataResponse.length; i++)
         {
-            this.scope.characterData.equipmentData[characterNumber][i].details = characterInventoryData[i].items[0];
+            const currentCharacterEquipment = this.scope.characterData.equipmentData[characterNumberResponse];
+            for (let j = 0; j < currentCharacterEquipment.length; j++)
+            {
+                if (inventoryDataResponse[i].items[0].itemHash == currentCharacterEquipment[j].itemHash)
+                {
+                    this.scope.characterData.equipmentData[characterNumberResponse][j].details = inventoryDataResponse[i].items[0];
+                }
+            }
         }
+    }
+
+    //#endregion
+
+    //#region Member Methods
+
+    private searchPlayer = (searchValue: any) =>
+    {
+        this.scope.displayName = searchValue;
+        this.$state.go("destinyPlayer", {
+            platform: this.scope.platform,
+            displayName: this.scope.displayName,
+        });
     }
 
     private matchDestinyHashes = (hashArray: Array<IHash>, classHash: number): string =>
@@ -162,6 +195,10 @@ class DestinyPlayerController
         ];
     }
 }
+
+//#endregion
+
+
 
 masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",
     "destinyDataService", "$stateParams", "$state", DestinyPlayerController]); 
