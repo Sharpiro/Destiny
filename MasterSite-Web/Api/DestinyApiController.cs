@@ -92,7 +92,7 @@ namespace MasterSite_Web
             object jsonContent;
             using (var client = new HttpClient())
             {
-                var url = $"https://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
+                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
                 try
                 {
                     var request = client.GetAsync(url);

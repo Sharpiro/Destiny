@@ -59,29 +59,29 @@
     </div>-->
     <div class="row">
         <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
-            <!--<h4>{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</h4>-->
             <h4>{{characterData.charactersOverview[0]}}</h4>
             <table>
                 <tr ng-repeat="item in characterData.equipmentData[0]">
                     <td><a href="http://destinydb.com/items/{{item.itemHash}}"  target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                    <td>{{item.details.primaryStat.value}}</td>
                 </tr>
             </table>
         </div>
         <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
-            <!--<h4>{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</h4>-->
             <h4>{{characterData.charactersOverview[1]}}</h4>
             <table>
                 <tr ng-repeat="item in characterData.equipmentData[1]">
                     <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                    <td>{{item.details.primaryStat.value}}</td>
                 </tr>
             </table>
         </div>
         <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
-            <!--<h4>{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</h4>-->
             <h4>{{characterData.charactersOverview[2]}}</h4>
             <table>
                 <tr ng-repeat="item in characterData.equipmentData[2]">
                     <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img src="http://bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                    <td>{{item.details.primaryStat.value}}</td>
                 </tr>
             </table>
         </div>

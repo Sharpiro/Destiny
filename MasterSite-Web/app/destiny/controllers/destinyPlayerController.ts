@@ -105,6 +105,12 @@ class DestinyPlayerController
     private handleGetCharactersInventoryResponse = (data: any) =>
     {
         let dataObject = JSON.parse(data);
+        const characterNumber = dataObject.CharacterNumber;
+        let characterInventoryData = dataObject.Response.Response.data.buckets.Equippable
+        for (let i = 0; i < characterInventoryData.length; i++)
+        {
+            this.scope.characterData.equipmentData[characterNumber][i].details = characterInventoryData[i].items[0];
+        }
     }
 
     private matchDestinyHashes = (hashArray: Array<IHash>, classHash: number): string =>
