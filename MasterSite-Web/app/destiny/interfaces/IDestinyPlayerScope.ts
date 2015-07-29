@@ -9,6 +9,7 @@
     displayName: string;
     characterNumber: number;
     triumphs: Array<ITriumphs>;
+    $apply: any;
 }
 
 interface ICharacterData
@@ -27,6 +28,8 @@ interface IEquipmentData
 {
     itemHash: number;
     details: any;
+    image: HTMLImageElement;
+    icon: string;
 }
 
 interface ITriumphs

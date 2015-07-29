@@ -3,6 +3,9 @@
 
 class DestinyDataService implements IDestinyDataService
 {
+    public BungieBaseUrl = "http://bungie.net"
+    public BungieBaseUrlSecure = "https://bungie.net"
+
 
     private classHashes: Array<IHash> = [
         { "hash": 3655393761, "value": "Titan" },

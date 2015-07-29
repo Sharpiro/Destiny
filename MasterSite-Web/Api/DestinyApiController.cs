@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -136,6 +137,32 @@ namespace MasterSite_Web
             }
             //var returnModel = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
             return Json(jsonContent);
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetImage(string iconLocation)
+        {
+            HttpResponseMessage result;
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var url = $"http://www.bungie.net{iconLocation}";
+                    var request = client.GetAsync(url);
+                    var content = request.Result.Content.ReadAsByteArrayAsync().Result;
+                    result = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new ByteArrayContent(content),
+                    };
+                    result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Async Request Failed...");
+                    return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                };
+            }
+            return result;
         }
 
         [HttpPost]
