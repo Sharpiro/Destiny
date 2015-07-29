@@ -23,10 +23,10 @@ class DestinyPlayerController
     {
         for (let i = 0; i < 3; i++)
         {
-            let currentEquipmentList = equipmentList[i];
+            const currentEquipmentList = equipmentList[i];
             for (let j = 0; j < equipmentList[i].length; j++)
             {
-                let test = this.destinyDataService.getItemOrderValue(j);
+                const test = this.destinyDataService.getItemOrderValue(j);
                 this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) =>
                 {
                     this.handleGetItemResponse(data.data);
@@ -39,7 +39,7 @@ class DestinyPlayerController
     {
         for (let i = 0; i < charactersDataList.length; i++)
         {
-            let characterId = charactersDataList[i].characterBase.characterId;
+            const characterId = charactersDataList[i].characterBase.characterId;
             this.destinyApiService.getCharacterInventory(this.getPlatformNumber(this.scope.platform),
                 this.membershipId, characterId, i).then((data: any) =>
                 {
@@ -87,7 +87,7 @@ class DestinyPlayerController
         this.scope.characterData = { charactersOverview: charactersOverviewTwo, equipmentData: equipmentData };
 
         //get generic equipment data
-        //this.getEquipmentInfo(equipmentData);
+        this.getEquipmentInfo(equipmentData);
         //get inventory data for characters
         //this.getCharactersInventory(charactersDataList);
     }
@@ -100,26 +100,26 @@ class DestinyPlayerController
         for (let i = 0; i < triumphs.length; i++)
         {
             this.scope.triumphs[i] = { title: staticTriumphData[i].title, complete: triumphs[i].complete };
-            console.log(`${staticTriumphData[i].title}: ${triumphs[i].complete}`);
+            //console.log(`${staticTriumphData[i].title}: ${triumphs[i].complete}`);
         }
     }
 
     private handleGetItemResponse = (data: any) =>
     {
-        let dataObject = JSON.parse(data);
-        let listNumber = dataObject.ListNumber;
-        let listPosition = dataObject.ListPosition;
-        let itemData = dataObject.Response.Response.data.inventoryItem;
-        let temp = this.destinyDataService.getItemOrderValue(listPosition)
-        this.scope.characterData.equipmentData[listNumber].splice(this.destinyDataService.getItemOrderValue(listPosition), 1, itemData);
-        console.log(`List Number: ${listNumber}, Position: ${listPosition}, Name: ${itemData.itemName}`);
+        const dataObject = JSON.parse(data);
+        const listNumber = dataObject.ListNumber;
+        const listPosition = dataObject.ListPosition;
+        const itemData = dataObject.Response.Response.data.inventoryItem;
+        const orderedListPosition = this.destinyDataService.getItemOrderValue(listPosition);
+        this.scope.characterData.equipmentData[listNumber].splice(orderedListPosition, 1, itemData);
+        //console.log(`List Number: ${listNumber}, Position: ${listPosition}, Name: ${itemData.itemName}`);
     }
 
     private handleGetCharactersInventoryResponse = (data: any) =>
     {
-        let dataResponse = JSON.parse(data);
+        const dataResponse = JSON.parse(data);
         const characterNumberResponse = dataResponse.CharacterNumber;
-        let inventoryDataResponse = dataResponse.Response.Response.data.buckets.Equippable
+        const inventoryDataResponse = dataResponse.Response.Response.data.buckets.Equippable;
         for (let i = 0; i < inventoryDataResponse.length; i++)
         {
             const currentCharacterEquipment = this.scope.characterData.equipmentData[characterNumberResponse];
@@ -169,16 +169,16 @@ class DestinyPlayerController
         const raceHashes = this.destinyDataService.getRaceHashes();
         const classHashes = this.destinyDataService.getClassHashes();
         const genderHashes = this.destinyDataService.getGenderHashes();
-        let match = this.matchDestinyHashes;
-        let characterOneRace = match(raceHashes, charactersDataList[0].characterBase.raceHash);
-        let characterTwoRace = match(raceHashes, charactersDataList[1].characterBase.raceHash);
-        let characterThreeRace = match(raceHashes, charactersDataList[2].characterBase.raceHash);
-        let characterOneClass = match(classHashes, charactersDataList[0].characterBase.classHash);
-        let characterTwoClass = match(classHashes, charactersDataList[1].characterBase.classHash);
-        let characterThreeClass = match(classHashes, charactersDataList[2].characterBase.classHash);
-        let characterOneGender = match(genderHashes, charactersDataList[0].characterBase.genderHash);
-        let characterTwoGender = match(genderHashes, charactersDataList[1].characterBase.genderHash);
-        let characterThreeGender = match(genderHashes, charactersDataList[2].characterBase.genderHash);
+        const match = this.matchDestinyHashes;
+        const characterOneRace = match(raceHashes, charactersDataList[0].characterBase.raceHash);
+        const characterTwoRace = match(raceHashes, charactersDataList[1].characterBase.raceHash);
+        const characterThreeRace = match(raceHashes, charactersDataList[2].characterBase.raceHash);
+        const characterOneClass = match(classHashes, charactersDataList[0].characterBase.classHash);
+        const characterTwoClass = match(classHashes, charactersDataList[1].characterBase.classHash);
+        const characterThreeClass = match(classHashes, charactersDataList[2].characterBase.classHash);
+        const characterOneGender = match(genderHashes, charactersDataList[0].characterBase.genderHash);
+        const characterTwoGender = match(genderHashes, charactersDataList[1].characterBase.genderHash);
+        const characterThreeGender = match(genderHashes, charactersDataList[2].characterBase.genderHash);
         return [
             `${charactersDataList[0].characterLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`,
             `${charactersDataList[1].characterLevel} ${characterTwoRace} ${characterTwoClass} - ${characterTwoGender}`,
@@ -197,8 +197,6 @@ class DestinyPlayerController
 }
 
 //#endregion
-
-
 
 masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",
     "destinyDataService", "$stateParams", "$state", DestinyPlayerController]); 
