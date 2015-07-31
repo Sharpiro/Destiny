@@ -192,9 +192,9 @@
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
-    <Content Include="Content\images\destiny\damageTypeIcons\regular\2_arc.svg" />
-    <Content Include="Content\images\destiny\damageTypeIcons\regular\3_solar.svg" />
-    <Content Include="Content\images\destiny\damageTypeIcons\regular\4_void.svg" />
+    <Content Include="Content\images\destiny\damageTypeIcons\regular\2_arc.png" />
+    <Content Include="Content\images\destiny\damageTypeIcons\regular\3_solar.png" />
+    <Content Include="Content\images\destiny\damageTypeIcons\regular\4_void.png" />
     <Content Include="Content\images\destiny\damageTypeIcons\transparent\4_void.png" />
     <Content Include="Content\images\destiny\damageTypeIcons\transparent\2_arc.png" />
     <Content Include="Content\images\destiny\damageTypeIcons\transparent\3_solar.png" />
@@ -294,7 +294,7 @@
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptOutFile>C:\Users\U403598\Documents\_Work\Learning\Development\C#\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
+    <TypeScriptOutFile>F:\Git_Base\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptOutDir />
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>

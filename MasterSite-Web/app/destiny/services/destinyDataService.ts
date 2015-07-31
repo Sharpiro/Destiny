@@ -9,9 +9,9 @@ class DestinyDataService implements IDestinyDataService
         icons: {
             damageTypeIcons: {
                 regular: {
-                    arc: "/content/images/destiny/damageTypeIcons/regular/2_arc.svg",
-                    solar: "/content/images/destiny/damageTypeIcons/regular/3_solar.svg",
-                    void: "/content/images/destiny/damageTypeIcons/regular/4_void.svg"
+                    arc: "/content/images/destiny/damageTypeIcons/regular/2_arc.png",
+                    solar: "/content/images/destiny/damageTypeIcons/regular/3_solar.png",
+                    void: "/content/images/destiny/damageTypeIcons/regular/4_void.png"
                 },
                 transparent: {
                     arc: "/content/images/destiny/damageTypeIcons/transparent/2_arc.png",
@@ -50,8 +50,11 @@ class DestinyDataService implements IDestinyDataService
         { "hash": -100, "value": "Charge Rate" }
     ];
 
-    //spec-guns-gear-misc
-    private itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
+    //spec-guns-gear-misc//old way!
+    //private itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
+
+    //spec-guns-gear-misc//new way
+    private itemOrder: Array<number> =   [0, 6, 7, 8, 1, 2, 3, 4, 5, 11, 10, 9, 13, 12];
 
     //account triumphs
     private accountTriumphs: IStaticTriumphsData = {
