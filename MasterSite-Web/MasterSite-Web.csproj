@@ -192,6 +192,12 @@
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\images\destiny\damageTypeIcons\regular\2_arc.svg" />
+    <Content Include="Content\images\destiny\damageTypeIcons\regular\3_solar.svg" />
+    <Content Include="Content\images\destiny\damageTypeIcons\regular\4_void.svg" />
+    <Content Include="Content\images\destiny\damageTypeIcons\transparent\4_void.png" />
+    <Content Include="Content\images\destiny\damageTypeIcons\transparent\2_arc.png" />
+    <Content Include="Content\images\destiny\damageTypeIcons\transparent\3_solar.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\css\Site.css" />
@@ -222,8 +228,9 @@
     <TypeScriptCompile Include="app\destiny\controllers\destinyHeaderController.ts" />
     <TypeScriptCompile Include="app\destiny\directives\sidebarDirective.ts" />
     <TypeScriptCompile Include="app\destiny\enumerations\destinyEnums.ts" />
+    <TypeScriptCompile Include="app\destiny\filters\destinyFilter.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyApiService.ts" />
-    <TypeScriptCompile Include="app\destiny\interfaces\IDestinyDataService.ts" />
+    <TypeScriptCompile Include="app\destiny\interfaces\destinyDataServiceInterfaces.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyPlayerScope.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyApiService.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyDataService.ts" />
