@@ -112,13 +112,8 @@ class DestinyPlayerController
         const listNumber = dataObject.ListNumber;
         const listPosition = dataObject.ListPosition;
         const itemData = dataObject.Response.Response.data.inventoryItem;
-        const orderedListPosition = this.destinyDataService.getItemOrderValue(listPosition);
-        this.scope.characterData.equipmentData[listNumber][orderedListPosition].itemHash = itemData.itemHash;
-        this.scope.characterData.equipmentData[listNumber][orderedListPosition].icon = itemData.icon;
-        this.scope.characterData.equipmentData[listNumber][orderedListPosition].itemName = itemData.itemName;
-        console.log();
-        //this.scope.characterData.equipmentData[listNumber].splice(orderedListPosition, 1, itemData);
-        //console.log(`List Number: ${listNumber}, Position: ${listPosition}, Name: ${itemData.itemName}`);
+        this.scope.characterData.equipmentData[listNumber][listPosition].icon = itemData.icon;
+        this.scope.characterData.equipmentData[listNumber][listPosition].itemName = itemData.itemName;
     }
 
     private handleGetCharactersInventoryResponse = (data: any) =>
@@ -134,14 +129,13 @@ class DestinyPlayerController
                 if (inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
                 {
                     const bucketHash = <IBucketHash>this.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
-                    const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
                     if (bucketHash.category === ITEMCATEGORY.Weapon)
                     {
                         const itemDetails: IEquipmentDataDetails = {
                             primaryStat: inventoryDataResponse[i].items[0].primaryStat.value,
                             damageType: inventoryDataResponse[i].items[0].damageType
                         };
-                        this.scope.characterData.equipmentData[characterNumberResponse][orderedListPosition].details = itemDetails;
+                        this.scope.characterData.equipmentData[characterNumberResponse][j].details = itemDetails;
                     }
                     else if (bucketHash.category === ITEMCATEGORY.Armor)
                     {
@@ -151,7 +145,7 @@ class DestinyPlayerController
                                 primaryStat: inventoryDataResponse[i].items[0].stats[0].value,
                                 damageType: null
                             };
-                            this.scope.characterData.equipmentData[characterNumberResponse][orderedListPosition].details = itemDetails;
+                            this.scope.characterData.equipmentData[characterNumberResponse][j].details = itemDetails;
                         }
                     }
                 }
@@ -213,11 +207,22 @@ class DestinyPlayerController
 
     private getEquipmentDataObject = (charactersDataList: Array<any>): Array<Array<IEquipmentData>> =>
     {
-        return [
+        const unorderedList = [
             charactersDataList[0].characterBase.peerView.equipment,
             charactersDataList[1].characterBase.peerView.equipment,
             charactersDataList[2].characterBase.peerView.equipment
         ];
+        let orderedList: any = [[], [], []];
+        //re-order list
+        for (let i = 0; i < this.maxCharacterDetails; i++)
+        {
+            for (let j = 0; j < unorderedList[i].length; j++)
+            {
+                const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
+                orderedList[i][j] = unorderedList[i][orderedListPosition];
+            }
+        }
+        return orderedList;
     }
 }
 
