@@ -21,6 +21,10 @@
     width: 35px;
 }
 
+#equipment .damageTypeIcon {
+    width: 35px;
+}
+
 #page-wrapper{
     padding-top: 25px;
     margin-left: auto;

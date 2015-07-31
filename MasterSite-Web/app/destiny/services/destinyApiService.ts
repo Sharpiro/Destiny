@@ -44,7 +44,7 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public GetAccountTriumphs = (platform: number, membershipId: number): ng.IPromise<any> =>
+    public getAccountTriumphs = (platform: number, membershipId: number): ng.IPromise<any> =>
     {
         return this.$http.get(`/api/DestinyApi/GetAccountTriumphs?platform=${platform}&membershipId=${membershipId}`);
     }

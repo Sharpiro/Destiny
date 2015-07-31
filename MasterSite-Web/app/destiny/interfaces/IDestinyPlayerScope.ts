@@ -18,7 +18,8 @@ interface ICharacterData
     equipmentData: Array<Array<IEquipmentData>>;
 }
 
-interface ICharacterOverview {
+interface ICharacterOverview
+{
     level: number;
     race: string;
     className: string;
@@ -27,8 +28,8 @@ interface ICharacterOverview {
 interface IEquipmentData
 {
     itemHash: number;
-    details: any;
-    image: HTMLImageElement;
+    itemName: string;
+    details: IEquipmentDataDetails;
     icon: string;
 }
 
@@ -36,4 +37,10 @@ interface ITriumphs
 {
     title: string,
     complete: boolean;
+}
+
+interface IEquipmentDataDetails
+{
+    primaryStat: number;
+    damageType: DAMAGETYPE;
 }

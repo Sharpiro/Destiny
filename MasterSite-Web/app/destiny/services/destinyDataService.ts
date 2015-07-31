@@ -1,11 +1,26 @@
 ﻿///<reference path="../app.ts"/>
-///<reference path="../interfaces/IDestinyDataService.ts"/>
 
 class DestinyDataService implements IDestinyDataService
 {
-    public BungieBaseUrl = "http://bungie.net"
-    public BungieBaseUrlSecure = "https://bungie.net"
+    public bungieBaseUrl = "http://bungie.net";
+    public bungieBaseUrlSecure = "https://bungie.net";
 
+    private destinyLinks = {
+        icons: {
+            damageTypeIcons: {
+                regular: {
+                    arc: "/content/images/destiny/damageTypeIcons/regular/2_arc.svg",
+                    solar: "/content/images/destiny/damageTypeIcons/regular/3_solar.svg",
+                    void: "/content/images/destiny/damageTypeIcons/regular/4_void.svg"
+                },
+                transparent: {
+                    arc: "/content/images/destiny/damageTypeIcons/transparent/2_arc.png",
+                    solar: "/content/images/destiny/damageTypeIcons/transparent/3_solar.png",
+                    void: "/content/images/destiny/damageTypeIcons/transparent/4_void.png"
+                }
+            }
+        }
+    };
 
     private classHashes: Array<IHash> = [
         { "hash": 3655393761, "value": "Titan" },
@@ -36,10 +51,10 @@ class DestinyDataService implements IDestinyDataService
     ];
 
     //spec-guns-gear-misc
-    public itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
+    private itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
 
     //account triumphs
-    public accountTriumphs: IStaticTriumphsData = {
+    private accountTriumphs: IStaticTriumphsData = {
         yearOne: [
             { title: "Apprentice of Light", description: "A character reached the maximum level" },
             { title: "Light of the Garden", description: "Defeated the dark heart of the Black Garden" },
@@ -53,6 +68,27 @@ class DestinyDataService implements IDestinyDataService
             { title: "Chest Hunter", description: "Found all Golden Chests" }
         ]
     };
+
+    private bucketHashes: Array<IBucketHash> = [
+        { hash: 3284755031, value: "Subclass", category: null },
+        { hash: 1498876634, value: "Primary", category: ITEMCATEGORY.Weapon },
+        { hash: 2465295065, value: "Special", category: ITEMCATEGORY.Weapon },
+        { hash: 953998645, value: "Heavy", category: ITEMCATEGORY.Weapon },
+        { hash: 3448274439, value: "Head", category: ITEMCATEGORY.Armor },
+        { hash: 3551918588, value: "Hands", category: ITEMCATEGORY.Armor },
+        { hash: 14239492, value: "Chest", category: ITEMCATEGORY.Armor },
+        { hash: 20886954, value: "Legs", category: ITEMCATEGORY.Armor },
+        { hash: 1585787867, value: "Class Item", category: ITEMCATEGORY.Armor },
+        { hash: 4023194814, value: "Ghost Shell", category: ITEMCATEGORY.Misc },
+        { hash: 2025709351, value: "Sparrow", category: ITEMCATEGORY.Misc },
+        { hash: 284967655, value: "Ship", category: ITEMCATEGORY.Misc },
+        { hash: 2973005342, value: "Shader", category: ITEMCATEGORY.Misc },
+        { hash: 4274335291, value: "Emblem", category: ITEMCATEGORY.Misc }
+    ];
+
+    private damageTypeHahes: Array<IHash> = [
+        { hash: 1498876634, value: "Arc", category: DAMAGETYPE.Arc },
+    ];
 
     constructor(private $http: ng.IHttpService, private $q: ng.IQService)
     {
@@ -87,23 +123,16 @@ class DestinyDataService implements IDestinyDataService
     {
         return this.accountTriumphs;
     }
-}
 
-interface IHash
-{
-    hash: number;
-    value: string;
-}
+    public getBucketHashes = (): Array<IHash> =>
+    {
+        return this.bucketHashes;
+    }
 
-interface IStaticTriumphsData
-{
-    yearOne: Array<IYearOneTriumph>
-}
-
-interface IYearOneTriumph
-{
-    title: string,
-    description: string
+    public getDestinyLinks = (): any =>
+    {
+        return this.destinyLinks;
+    }
 }
 
 masterSite.service("destinyDataService", ["$http", "$q", DestinyDataService]); 

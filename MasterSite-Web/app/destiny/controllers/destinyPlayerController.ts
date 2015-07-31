@@ -4,12 +4,15 @@
 class DestinyPlayerController
 {
     private membershipId: number;
+    private maxCharacterDetails = 3;
 
     constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService, $stateParams: any, private $state: any)
     {
         scope.VM = this;
         scope.platform = $stateParams.platform;
         scope.displayName = $stateParams.displayName;
+        //scope.characterData.equipmentData = [[{}], [{}], [{}];
+
         
         //Service API Calls
         destinyApiService.searchPlayer(this.getPlatformNumber(scope.platform), scope.displayName).then(
@@ -21,12 +24,11 @@ class DestinyPlayerController
 
     private getEquipmentInfo = (equipmentList: Array<Array<IEquipmentData>>) =>
     {
-        for (let i = 0; i < 3; i++)
+        for (let i = 0; i < this.maxCharacterDetails; i++)
         {
             const currentEquipmentList = equipmentList[i];
             for (let j = 0; j < equipmentList[i].length; j++)
             {
-                const test = this.destinyDataService.getItemOrderValue(j);
                 this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) =>
                 {
                     this.handleGetItemResponse(data.data);
@@ -37,7 +39,7 @@ class DestinyPlayerController
 
     private getCharactersInventory = (charactersDataList: any) =>
     {
-        for (let i = 0; i < charactersDataList.length; i++)
+        for (let i = 0; i < this.maxCharacterDetails; i++)
         {
             const characterId = charactersDataList[i].characterBase.characterId;
             this.destinyApiService.getCharacterInventory(this.getPlatformNumber(this.scope.platform),
@@ -68,7 +70,7 @@ class DestinyPlayerController
             (innerData: any) => this.handleGetAccountInfoResponse(innerData.data),
             () => this.scope.errorMessage = "An Error has occured while getting account info");
         //get Account triumphs
-        this.destinyApiService.GetAccountTriumphs(this.getPlatformNumber(this.scope.platform), this.membershipId).then(
+        this.destinyApiService.getAccountTriumphs(this.getPlatformNumber(this.scope.platform), this.membershipId).then(
             (innerData: any) => this.handleGetAccountTriumphsResponse(innerData.data),
             () => this.scope.errorMessage = "An Error has occured while getting account info");
     }
@@ -86,10 +88,10 @@ class DestinyPlayerController
         const equipmentData: Array<Array<IEquipmentData>> = this.getEquipmentDataObject(charactersDataList);
         this.scope.characterData = { charactersOverview: charactersOverviewTwo, equipmentData: equipmentData };
 
+        //get inventory data for characters
+        this.getCharactersInventory(charactersDataList);
         //get generic equipment data
         this.getEquipmentInfo(equipmentData);
-        //get inventory data for characters
-        //this.getCharactersInventory(charactersDataList);
     }
 
     private handleGetAccountTriumphsResponse = (data: any) =>
@@ -111,7 +113,11 @@ class DestinyPlayerController
         const listPosition = dataObject.ListPosition;
         const itemData = dataObject.Response.Response.data.inventoryItem;
         const orderedListPosition = this.destinyDataService.getItemOrderValue(listPosition);
-        this.scope.characterData.equipmentData[listNumber].splice(orderedListPosition, 1, itemData);
+        this.scope.characterData.equipmentData[listNumber][orderedListPosition].itemHash = itemData.itemHash;
+        this.scope.characterData.equipmentData[listNumber][orderedListPosition].icon = itemData.icon;
+        this.scope.characterData.equipmentData[listNumber][orderedListPosition].itemName = itemData.itemName;
+        console.log();
+        //this.scope.characterData.equipmentData[listNumber].splice(orderedListPosition, 1, itemData);
         //console.log(`List Number: ${listNumber}, Position: ${listPosition}, Name: ${itemData.itemName}`);
     }
 
@@ -125,9 +131,29 @@ class DestinyPlayerController
             const currentCharacterEquipment = this.scope.characterData.equipmentData[characterNumberResponse];
             for (let j = 0; j < currentCharacterEquipment.length; j++)
             {
-                if (inventoryDataResponse[i].items[0].itemHash == currentCharacterEquipment[j].itemHash)
+                if (inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
                 {
-                    this.scope.characterData.equipmentData[characterNumberResponse][j].details = inventoryDataResponse[i].items[0];
+                    const bucketHash = <IBucketHash>this.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
+                    const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
+                    if (bucketHash.category === ITEMCATEGORY.Weapon)
+                    {
+                        const itemDetails: IEquipmentDataDetails = {
+                            primaryStat: inventoryDataResponse[i].items[0].primaryStat.value,
+                            damageType: inventoryDataResponse[i].items[0].damageType
+                        };
+                        this.scope.characterData.equipmentData[characterNumberResponse][orderedListPosition].details = itemDetails;
+                    }
+                    else if (bucketHash.category === ITEMCATEGORY.Armor)
+                    {
+                        if (inventoryDataResponse[i].items[0].stats[0])
+                        {
+                            const itemDetails: IEquipmentDataDetails = {
+                                primaryStat: inventoryDataResponse[i].items[0].stats[0].value,
+                                damageType: null
+                            };
+                            this.scope.characterData.equipmentData[characterNumberResponse][orderedListPosition].details = itemDetails;
+                        }
+                    }
                 }
             }
         }
@@ -146,14 +172,14 @@ class DestinyPlayerController
         });
     }
 
-    private matchDestinyHashes = (hashArray: Array<IHash>, classHash: number): string =>
+    private getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
     {
         for (let i = 0; i < hashArray.length; i++)
         {
-            if (hashArray[i].hash === classHash)
-                return hashArray[i].value;
+            if (hashArray[i].hash === hash)
+                return hashArray[i];
         }
-        console.log(`Error: Unknown Hash: ${classHash}`);
+        console.warn(`Warning: Unknown Hash: ${hash}`);
         return null;
     }
 
@@ -169,16 +195,15 @@ class DestinyPlayerController
         const raceHashes = this.destinyDataService.getRaceHashes();
         const classHashes = this.destinyDataService.getClassHashes();
         const genderHashes = this.destinyDataService.getGenderHashes();
-        const match = this.matchDestinyHashes;
-        const characterOneRace = match(raceHashes, charactersDataList[0].characterBase.raceHash);
-        const characterTwoRace = match(raceHashes, charactersDataList[1].characterBase.raceHash);
-        const characterThreeRace = match(raceHashes, charactersDataList[2].characterBase.raceHash);
-        const characterOneClass = match(classHashes, charactersDataList[0].characterBase.classHash);
-        const characterTwoClass = match(classHashes, charactersDataList[1].characterBase.classHash);
-        const characterThreeClass = match(classHashes, charactersDataList[2].characterBase.classHash);
-        const characterOneGender = match(genderHashes, charactersDataList[0].characterBase.genderHash);
-        const characterTwoGender = match(genderHashes, charactersDataList[1].characterBase.genderHash);
-        const characterThreeGender = match(genderHashes, charactersDataList[2].characterBase.genderHash);
+        const characterOneRace = this.getHashObject(raceHashes, charactersDataList[0].characterBase.raceHash).value;
+        const characterTwoRace = this.getHashObject(raceHashes, charactersDataList[1].characterBase.raceHash).value;
+        const characterThreeRace = this.getHashObject(raceHashes, charactersDataList[2].characterBase.raceHash).value;
+        const characterOneClass = this.getHashObject(classHashes, charactersDataList[0].characterBase.classHash).value;
+        const characterTwoClass = this.getHashObject(classHashes, charactersDataList[1].characterBase.classHash).value;
+        const characterThreeClass = this.getHashObject(classHashes, charactersDataList[2].characterBase.classHash).value;
+        const characterOneGender = this.getHashObject(genderHashes, charactersDataList[0].characterBase.genderHash).value;
+        const characterTwoGender = this.getHashObject(genderHashes, charactersDataList[1].characterBase.genderHash).value;
+        const characterThreeGender = this.getHashObject(genderHashes, charactersDataList[2].characterBase.genderHash).value;
         return [
             `${charactersDataList[0].characterLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`,
             `${charactersDataList[1].characterLevel} ${characterTwoRace} ${characterTwoClass} - ${characterTwoGender}`,
