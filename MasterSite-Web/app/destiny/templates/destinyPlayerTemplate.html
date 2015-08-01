@@ -27,12 +27,8 @@
     </div>
 </nav>
 <div id="page-wrapper">
-    <!--<a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 1})">{{characterData.charactersOverview[0].level}} {{characterData.charactersOverview[0].className}}</a>
-        <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 2})">{{characterData.charactersOverview[1].level}} {{characterData.charactersOverview[1].className}}</a>
-        <a ui-sref="destinyPlayer({platform: platform, displayName: displayName, characterNumber: 3})">{{characterData.charactersOverview[2].level}} {{characterData.charactersOverview[2].className}}</a>-->
-    <!-- End Sidebar -->
     <!-- Main Content -->
-    <!--<div class="row">
+    <div class="row">
         <span class="col-md-4 col-md-offset-4" style="font-size: 200%; color: red; font-family: Comic Sans MS">{{errorMessage}}</span>
     </div>
     <div class="row">
@@ -47,19 +43,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2 col-md-offset-5">
-            <h3>
-                {{characterData.level}}
-                {{characterData.raceName}}
-                {{characterData.className}}
-            </h3>
-        </div>
-    </div>-->
-    <div class="row">
         <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
-            <h4>{{characterData.charactersOverview[0]}}</h4>
+            <h4>{{characterData[0].charactersOverview}}</h4>
             <table class="table">
-                <tr ng-repeat="item in characterData.equipmentData[0]">
+                <tr ng-repeat="item in characterData[0].equipmentData">
                     <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img ng-src="https://www.bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat}}</td>
                     <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
@@ -67,9 +54,9 @@
             </table>
         </div>
         <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
-            <h4>{{characterData.charactersOverview[1]}}</h4>
+            <h4>{{characterData[1].charactersOverview}}</h4>
             <table class="table">
-                <tr ng-repeat="item in characterData.equipmentData[1]">
+                <tr ng-repeat="item in characterData[1].equipmentData">
                     <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img ng-src="https://www.bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat}}</td>
                     <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
@@ -77,9 +64,9 @@
             </table>
         </div>
         <div id="equipment" class="col-sm-4 col-md-4" style="border-style: solid">
-            <h4>{{characterData.charactersOverview[2]}}</h4>
+            <h4>{{characterData[2].charactersOverview}}</h4>
             <table class="table">
-                <tr ng-repeat="item in characterData.equipmentData[2]">
+                <tr ng-repeat="item in characterData[2].equipmentData">
                     <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img ng-src="https://www.bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat}}</td>
                     <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>

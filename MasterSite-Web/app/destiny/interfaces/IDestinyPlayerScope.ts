@@ -4,18 +4,17 @@
     errorMessage: string;
     VM: DestinyPlayerController;
     playerSearchData: any;
-    characterData: ICharacterData;
+    characterData: Array<ICharacterData>;
     platform: string;
     displayName: string;
-    characterNumber: number;
     triumphs: Array<ITriumphs>;
     $apply: any;
 }
 
 interface ICharacterData
 {
-    charactersOverview: Array<string>;//Array<ICharacterOverview>;
-    equipmentData: Array<Array<IEquipmentData>>;
+    charactersOverview: string;
+    equipmentData: Array<IEquipmentData>;
 }
 
 interface ICharacterOverview
