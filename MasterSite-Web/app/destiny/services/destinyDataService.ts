@@ -25,6 +25,10 @@ class DestinyDataService implements IDestinyDataService
                     solar: "/content/images/destiny/damageTypeIcons/transparent/3_solar.png",
                     void: "/content/images/destiny/damageTypeIcons/transparent/4_void.png"
                 }
+            },
+            booleanIcons : {
+                trueIcon: "/content/images/destiny/boolean/true.png",
+                falseIcon: "/content/images/destiny/boolean/false.png"
             }
         },
         databases: {
