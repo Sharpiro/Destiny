@@ -1,4 +1,4 @@
-﻿enum PLATFORM { xbox = 1, playstation = 2 }
+﻿enum PLATFORM { Xbox = 1, Psn = 2 }
 
 enum ITEMCATEGORY { Weapon, Armor, Misc };
 

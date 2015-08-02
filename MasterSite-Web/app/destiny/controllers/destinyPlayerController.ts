@@ -3,18 +3,31 @@
 
 class DestinyPlayerController
 {
-    private membershipId: number;
-
     constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService, $stateParams: any, private $state: any)
     {
-        scope.VM = this;
-        scope.platform = $stateParams.platform;
-        scope.displayName = $stateParams.displayName;
-        
-        //Service API Calls
-        destinyApiService.searchPlayer(this.getPlatformNumber(scope.platform), scope.displayName).then(
-            (data: any) => this.handleSearchPlayerResponse(data.data),
-            () => this.scope.errorMessage = "An Error has occured while searching for player");
+        scope.vm = this;
+        scope.accountDetails = new AccountDetails();
+        scope.accountDetails.platform = this.getPlatformNumber($stateParams.platform);
+        scope.accountDetails.displayName = $stateParams.displayName;
+        const storedPlayerData = destinyDataService.getStoredPlayerData();
+        scope.accountDetails.platformIcon = storedPlayerData.platformIcon;
+        scope.accountDetails.membershipId = storedPlayerData.membershipId;
+
+        if (storedPlayerData.displayName !== scope.accountDetails.displayName || !scope.accountDetails.membershipId)
+        {
+            this.searchPlayer(scope.accountDetails.displayName);
+        }
+        else
+        {
+            //get general account information
+            this.destinyApiService.getAccountInfo(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+                (innerData: any) => this.handleGetAccountInfoResponse(innerData.data),
+                () => this.scope.errorMessage = "An Error has occured while getting account info");
+            //get Account triumphs
+            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+                (innerData: any) => this.handleGetAccountTriumphsResponse(innerData.data),
+                () => this.scope.errorMessage = "An Error has occured while getting account info");
+        }
     }
 
     //#region API Call Wrappers
@@ -40,8 +53,8 @@ class DestinyPlayerController
         for (let i = 0; i < charactersDataList.length; i++)
         {
             const characterId = charactersDataList[i].characterBase.characterId;
-            this.destinyApiService.getCharacterInventory(this.getPlatformNumber(this.scope.platform),
-                this.membershipId, characterId, i).then((data: any) =>
+            this.destinyApiService.getCharacterInventory(this.scope.accountDetails.platform,
+                this.scope.accountDetails.membershipId, characterId, i).then((data: any) =>
                 {
                     this.handleGetCharactersInventoryResponse(data.data);
                 });
@@ -60,23 +73,21 @@ class DestinyPlayerController
             this.scope.errorMessage = "Error: Player not found";
             return;
         }
-        this.membershipId = dataResponse.membershipId || null;
-        this.scope.playerSearchData = dataResponse;
+        this.scope.accountDetails.membershipId= dataResponse.membershipId;
+        this.scope.accountDetails.platform = dataResponse.membershipType;
+        this.scope.accountDetails.displayName = dataResponse.displayName;
+        this.scope.accountDetails.platformIcon = dataResponse.iconPath;
+        this.destinyDataService.setStoredPlayerData(this.scope.accountDetails);
 
-        //get general account information
-        this.destinyApiService.getAccountInfo(this.getPlatformNumber(this.scope.platform), this.membershipId).then(
-            (innerData: any) => this.handleGetAccountInfoResponse(innerData.data),
-            () => this.scope.errorMessage = "An Error has occured while getting account info");
-        //get Account triumphs
-        this.destinyApiService.getAccountTriumphs(this.getPlatformNumber(this.scope.platform), this.membershipId).then(
-            (innerData: any) => this.handleGetAccountTriumphsResponse(innerData.data),
-            () => this.scope.errorMessage = "An Error has occured while getting account info");
+        this.$state.go("destinyPlayer", {
+            platform: this.getPlatformString(dataResponse.membershipType),
+            displayName: dataResponse.displayName
+        }, { reload: true });
     }
 
     private handleGetAccountInfoResponse = (data: any) =>
     {
         const accountInfoData = JSON.parse(data).Response.data;
-        //const charactersDataList = [accountInfoData.characters[0], accountInfoData.characters[1], accountInfoData.characters[2]];
         let charactersDataList: any = [];
         for (let i = 0; i < accountInfoData.characters.length; i++)
         {
@@ -164,13 +175,16 @@ class DestinyPlayerController
 
     //#region Member Methods
 
-    private searchPlayer = (searchValue: any) =>
+    private searchPlayer = (searchValue: string) =>
     {
-        this.scope.displayName = searchValue;
-        this.$state.go("destinyPlayer", {
-            platform: this.scope.platform,
-            displayName: this.scope.displayName,
-        });
+        this.destinyApiService.searchPlayer(searchValue).then(
+            (data: any) => this.handleSearchPlayerResponse(data.data),
+            () => this.scope.errorMessage = "An Error has occured while searching for player");
+    }
+
+    private rowClicked = (itemHash: any) =>
+    {
+        //window.open(`${this.destinyDataService.getDestinyLinks().databases.destinydb}${itemHash}`, "_blank");
     }
 
     private getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
@@ -184,9 +198,14 @@ class DestinyPlayerController
         return null;
     }
 
-    private getPlatformNumber(platformName: string): number
+    private getPlatformString(platform: number): string
     {
-        return this.scope.platform === PLATFORM[1] ? PLATFORM.xbox : PLATFORM.playstation;
+        return platform === PLATFORM.Xbox ? PLATFORM[PLATFORM.Xbox] : PLATFORM[PLATFORM.Psn];
+    }
+
+    private getPlatformNumber(platform: string): number
+    {
+        return platform === PLATFORM[PLATFORM.Xbox] ? PLATFORM.Xbox : PLATFORM.Psn;
     }
 
     private getCharacterOverviewObject = (charactersDataList: Array<any>): Array<string> =>

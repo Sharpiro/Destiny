@@ -2,11 +2,9 @@
 {
     message: string;
     errorMessage: string;
-    VM: DestinyPlayerController;
-    playerSearchData: any;
+    vm: DestinyPlayerController;
+    accountDetails: IAccountDetails;
     characterData: Array<ICharacterData>;
-    platform: string;
-    displayName: string;
     triumphs: Array<ITriumphs>;
     $apply: any;
 }
