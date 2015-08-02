@@ -70,5 +70,18 @@ body {
     position: relative;
 }
 
+.testingPopup {
+    position: absolute;
+    visibility: hidden;
+}
+
+.equipment:hover .testingPopup {
+    visibility:visible;
+}
+
+#triumphs img{
+    width: 35px;
+}
+
 
 /*#endregion*/

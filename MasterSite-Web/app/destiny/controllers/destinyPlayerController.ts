@@ -73,7 +73,7 @@ class DestinyPlayerController
             this.scope.errorMessage = "Error: Player not found";
             return;
         }
-        this.scope.accountDetails.membershipId= dataResponse.membershipId;
+        this.scope.accountDetails.membershipId = dataResponse.membershipId;
         this.scope.accountDetails.platform = dataResponse.membershipType;
         this.scope.accountDetails.displayName = dataResponse.displayName;
         this.scope.accountDetails.platformIcon = dataResponse.iconPath;
@@ -185,6 +185,11 @@ class DestinyPlayerController
     private rowClicked = (itemHash: any) =>
     {
         //window.open(`${this.destinyDataService.getDestinyLinks().databases.destinydb}${itemHash}`, "_blank");
+    }
+
+    private mouseOverRow(row: any)
+    {
+        console.log("row");
     }
 
     private getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
