@@ -8,12 +8,32 @@ class DestinyApiService implements IDestinyApiService
     {
     }
 
-    public searchPlayer(platform: number, displayName: string): ng.IPromise<any>
+    public searchPlayer(displayName: string): ng.IPromise<any>
     {
-        if (platform && displayName)
-            return this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=${platform}&displayName=${displayName}`);
-        let dfd = this.$q.defer();
-        dfd.reject();
+        const dfd = this.$q.defer();
+        if (displayName)
+        {
+            this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=1&displayName=${displayName}`).then((data: any) =>
+            {
+                const dataObject = JSON.parse(data.data);
+                if (dataObject.Response[0])
+                {
+                    dfd.resolve(data);
+                }
+            });
+            this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=2&displayName=${displayName}`).then((data: any) =>
+            {
+                const dataObject = JSON.parse(data.data);
+                if (dataObject.Response[0])
+                {
+                    dfd.resolve(data);
+                }
+            });
+        }
+        else
+        {
+            dfd.reject();
+        }
         return dfd.promise;
     }
 
@@ -21,7 +41,7 @@ class DestinyApiService implements IDestinyApiService
     {
         if (platform && membershipId)
             return this.$http.get(`/api/DestinyApi/GetAccountInfo?platform=${platform}&membershipId=${membershipId}`);
-        let dfd = this.$q.defer();
+        const dfd = this.$q.defer();
         dfd.reject();
         return dfd.promise;
     }
@@ -30,7 +50,7 @@ class DestinyApiService implements IDestinyApiService
     {
         if (itemId !== undefined)
             return this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemId}&listNumber=${listNumber}&listPosition=${listPosition}`);
-        let dfd = this.$q.defer();
+        const dfd = this.$q.defer();
         dfd.reject();
         return dfd.promise;
     }
@@ -39,7 +59,7 @@ class DestinyApiService implements IDestinyApiService
     {
         if (characterId !== undefined)
             return this.$http.get(`/api/DestinyApi/GetCharacterInventory?platform=${platform}&membershipId=${membershipId}&characterId=${characterId}&characterNumber=${characterNumber}`);
-        let dfd = this.$q.defer();
+        const dfd = this.$q.defer();
         dfd.reject();
         return dfd.promise;
     }

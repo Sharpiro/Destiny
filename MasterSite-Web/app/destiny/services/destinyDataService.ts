@@ -5,6 +5,13 @@ class DestinyDataService implements IDestinyDataService
     public bungieBaseUrl = "http://bungie.net";
     public bungieBaseUrlSecure = "https://bungie.net";
 
+    private currentPlayerData: IAccountDetails = {
+        membershipId: null,
+        displayName: null,
+        platform: null,
+        platformIcon: null
+    };
+
     private destinyLinks = {
         icons: {
             damageTypeIcons: {
@@ -19,6 +26,9 @@ class DestinyDataService implements IDestinyDataService
                     void: "/content/images/destiny/damageTypeIcons/transparent/4_void.png"
                 }
             }
+        },
+        databases: {
+            destinydb: "http://www.destinydb.com/items/"
         }
     };
 
@@ -54,7 +64,7 @@ class DestinyDataService implements IDestinyDataService
     //private itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
 
     //spec-guns-gear-misc//new way
-    private itemOrder: Array<number> =   [0, 6, 7, 8, 1, 2, 3, 4, 5, 11, 10, 9, 13, 12];
+    private itemOrder: Array<number> = [0, 6, 7, 8, 1, 2, 3, 4, 5, 11, 10, 9, 13, 12];
 
     //account triumphs
     private accountTriumphs: IStaticTriumphsData = {
@@ -135,6 +145,17 @@ class DestinyDataService implements IDestinyDataService
     public getDestinyLinks = (): any =>
     {
         return this.destinyLinks;
+    }
+
+    public getStoredPlayerData = (): IAccountDetails =>
+    {
+        return this.currentPlayerData;
+    }
+
+    public setStoredPlayerData = (accountDetails: IAccountDetails): void =>
+    {
+        this.currentPlayerData = accountDetails;
+        //{ membershipId: id, displayName: displayName, platform: null, platformIcon: null }
     }
 }
 
