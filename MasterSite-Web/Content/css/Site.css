@@ -76,7 +76,7 @@ body {
 }
 
 .equipment:hover .testingPopup {
-    visibility:visible;
+    /*visibility:visible;*/
 }
 
 #triumphs img{

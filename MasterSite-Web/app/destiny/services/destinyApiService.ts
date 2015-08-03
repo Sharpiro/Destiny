@@ -8,27 +8,31 @@ class DestinyApiService implements IDestinyApiService
     {
     }
 
-    public searchPlayer(displayName: string): ng.IPromise<any>
+    public searchPlayer(displayName: string, platform: number = 1): ng.IPromise<any>
     {
         const dfd = this.$q.defer();
         if (displayName)
         {
-            this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=1&displayName=${displayName}`).then((data: any) =>
+            this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=${platform}&displayName=${displayName}`).then((data: any) =>
             {
                 const dataObject = JSON.parse(data.data);
                 if (dataObject.Response[0])
                 {
                     dfd.resolve(data);
                 }
-            });
-            this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=2&displayName=${displayName}`).then((data: any) =>
-            {
-                const dataObject = JSON.parse(data.data);
-                if (dataObject.Response[0])
+                else
                 {
-                    dfd.resolve(data);
+                    this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=2&displayName=${displayName}`).then((data: any) =>
+                    {
+                        const dataObject = JSON.parse(data.data);
+                        if (dataObject.Response[0])
+                        {
+                            dfd.resolve(data);
+                        }
+                    });
                 }
             });
+
         }
         else
         {
