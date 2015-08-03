@@ -6,16 +6,10 @@ class DestinyPlayerController
     constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService, $stateParams: any, private $state: any)
     {
         scope.vm = this;
-        scope.accountDetails = new AccountDetails();
-        scope.accountDetails.platform = this.getPlatformNumber($stateParams.platform);
-        scope.accountDetails.displayName = $stateParams.displayName;
-        const storedPlayerData = destinyDataService.getStoredPlayerData();
-        scope.accountDetails.platformIcon = storedPlayerData.platformIcon;
-        scope.accountDetails.membershipId = storedPlayerData.membershipId;
 
-        if (storedPlayerData.displayName !== scope.accountDetails.displayName || !scope.accountDetails.membershipId)
+        if (this.updateAccountDetails($stateParams))
         {
-            this.searchPlayer(scope.accountDetails.displayName);
+            this.searchPlayer(scope.accountDetails.displayName, scope.accountDetails.platform);
         }
         else
         {
@@ -100,11 +94,16 @@ class DestinyPlayerController
         }
         const charactersOverview: Array<string> = this.getCharacterOverviewObject(charactersDataList);
         const equipmentData: Array<Array<IEquipmentData>> = this.getEquipmentDataObject(charactersDataList);
-        this.scope.characterData = [
-            { charactersOverview: charactersOverview[0], equipmentData: equipmentData[0] },
-            { charactersOverview: charactersOverview[1], equipmentData: equipmentData[1] },
-            { charactersOverview: charactersOverview[2], equipmentData: equipmentData[2] },
-        ];
+        this.scope.characterData = [];
+        for (let i = 0; i < charactersDataList.length; i++)
+        {
+            this.scope.characterData.push({ charactersOverview: charactersOverview[i], equipmentData: equipmentData[i] });
+        }
+        //this.scope.characterData = [
+        //    { charactersOverview: charactersOverview[0], equipmentData: equipmentData[0] },
+        //    { charactersOverview: charactersOverview[1], equipmentData: equipmentData[1] },
+        //    { charactersOverview: charactersOverview[2], equipmentData: equipmentData[2] }
+        //];
 
         //get inventory data for characters
         this.getCharactersInventory(charactersDataList);
@@ -175,9 +174,9 @@ class DestinyPlayerController
 
     //#region Member Methods
 
-    private searchPlayer = (searchValue: string) =>
+    private searchPlayer = (searchValue: string, platform?: number) =>
     {
-        this.destinyApiService.searchPlayer(searchValue).then(
+        this.destinyApiService.searchPlayer(searchValue, platform).then(
             (data: any) => this.handleSearchPlayerResponse(data.data),
             () => this.scope.errorMessage = "An Error has occured while searching for player");
     }
@@ -189,7 +188,30 @@ class DestinyPlayerController
 
     private mouseOverRow(row: any)
     {
-        console.log("row");
+        //console.log("row");
+    }
+
+    private updateAccountDetails = (stateParams: any): boolean =>
+    {
+        this.scope.accountDetails = new AccountDetails();
+        this.scope.accountDetails.platform = this.getPlatformNumber(stateParams.platform);
+        this.scope.accountDetails.displayName = stateParams.displayName;
+        const storedPlayerData = this.destinyDataService.getStoredPlayerData();
+        this.scope.accountDetails.platformIcon = storedPlayerData.platformIcon;
+        this.scope.accountDetails.membershipId = storedPlayerData.membershipId;
+        if (!this.scope.accountDetails.membershipId)
+        {
+            return true;
+        }
+        if (storedPlayerData.platform !== this.scope.accountDetails.platform)
+        {
+            return true;
+        }
+        if (storedPlayerData.displayName !== this.scope.accountDetails.displayName)
+        {
+            return true;
+        }
+        return false;
     }
 
     private getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
@@ -205,12 +227,13 @@ class DestinyPlayerController
 
     private getPlatformString(platform: number): string
     {
-        return platform === PLATFORM.Xbox ? PLATFORM[PLATFORM.Xbox] : PLATFORM[PLATFORM.Psn];
+        return platform === PLATFORM.xbox ? PLATFORM[PLATFORM.xbox] : PLATFORM[PLATFORM.ps];
     }
 
     private getPlatformNumber(platform: string): number
     {
-        return platform === PLATFORM[PLATFORM.Xbox] ? PLATFORM.Xbox : PLATFORM.Psn;
+        platform = platform.toLowerCase();
+        return platform === PLATFORM[PLATFORM.xbox] ? PLATFORM.xbox : PLATFORM.ps;
     }
 
     private getCharacterOverviewObject = (charactersDataList: Array<any>): Array<string> =>
