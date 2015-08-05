@@ -1,5 +1,4 @@
-Added icons.
-Set icons to get securely from bungie.net instead of proxy to allow for browser caching
-Added Light level to gear.
-Added Damage Type to Weapons
-refactored logic to allow ordering of inventory items and generic item data to be completely separate
+New Changes:
+	GearScore?
+	On-hover popup
+		Updates to popup directive

@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="appCombined.js" />
+    <Content Include="app\destiny\templates\testTemplate.html" />
     <Content Include="app\destiny\templates\destinyPlayerTemplate.html" />
     <Content Include="app\destiny\index.html" />
     <Content Include="app\index.html" />
@@ -213,6 +214,7 @@
     <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Scripts\bootstrap\js\bootstrap.js" />
     <Content Include="Scripts\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Scripts\bootstrap\js\ui-bootstrap-tpls-0.13.1.min.js" />
     <Content Include="Scripts\jquery\jquery.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -228,6 +230,8 @@
     <TypeScriptCompile Include="app\destiny\app.ts" />
     <TypeScriptCompile Include="app\destiny\controllers\destinyPlayerController.ts" />
     <TypeScriptCompile Include="app\destiny\controllers\destinyHeaderController.ts" />
+    <TypeScriptCompile Include="app\destiny\controllers\testController.ts" />
+    <TypeScriptCompile Include="app\destiny\directives\popupDirective.ts" />
     <TypeScriptCompile Include="app\destiny\directives\sidebarDirective.ts" />
     <TypeScriptCompile Include="app\destiny\enumerations\destinyEnums.ts" />
     <TypeScriptCompile Include="app\destiny\filters\destinyFilter.ts" />
@@ -296,7 +300,7 @@
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptOutFile>F:\Git_Base\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
+    <TypeScriptOutFile>C:\Users\U403598\Documents\_Work\Learning\Development\C#\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptOutDir />
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>

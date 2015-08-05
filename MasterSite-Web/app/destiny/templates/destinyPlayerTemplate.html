@@ -38,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <img src="http://www.bungie.net/{{accountDetails.platformIcon}}" />
+            <img ng-src="https://www.bungie.net/{{accountDetails.platformIcon}}" alt="platform" />
         </div>
         <div class="col-md-4" style="font-size: 200%">
             {{accountDetails.displayName}}
@@ -51,33 +51,35 @@
         <div class="col-sm-4 col-md-4" style="border-style: none">
             <h4>{{characterData[0].charactersOverview}}</h4>
             <table class="table equipment">
-                <tr ng-repeat="item in characterData[0].equipmentData" ng-click="vm.rowClicked(item.itemHash)" ng-mouseover="vm.mouseOverRow(item)">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img ng-src="https://www.bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                <tr ng-repeat="item in characterData[0].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat}}</td>
                     <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
-                    <td class="testingPopup"><div>{{$index}}</div></td>
+                    <td class="testingPopup" ng-show="showDetails">
+                        <div>{{$index}}</div>
+                    </td>
                 </tr>
             </table>
         </div>
         <div class="col-sm-4 col-md-4" style="border-style: none">
             <h4>{{characterData[1].charactersOverview}}</h4>
             <table class="table equipment">
-                <tr ng-repeat="item in characterData[1].equipmentData" ng-click="vm.rowClicked(item.itemHash)" ng-mouseover="vm.mouseOverRow(item)">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img ng-src="https://www.bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                <tr ng-repeat="item in characterData[1].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat}}</td>
                     <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
-                    <td class="testingPopup"><div>{{$index}}</div></td>
+                    <td class="testingPopup" ng-show="showDetails"><div>{{$index}}</div></td>
                 </tr>
             </table>
         </div>
         <div class="col-sm-4 col-md-4" style="border-style: none">
             <h4>{{characterData[2].charactersOverview}}</h4>
             <table class="table equipment">
-                <tr ng-repeat="item in characterData[2].equipmentData" ng-click="vm.rowClicked(item.itemHash)" ng-mouseover="vm.mouseOverRow(item)">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img ng-src="https://www.bungie.net{{item.icon}}" />{{item.itemName}}</a></td>
+                <tr ng-repeat="item in characterData[2].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName}}</a></td>
                     <td>{{item.details.primaryStat}}</td>
                     <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
-                    <td class="testingPopup"><div>{{$index}}</div></td>
+                    <td class="testingPopup" ng-show="showDetails"><div>{{$index}}</div></td>
                 </tr>
             </table>
         </div>
