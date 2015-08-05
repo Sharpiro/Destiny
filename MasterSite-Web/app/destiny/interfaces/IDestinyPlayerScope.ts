@@ -6,6 +6,7 @@
     accountDetails: IAccountDetails;
     characterData: Array<ICharacterData>;
     triumphs: Array<ITriumphs>;
+    testing: any;
     $apply: any;
 }
 

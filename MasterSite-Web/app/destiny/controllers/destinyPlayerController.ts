@@ -186,9 +186,9 @@ class DestinyPlayerController
         //window.open(`${this.destinyDataService.getDestinyLinks().databases.destinydb}${itemHash}`, "_blank");
     }
 
-    private mouseOverRow(row: any)
+    private mouseOverRow(item: IEquipmentData)
     {
-        //console.log("row");
+        console.log(item.itemName);
     }
 
     private updateAccountDetails = (stateParams: any): boolean =>
