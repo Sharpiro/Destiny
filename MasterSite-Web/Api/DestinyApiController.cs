@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
-using Newtonsoft.Json;
 using MasterSite_Web.Models;
 
-namespace MasterSite_Web
+namespace MasterSite_Web.Api
 {
     public class DestinyApiController : ApiController
     {
+        public readonly string bungieApiKey = ConfigurationManager.AppSettings.Get("bungieApiKey");
         [HttpGet]
         public IHttpActionResult SearchDestinyPlayer(int platform, string displayName)
         {
@@ -23,8 +20,15 @@ namespace MasterSite_Web
                 var url = $"http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/{platform}/{displayName}/";
                 try
                 {
-                    var request = client.GetAsync(url);
-                    content = request.Result.Content.ReadAsStringAsync().Result;
+                    var request = new HttpRequestMessage()
+                    {
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
+                    };
+                    request.Headers.Add("X-API-Key", bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    content = result.Content.ReadAsStringAsync().Result;
                 }
                 catch (Exception ex)
                 {
@@ -44,8 +48,15 @@ namespace MasterSite_Web
                 var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/";
                 try
                 {
-                    var request = client.GetAsync(url);
-                    content = request.Result.Content.ReadAsStringAsync().Result;
+                    var request = new HttpRequestMessage()
+                    {
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
+                    };
+                    request.Headers.Add("X-API-Key", bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    content = result.Content.ReadAsStringAsync().Result;
                 }
                 catch (Exception ex)
                 {
@@ -66,8 +77,15 @@ namespace MasterSite_Web
                 var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{itemId}/";
                 try
                 {
-                    var request = client.GetAsync(url);
-                    content = request.Result.Content.ReadAsStringAsync().Result;
+                    var request = new HttpRequestMessage()
+                    {
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
+                    };
+                    request.Headers.Add("X-API-Key", bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    content = result.Content.ReadAsStringAsync().Result;
                     jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 }
                 catch (Exception ex)
@@ -96,8 +114,15 @@ namespace MasterSite_Web
                 var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
                 try
                 {
-                    var request = client.GetAsync(url);
-                    content = request.Result.Content.ReadAsStringAsync().Result;
+                    var request = new HttpRequestMessage()
+                    {
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
+                    };
+                    request.Headers.Add("X-API-Key", bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    content = result.Content.ReadAsStringAsync().Result;
                     jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 }
                 catch (Exception ex)
@@ -125,8 +150,15 @@ namespace MasterSite_Web
                 var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Triumphs/";
                 try
                 {
-                    var request = client.GetAsync(url);
-                    content = request.Result.Content.ReadAsStringAsync().Result;
+                    var request = new HttpRequestMessage()
+                    {
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
+                    };
+                    request.Headers.Add("X-API-Key", bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    content = result.Content.ReadAsStringAsync().Result;
                     jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 }
                 catch (Exception ex)
@@ -135,26 +167,32 @@ namespace MasterSite_Web
                     return InternalServerError(ex);
                 };
             }
-            //var returnModel = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
             return Json(jsonContent);
         }
 
         [HttpGet]
         public HttpResponseMessage GetImage(string iconLocation)
         {
-            HttpResponseMessage result;
+            HttpResponseMessage responseMessage;
             using (var client = new HttpClient())
             {
+                var url = $"http://www.bungie.net{iconLocation}";
                 try
                 {
-                    var url = $"http://www.bungie.net{iconLocation}";
-                    var request = client.GetAsync(url);
-                    var content = request.Result.Content.ReadAsByteArrayAsync().Result;
-                    result = new HttpResponseMessage(HttpStatusCode.OK)
+                    var request = new HttpRequestMessage()
+                    {
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
+                    };
+                    request.Headers.Add("X-API-Key", bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    var content = result.Content.ReadAsByteArrayAsync().Result;
+                    responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
                     {
                         Content = new ByteArrayContent(content),
                     };
-                    result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                    responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
                 }
                 catch (Exception)
                 {
@@ -162,7 +200,7 @@ namespace MasterSite_Web
                     return new HttpResponseMessage(HttpStatusCode.InternalServerError);
                 };
             }
-            return result;
+            return responseMessage;
         }
 
         [HttpPost]
