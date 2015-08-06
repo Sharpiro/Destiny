@@ -181,7 +181,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CharacterInventoryModel.cs" />
+    <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\ItemModel.cs" />
+    <Compile Include="Models\SearchDestinyPlayerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -238,8 +240,12 @@
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyApiService.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\destinyDataServiceInterfaces.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyPlayerScope.ts" />
+    <TypeScriptCompile Include="app\destiny\interfaces\SharedFunctionsServiceInterface.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyApiService.ts" />
+    <TypeScriptCompile Include="app\destiny\services\destinyBLService.ts" />
+    <TypeScriptCompile Include="app\destiny\interfaces\destinyBLInterfaces.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyDataService.ts" />
+    <TypeScriptCompile Include="app\destiny\services\sharedFunctionsService.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\angular-ui-router.d.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\jquery.d.ts" />
@@ -300,7 +306,7 @@
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptOutFile>F:\Git_Base\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
+    <TypeScriptOutFile>C:\Users\U403598\Documents\_Work\Learning\Development\C#\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptOutDir />
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>

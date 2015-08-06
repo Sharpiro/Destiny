@@ -2,16 +2,20 @@
 {
     message: string;
     errorMessage: string;
+    pageIsErrored: boolean;
+    showPageContent: boolean;
     vm: DestinyPlayerController;
     accountDetails: IAccountDetails;
     characterData: Array<ICharacterData>;
     triumphs: Array<ITriumphs>;
     testing: any;
     $apply: any;
+    bind: any;
 }
 
 interface ICharacterData
 {
+    characterId: number;
     charactersOverview: string;
     equipmentData: Array<IEquipmentData>;
 }
@@ -25,10 +29,10 @@ interface ICharacterOverview
 
 interface IEquipmentData
 {
-    itemHash: number;
-    itemName: string;
-    details: IEquipmentDataDetails;
     icon: string;
+    itemName: string;
+    itemHash: number;
+    details: IEquipmentDataDetails;
 }
 
 interface ITriumphs

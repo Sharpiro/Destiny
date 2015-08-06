@@ -31,74 +31,80 @@
         </div>
     </div>
 </nav>
-<div id="page-wrapper" class="container">
-    <!-- Main Content -->
-    <div class="row">
-        <span class="col-md-4 col-md-offset-4" style="font-size: 200%; color: red; font-family: Comic Sans MS">{{errorMessage}}</span>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <img ng-src="https://www.bungie.net/{{accountDetails.platformIcon}}" alt="platform" />
-        </div>
-        <div class="col-md-4" style="font-size: 200%">
-            {{accountDetails.displayName}}
-        </div>
-        <div class="col-md-4">
-            <label>Membership Id: </label> {{accountDetails.membershipId}}
+<div id="page-wrapper">
+    <div class="container">
+        <div class="row"  id="errorMessage" ng-show="pageIsErrored">
+            <span class="col-md-12">Error: {{errorMessage}}</span>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-4 col-md-4" style="border-style: none">
-            <h4>{{characterData[0].charactersOverview}}</h4>
-            <table class="table equipment">
-                <tr ng-repeat="item in characterData[0].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName}}</a></td>
-                    <td>{{item.details.primaryStat}}</td>
-                    <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
-                    <td class="testingPopup" ng-show="showDetails">
-                        <div>{{$index}}</div>
-                    </td>
+    <div class="container" ng-show="showPageContent" style="border-style: das">
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-md-4">
+                <img ng-src="https://www.bungie.net/{{accountDetails.platformIcon}}" alt="platform"/>
+            </div>
+            <div class="col-md-4" style="font-size: 200%">
+                {{accountDetails.displayName}}
+            </div>
+            <div class="col-md-4">
+                <label>Membership Id: </label> {{accountDetails.membershipId}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4" style="border-style: none">
+                <h4>{{characterData[0].charactersOverview}}</h4>
+                <table class="table equipment">
+                    <tr ng-repeat="item in characterData[0].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt=""/>{{item.itemName}}</a></td>
+                        <td>{{item.details.primaryStat}}</td>
+                        <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
+                        <td class="testingPopup" ng-show="showDetails">
+                            <div>{{$index}}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-4 col-md-4" style="border-style: none">
+                <h4>{{characterData[1].charactersOverview}}</h4>
+                <table class="table equipment">
+                    <tr ng-repeat="item in characterData[1].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt=""/>{{item.itemName}}</a></td>
+                        <td>{{item.details.primaryStat}}</td>
+                        <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
+                        <td class="testingPopup" ng-show="showDetails">
+                            <div>{{$index}}</div></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-4 col-md-4" style="border-style: none">
+                <h4>{{characterData[2].charactersOverview}}</h4>
+                <table class="table equipment">
+                    <tr ng-repeat="item in characterData[2].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt=""/>{{item.itemName}}</a></td>
+                        <td>{{item.details.primaryStat}}</td>
+                        <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
+                        <td class="testingPopup" ng-show="showDetails">
+                            <div>{{$index}}</div></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="triumphs" class="row">
+            <h4>Year 1 Triumphs</h4>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Complete</th>
+                </tr>
+                <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
+                    <td>{{triumph.title}}</td>
+                    <td ng-bind-html="triumph.complete | booleanFilter">{{triumph.complete}}</td>
+                </tr>
+                <tr>
+                    <td>{{triumphs[9].title}}</td>
+                    <td ng-bind-html="triumphs[9].complete | booleanFilter">{{triumphs[9].complete}}</td>
                 </tr>
             </table>
         </div>
-        <div class="col-sm-4 col-md-4" style="border-style: none">
-            <h4>{{characterData[1].charactersOverview}}</h4>
-            <table class="table equipment">
-                <tr ng-repeat="item in characterData[1].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName}}</a></td>
-                    <td>{{item.details.primaryStat}}</td>
-                    <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
-                    <td class="testingPopup" ng-show="showDetails"><div>{{$index}}</div></td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-sm-4 col-md-4" style="border-style: none">
-            <h4>{{characterData[2].charactersOverview}}</h4>
-            <table class="table equipment">
-                <tr ng-repeat="item in characterData[2].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                    <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName}}</a></td>
-                    <td>{{item.details.primaryStat}}</td>
-                    <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
-                    <td class="testingPopup" ng-show="showDetails"><div>{{$index}}</div></td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div id="triumphs" class="row">
-        <h4>Year 1 Triumphs</h4>
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Complete</th>
-            </tr>
-            <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
-                <td>{{triumph.title}}</td>
-                <td ng-bind-html="triumph.complete | booleanFilter">{{triumph.complete}}</td>
-            </tr>
-            <tr>
-                <td>{{triumphs[9].title}}</td>
-                <td ng-bind-html="triumphs[9].complete | booleanFilter">{{triumphs[9].complete}}</td>
-            </tr>
-        </table>
     </div>
 </div>

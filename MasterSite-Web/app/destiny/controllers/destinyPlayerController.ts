@@ -3,9 +3,12 @@
 
 class DestinyPlayerController
 {
-    constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService, $stateParams: any, private $state: any)
+    //#region Constructor
+    constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService,
+        $stateParams: any, private $state: any, private destinyBlService: DestinyBlService, private sharedFunctionsService: SharedFunctionsService)
     {
         scope.vm = this;
+        this.scope.showPageContent = true;
 
         if (this.updateAccountDetails($stateParams))
         {
@@ -15,40 +18,55 @@ class DestinyPlayerController
         {
             //get general account information
             this.destinyApiService.getAccountInfo(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (innerData: any) => this.handleGetAccountInfoResponse(innerData.data),
-                () => this.scope.errorMessage = "An Error has occured while getting account info");
+                (data: any) =>
+                {
+                    this.scope.characterData = destinyBlService.handleGetAccountInfoResponse(data.data);
+                    this.getCharactersInventory(this.scope.characterData);
+                    this.getEquipmentInfo(this.scope.characterData);
+                },
+                (data: any) => this.setPageError(data.ExceptionMessage));
             //get Account triumphs
             this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (innerData: any) => this.handleGetAccountTriumphsResponse(innerData.data),
-                () => this.scope.errorMessage = "An Error has occured while getting account info");
+                (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data),
+                (data: any) => this.setPageError(data));
+            //get unique weapon data
+            this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+                (data: any) => destinyBlService.handleGetUniqueWeaponDataResponse(data.data),
+                (data: any) => this.setPageError(data));
         }
     }
 
+    //#endregion Constructor
+
     //#region API Call Wrappers
 
-    private getEquipmentInfo = (equipmentList: Array<Array<IEquipmentData>>) =>
+    private getEquipmentInfo = (characterDataList: Array<ICharacterData>) =>
     {
-        //TODO: Find a better way to organize character data to get # of characters etc.
-        for (let i = 0; i < 3; i++)
+        //TODO: Create Plunker demonstrating TS bug where "scope" is not accessible via breakpoint in the context
+        for (let i = 0; i < characterDataList.length; i++)
         {
-            const currentEquipmentList = equipmentList[i];
-            for (let j = 0; j < equipmentList[i].length; j++)
+            const currentEquipmentList = characterDataList[i].equipmentData;
+            for (let j = 0; j < characterDataList[i].equipmentData.length; j++)
             {
                 this.destinyApiService.getItem(currentEquipmentList[j].itemHash, i, j).then((data: any) =>
                 {
-                    this.handleGetItemResponse(data.data);
+                    //this.handleGetItemResponse(data.data);
+                    const listNumber = data.data.ListNumber;
+                    const listPosition = data.data.ListPosition;
+                    const itemData = data.data.Response.Response.data.inventoryItem;
+                    this.scope.characterData[listNumber].equipmentData[listPosition].icon = itemData.icon;
+                    this.scope.characterData[listNumber].equipmentData[listPosition].itemName = itemData.itemName;
                 });
             }
         }
     }
 
-    private getCharactersInventory = (charactersDataList: any) =>
+    private getCharactersInventory = (charactersData: Array<ICharacterData>) =>
     {
-        for (let i = 0; i < charactersDataList.length; i++)
+        for (let i = 0; i < charactersData.length; i++)
         {
-            const characterId = charactersDataList[i].characterBase.characterId;
             this.destinyApiService.getCharacterInventory(this.scope.accountDetails.platform,
-                this.scope.accountDetails.membershipId, characterId, i).then((data: any) =>
+                this.scope.accountDetails.membershipId, charactersData[i].characterId, i).then((data: any) =>
                 {
                     this.handleGetCharactersInventoryResponse(data.data);
                 });
@@ -61,7 +79,7 @@ class DestinyPlayerController
 
     private handleSearchPlayerResponse = (data: any) =>
     {
-        const dataResponse = JSON.parse(data).Response[0];
+        const dataResponse = data.Response[0];
         if (!dataResponse)
         {
             this.scope.errorMessage = "Error: Player not found";
@@ -79,65 +97,10 @@ class DestinyPlayerController
         }, { reload: true });
     }
 
-    private handleGetAccountInfoResponse = (data: any) =>
-    {
-        const accountInfoData = JSON.parse(data).Response.data;
-        let charactersDataList: any = [];
-        for (let i = 0; i < accountInfoData.characters.length; i++)
-        {
-            charactersDataList.push(accountInfoData.characters[i]);
-        }
-        if (!charactersDataList[0])
-        {
-            this.scope.errorMessage = "Error: Character not found";
-            return;
-        }
-        const charactersOverview: Array<string> = this.getCharacterOverviewObject(charactersDataList);
-        const equipmentData: Array<Array<IEquipmentData>> = this.getEquipmentDataObject(charactersDataList);
-        this.scope.characterData = [];
-        for (let i = 0; i < charactersDataList.length; i++)
-        {
-            this.scope.characterData.push({ charactersOverview: charactersOverview[i], equipmentData: equipmentData[i] });
-        }
-        //this.scope.characterData = [
-        //    { charactersOverview: charactersOverview[0], equipmentData: equipmentData[0] },
-        //    { charactersOverview: charactersOverview[1], equipmentData: equipmentData[1] },
-        //    { charactersOverview: charactersOverview[2], equipmentData: equipmentData[2] }
-        //];
-
-        //get inventory data for characters
-        this.getCharactersInventory(charactersDataList);
-        //get generic equipment data
-        this.getEquipmentInfo(equipmentData);
-    }
-
-    private handleGetAccountTriumphsResponse = (data: any) =>
-    {
-        const triumphs = data.Response.data.triumphSets[0].triumphs;
-        const staticTriumphData = this.destinyDataService.getAccountTriumphs().yearOne;
-        this.scope.triumphs = [];
-        for (let i = 0; i < triumphs.length; i++)
-        {
-            this.scope.triumphs[i] = { title: staticTriumphData[i].title, complete: triumphs[i].complete };
-            //console.log(`${staticTriumphData[i].title}: ${triumphs[i].complete}`);
-        }
-    }
-
-    private handleGetItemResponse = (data: any) =>
-    {
-        const dataObject = JSON.parse(data);
-        const listNumber = dataObject.ListNumber;
-        const listPosition = dataObject.ListPosition;
-        const itemData = dataObject.Response.Response.data.inventoryItem;
-        this.scope.characterData[listNumber].equipmentData[listPosition].icon = itemData.icon;
-        this.scope.characterData[listNumber].equipmentData[listPosition].itemName = itemData.itemName;
-    }
-
     private handleGetCharactersInventoryResponse = (data: any) =>
     {
-        const dataResponse = JSON.parse(data);
-        const characterNumberResponse = dataResponse.CharacterNumber;
-        const inventoryDataResponse = dataResponse.Response.Response.data.buckets.Equippable;
+        const characterNumberResponse = data.CharacterNumber;
+        const inventoryDataResponse = data.Response.Response.data.buckets.Equippable;
         for (let i = 0; i < inventoryDataResponse.length; i++)
         {
             const currentCharacterEquipment = this.scope.characterData[characterNumberResponse].equipmentData;
@@ -145,7 +108,7 @@ class DestinyPlayerController
             {
                 if (inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
                 {
-                    const bucketHash = <IBucketHash>this.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
+                    const bucketHash = <ICategoryHash>this.sharedFunctionsService.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
                     if (bucketHash.category === ITEMCATEGORY.Weapon)
                     {
                         const itemDetails: IEquipmentDataDetails = {
@@ -178,7 +141,7 @@ class DestinyPlayerController
     {
         this.destinyApiService.searchPlayer(searchValue, platform).then(
             (data: any) => this.handleSearchPlayerResponse(data.data),
-            () => this.scope.errorMessage = "An Error has occured while searching for player");
+            (data: any) => this.setPageError(data));
     }
 
     private rowClicked = (itemHash: any) =>
@@ -214,17 +177,6 @@ class DestinyPlayerController
         return false;
     }
 
-    private getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
-    {
-        for (let i = 0; i < hashArray.length; i++)
-        {
-            if (hashArray[i].hash === hash)
-                return hashArray[i];
-        }
-        console.warn(`Warning: Unknown Hash: ${hash}`);
-        return null;
-    }
-
     private getPlatformString(platform: number): string
     {
         return platform === PLATFORM.xbox ? PLATFORM[PLATFORM.xbox] : PLATFORM[PLATFORM.ps];
@@ -236,49 +188,15 @@ class DestinyPlayerController
         return platform === PLATFORM[PLATFORM.xbox] ? PLATFORM.xbox : PLATFORM.ps;
     }
 
-    private getCharacterOverviewObject = (charactersDataList: Array<any>): Array<string> =>
+    private setPageError = (errorDetails: string) =>
     {
-        const raceHashes = this.destinyDataService.getRaceHashes();
-        const classHashes = this.destinyDataService.getClassHashes();
-        const genderHashes = this.destinyDataService.getGenderHashes();
-        let characterOverviewObject: Array<string> = [];
-
-        for (let i = 0; i < charactersDataList.length; i++)
-        {
-            const characterOneRace = this.getHashObject(raceHashes, charactersDataList[i].characterBase.raceHash).value;
-            const characterOneClass = this.getHashObject(classHashes, charactersDataList[i].characterBase.classHash).value;
-            const characterOneGender = this.getHashObject(genderHashes, charactersDataList[i].characterBase.genderHash).value;
-            const characterOneLevel = charactersDataList[i].characterLevel;
-            const characterOverview = `${characterOneLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`;
-            characterOverviewObject.push(characterOverview);
-        }
-
-        return characterOverviewObject;
-    }
-
-    private getEquipmentDataObject = (charactersDataList: Array<any>): Array<Array<IEquipmentData>> =>
-    {
-        const unorderedList: Array<Array<IEquipmentData>> = [];
-
-        for (let i = 0; i < charactersDataList.length; i++)
-        {
-            unorderedList.push(charactersDataList[i].characterBase.peerView.equipment);
-        }
-        let orderedList: Array<Array<IEquipmentData>> = [[], [], []];
-        //re-order list
-        for (let i = 0; i < charactersDataList.length; i++)
-        {
-            for (let j = 0; j < unorderedList[i].length; j++)
-            {
-                const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
-                orderedList[i][j] = unorderedList[i][orderedListPosition];
-            }
-        }
-        return orderedList;
+        this.scope.pageIsErrored = true;
+        this.scope.errorMessage = errorDetails;
+        console.error(errorDetails);
     }
 }
 
 //#endregion
 
 masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",
-    "destinyDataService", "$stateParams", "$state", DestinyPlayerController]); 
+    "destinyDataService", "$stateParams", "$state", "destinyBlService", "sharedFunctionsService", DestinyPlayerController]); 

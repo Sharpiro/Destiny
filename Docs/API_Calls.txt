@@ -1,6 +1,7 @@
 //public
 	//find player by display name / get membership id
 		http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/1/sharpirox/
+		http://localhost:64449/api/destinyapi/SearchDestinyPlayer?platform=1&displayName=sharpirox
 	//get character information / get character ids
 		https://www.bungie.net/Platform/Destiny/1/Account/4611686018432239086
 	//get detailed equipped data per character via character id
