@@ -64,6 +64,12 @@ class DestinyDataService implements IDestinyDataService
         { "hash": -100, "value": "Charge Rate" }
     ];
 
+    private popularItems: Array<ICategoryHash> = [
+        { hash: 3118679308, value: "Ice Breaker", category: ITEMCATEGORY.Weapon },
+        { hash: 1274330687, value: "Gjallarhorn", category: ITEMCATEGORY.Weapon }
+
+    ];
+
     //spec-guns-gear-misc//old way!
     //private itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
 
@@ -86,7 +92,7 @@ class DestinyDataService implements IDestinyDataService
         ]
     };
 
-    private bucketHashes: Array<IBucketHash> = [
+    private bucketHashes: Array<ICategoryHash> = [
         { hash: 3284755031, value: "Subclass", category: null },
         { hash: 1498876634, value: "Primary", category: ITEMCATEGORY.Weapon },
         { hash: 2465295065, value: "Special", category: ITEMCATEGORY.Weapon },
@@ -104,7 +110,7 @@ class DestinyDataService implements IDestinyDataService
     ];
 
     private damageTypeHahes: Array<IHash> = [
-        { hash: 1498876634, value: "Arc", category: DAMAGETYPE.Arc },
+        { hash: 1498876634, value: "Arc", category: DAMAGETYPE.Arc }
     ];
 
     constructor(private $http: ng.IHttpService, private $q: ng.IQService)

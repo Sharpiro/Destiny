@@ -9,7 +9,7 @@ interface IHash
     value: string;
 }
 
-interface IBucketHash extends IHash
+interface ICategoryHash extends IHash
 {
     category: number;
 }

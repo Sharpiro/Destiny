@@ -15,7 +15,7 @@ class DestinyApiService implements IDestinyApiService
         {
             this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=${platform}&displayName=${displayName}`).then((data: any) =>
             {
-                const dataObject = JSON.parse(data.data);
+                const dataObject = data.data;
                 if (dataObject.Response[0])
                 {
                     dfd.resolve(data);
@@ -31,7 +31,7 @@ class DestinyApiService implements IDestinyApiService
                         }
                     });
                 }
-            });
+            }, (data: any) => dfd.reject(data.data.ExceptionMessage));
 
         }
         else
@@ -71,6 +71,11 @@ class DestinyApiService implements IDestinyApiService
     public getAccountTriumphs = (platform: number, membershipId: number): ng.IPromise<any> =>
     {
         return this.$http.get(`/api/DestinyApi/GetAccountTriumphs?platform=${platform}&membershipId=${membershipId}`);
+    }
+
+    public getUniqueWeaponData = (platform: number, membershipId: number): ng.IPromise<any> =>
+    {
+        return this.$http.get(`/api/DestinyApi/GetUniqueWeaponData?platform=${platform}&membershipId=${membershipId}`);
     }
 
     //public getAllItems(itemList: Array<IEquipmentData>): ng.IPromise<any>
