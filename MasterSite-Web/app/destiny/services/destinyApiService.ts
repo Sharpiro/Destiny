@@ -24,7 +24,7 @@ class DestinyApiService implements IDestinyApiService
                 {
                     this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=2&displayName=${displayName}`).then((data: any) =>
                     {
-                        const dataObject = JSON.parse(data.data);
+                        const dataObject = data.data;
                         if (dataObject.Response[0])
                         {
                             dfd.resolve(data);

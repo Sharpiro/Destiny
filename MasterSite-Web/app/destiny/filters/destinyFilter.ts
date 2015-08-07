@@ -1,5 +1,22 @@
 ﻿class DestinyFilter
 {
+
+    public static itemNameFilter()
+    {
+        return (input: string) =>
+        {
+            if (input)
+            {
+                const maxLength = 19;
+                if (input.length >= maxLength)
+                {
+                    return input.substr(0, maxLength);
+                }
+                return input;
+            }
+        };
+    }
+
     public static damageTypeFilter(sce: any, destinyDataService: DestinyDataService)
     {
         return (input: number) =>
@@ -48,3 +65,4 @@
 //masterSite.filter("damageTypeFilter", [DestinyFilter.damageTypeFilter]);
 masterSite.filter("damageTypeFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.damageTypeFilter($sce, destinyDataService));
 masterSite.filter("booleanFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.booleanFilter($sce, destinyDataService));
+masterSite.filter("itemNameFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.itemNameFilter());

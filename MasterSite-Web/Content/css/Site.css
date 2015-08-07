@@ -96,8 +96,16 @@ body {
     visibility:visible;
 }*/
 
-#triumphs img {
-    width: 35px;
+.gearscore img {
+    width: 25px;
+}
+
+.gearscore table {
+    margin-left: auto;
+    margin-right: auto;
+}
+.gearscore h4 {
+   text-align: center;
 }
 
 
