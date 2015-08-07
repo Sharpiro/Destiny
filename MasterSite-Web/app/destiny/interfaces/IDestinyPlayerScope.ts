@@ -11,6 +11,7 @@
     testing: any;
     $apply: any;
     bind: any;
+    weaponScore: Array<ITriumphs>;
 }
 
 interface ICharacterData
@@ -45,4 +46,8 @@ interface IEquipmentDataDetails
 {
     primaryStat: number;
     damageType: DAMAGETYPE;
+}
+
+interface IExoticData {
+    referenceId: number;
 }

@@ -5,8 +5,8 @@ var masterSite = angular.module("masterSite", ["ui.router", "ngAnimate", "ui.boo
 
 masterSite.config(["$stateProvider", "$urlRouterProvider", ($stateProvider: any, $urlRouterProvider: any) =>
 {
-    //$urlRouterProvider.otherwise("/player/xbox/sharpirox");
-    $urlRouterProvider.otherwise("/test");
+    $urlRouterProvider.otherwise("/player/xbox/sharpirox");
+    //$urlRouterProvider.otherwise("/test");
 
     //Destiny Routes
     $stateProvider

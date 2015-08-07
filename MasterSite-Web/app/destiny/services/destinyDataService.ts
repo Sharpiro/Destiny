@@ -26,7 +26,7 @@ class DestinyDataService implements IDestinyDataService
                     void: "/content/images/destiny/damageTypeIcons/transparent/4_void.png"
                 }
             },
-            booleanIcons : {
+            booleanIcons: {
                 trueIcon: "/content/images/destiny/boolean/true.png",
                 falseIcon: "/content/images/destiny/boolean/false.png"
             }
@@ -65,9 +65,14 @@ class DestinyDataService implements IDestinyDataService
     ];
 
     private popularItems: Array<ICategoryHash> = [
-        { hash: 3118679308, value: "Ice Breaker", category: ITEMCATEGORY.Weapon },
-        { hash: 1274330687, value: "Gjallarhorn", category: ITEMCATEGORY.Weapon }
-
+        { starred: true, hash: 3118679308, value: "Ice Breaker", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 1274330687, value: "Gjallarhorn", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 2344494719, value: "Lord of Wolves", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 2612834019, value: "Queenbreakers' Bow", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 2809229973, value: "Necrochasm", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 346443849, value: "Vex Mythoclast", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 3399255907, value: "347 Vesta Dynasty", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 1557422751, value: "Dreg's Promise", category: ITEMCATEGORY.Weapon },
     ];
 
     //spec-guns-gear-misc//old way!
@@ -166,6 +171,11 @@ class DestinyDataService implements IDestinyDataService
     {
         this.currentPlayerData = accountDetails;
         //{ membershipId: id, displayName: displayName, platform: null, platformIcon: null }
+    }
+
+    public getPopularItems = (): Array<ICategoryHash> =>
+    {
+        return this.popularItems;
     }
 }
 

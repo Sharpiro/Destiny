@@ -29,41 +29,54 @@ class DestinyBlService implements IDestinyBlService
         for (let i = 0; i < accountInfoData.characters.length; i++)
         {
             let currentCharacterData = accountInfoData.characters[i];
-            const charactersOverview: Array<string> = this.getCharacterOverviewObject(currentCharacterData);
+            const charactersOverview: string = this.getCharacterOverviewObject(currentCharacterData);
             const equipmentData: Array<IEquipmentData> = this.getEquipmentDataObject(currentCharacterData);
             const characterId = currentCharacterData.characterBase.characterId;
-            characterData.push({ charactersOverview: charactersOverview[i], equipmentData: equipmentData, characterId: characterId });
+            characterData.push({ charactersOverview: charactersOverview, equipmentData: equipmentData, characterId: characterId });
         }
         return characterData;
     }
 
 
 
-    public handleGetUniqueWeaponDataResponse = (data: any) => {
-        console.log(data);
+    public handleGetUniqueWeaponDataResponse = (data: any): Array<ITriumphs> =>
+    {
+        const exoticData: Array<IExoticData> = data.Response.data.weapons;
+        const popularItems = this.destinyDataService.getPopularItems();
+        let gearScoreList: Array<ITriumphs> = [];
+        for (let i = 0; i < exoticData.length; i++)
+        {
+            for (let j = 0; j < popularItems.length; j++)
+            {
+                if (exoticData[i].referenceId === popularItems[j].hash)
+                {
+                    if (popularItems[j].starred)
+                    {
+                        let gearObj: ITriumphs = { title: popularItems[j].value, complete: true };
+                        gearScoreList.push(gearObj);
+                    }
+                }
+            }
+        }
+        return gearScoreList;
     }
 
     //#endregion
 
     //#region private member methods
-    private getCharacterOverviewObject = (charactersDataList: Array<any>): Array<string> =>
+    private getCharacterOverviewObject = (charactersDataList: any): string =>
     {
         const raceHashes = this.destinyDataService.getRaceHashes();
         const classHashes = this.destinyDataService.getClassHashes();
         const genderHashes = this.destinyDataService.getGenderHashes();
-        let characterOverviewObject: Array<string> = [];
 
-        for (let i = 0; i < charactersDataList.length; i++)
-        {
-            const characterOneRace = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList[i].characterBase.raceHash).value;
-            const characterOneClass = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList[i].characterBase.classHash).value;
-            const characterOneGender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList[i].characterBase.genderHash).value;
-            const characterOneLevel = charactersDataList[i].characterLevel;
-            const characterOverview = `${characterOneLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`;
-            characterOverviewObject.push(characterOverview);
-        }
+        const characterOneRace = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.characterBase.raceHash).value;
+        const characterOneClass = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.characterBase.classHash).value;
+        const characterOneGender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.characterBase.genderHash).value;
+        const characterOneLevel = charactersDataList.characterLevel;
+        const characterOverview = `${characterOneLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`;
 
-        return characterOverviewObject;
+        return characterOverview;
     }
 
     private getEquipmentDataObject = (charactersDataList: any): Array<IEquipmentData> =>

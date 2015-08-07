@@ -31,7 +31,7 @@ class DestinyPlayerController
                 (data: any) => this.setPageError(data));
             //get unique weapon data
             this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (data: any) => destinyBlService.handleGetUniqueWeaponDataResponse(data.data),
+                (data: any) => this.scope.weaponScore = destinyBlService.handleGetUniqueWeaponDataResponse(data.data),
                 (data: any) => this.setPageError(data));
         }
     }
@@ -151,7 +151,7 @@ class DestinyPlayerController
 
     private mouseOverRow(item: IEquipmentData)
     {
-        console.log(item.itemName);
+        //console.log(item.itemName);
     }
 
     private updateAccountDetails = (stateParams: any): boolean =>

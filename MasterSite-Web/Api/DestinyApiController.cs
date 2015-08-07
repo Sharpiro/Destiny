@@ -200,39 +200,35 @@ namespace MasterSite_Web.Api
         [HttpGet]
         public IHttpActionResult GetUniqueWeaponData(int platform, ulong membershipId)
         {
-            var contentList = new List<object>();
+            object jsonContent;
             using (var client = new HttpClient())
             {
-                for (var i = 0; i < 3; i++)
+                var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/0";
+                try
                 {
-                    var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/{i}";
-                    try
+                    var request = new HttpRequestMessage()
                     {
-                        var request = new HttpRequestMessage()
-                        {
-                            RequestUri = new Uri(url),
-                            Method = HttpMethod.Get,
-                        };
-                        request.Headers.Add("X-API-Key", _bungieApiKey);
-                        var task = client.SendAsync(request);
-                        var result = task.Result;
-                        var content = result.Content.ReadAsStringAsync().Result;
-                        var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
-                        if (responseModel.ErrorCode != 1)
-                        {
-                            return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-                        }
-                        var jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-                        contentList.Add(jsonContent);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Async Request Failed...");
-                        return InternalServerError(ex);
+                        RequestUri = new Uri(url),
+                        Method = HttpMethod.Get,
                     };
+                    request.Headers.Add("X-API-Key", _bungieApiKey);
+                    var task = client.SendAsync(request);
+                    var result = task.Result;
+                    var content = result.Content.ReadAsStringAsync().Result;
+                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
+                    if (responseModel.ErrorCode != 1)
+                    {
+                        return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
+                    }
+                    jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Async Request Failed...");
+                    return InternalServerError(ex);
+                };
             }
-            return Ok(contentList);
+            return Ok(jsonContent);
         }
 
         [HttpGet]

@@ -2,3 +2,6 @@ New Changes:
 	GearScore?
 	On-hover popup
 		Updates to popup directive
+		
+Issues
+	Sharpirox on psn - bad error handling

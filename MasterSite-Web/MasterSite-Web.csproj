@@ -306,7 +306,7 @@
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
-    <TypeScriptOutFile>C:\Users\U403598\Documents\_Work\Learning\Development\C#\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
+    <TypeScriptOutFile>F:\Git_Base\MasterSite\MasterSite-Web\appCombined.js</TypeScriptOutFile>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptOutDir />
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>

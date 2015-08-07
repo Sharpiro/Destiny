@@ -12,6 +12,7 @@ interface IHash
 interface ICategoryHash extends IHash
 {
     category: number;
+    starred?: boolean;
 }
 
 interface IStaticTriumphsData

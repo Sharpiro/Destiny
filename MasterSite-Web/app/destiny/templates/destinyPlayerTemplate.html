@@ -33,7 +33,7 @@
 </nav>
 <div id="page-wrapper">
     <div class="container">
-        <div class="row"  id="errorMessage" ng-show="pageIsErrored">
+        <div class="row" id="errorMessage" ng-show="pageIsErrored">
             <span class="col-md-12">Error: {{errorMessage}}</span>
         </div>
     </div>
@@ -41,7 +41,7 @@
         <!-- Main Content -->
         <div class="row">
             <div class="col-md-4">
-                <img ng-src="https://www.bungie.net/{{accountDetails.platformIcon}}" alt="platform"/>
+                <img ng-src="https://www.bungie.net/{{accountDetails.platformIcon}}" alt="platform" />
             </div>
             <div class="col-md-4" style="font-size: 200%">
                 {{accountDetails.displayName}}
@@ -55,7 +55,7 @@
                 <h4>{{characterData[0].charactersOverview}}</h4>
                 <table class="table equipment">
                     <tr ng-repeat="item in characterData[0].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt=""/>{{item.itemName}}</a></td>
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName | itemNameFilter}}</a></td>
                         <td>{{item.details.primaryStat}}</td>
                         <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
                         <td class="testingPopup" ng-show="showDetails">
@@ -68,11 +68,12 @@
                 <h4>{{characterData[1].charactersOverview}}</h4>
                 <table class="table equipment">
                     <tr ng-repeat="item in characterData[1].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt=""/>{{item.itemName}}</a></td>
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName | itemNameFilter}}</a></td>
                         <td>{{item.details.primaryStat}}</td>
                         <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
                         <td class="testingPopup" ng-show="showDetails">
-                            <div>{{$index}}</div></td>
+                            <div>{{$index}}</div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -80,31 +81,39 @@
                 <h4>{{characterData[2].charactersOverview}}</h4>
                 <table class="table equipment">
                     <tr ng-repeat="item in characterData[2].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt=""/>{{item.itemName}}</a></td>
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName | itemNameFilter}}</a></td>
                         <td>{{item.details.primaryStat}}</td>
                         <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
                         <td class="testingPopup" ng-show="showDetails">
-                            <div>{{$index}}</div></td>
+                            <div>{{$index}}</div>
+                        </td>
                     </tr>
                 </table>
             </div>
         </div>
-        <div id="triumphs" class="row">
-            <h4>Year 1 Triumphs</h4>
-            <table>
-                <tr>
-                    <th>Title</th>
-                    <th>Complete</th>
-                </tr>
-                <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
-                    <td>{{triumph.title}}</td>
-                    <td ng-bind-html="triumph.complete | booleanFilter">{{triumph.complete}}</td>
-                </tr>
-                <tr>
-                    <td>{{triumphs[9].title}}</td>
-                    <td ng-bind-html="triumphs[9].complete | booleanFilter">{{triumphs[9].complete}}</td>
-                </tr>
-            </table>
+        <div class="row gearscore">
+            <div class="col-md-6">
+                <h4>Year 1 Triumphs</h4>
+                <table class="table">
+                    <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
+                        <td>{{triumph.title}}</td>
+                        <td ng-bind-html="triumph.complete | booleanFilter">{{triumph.complete}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{triumphs[9].title}}</td>
+                        <td ng-bind-html="triumphs[9].complete | booleanFilter">{{triumphs[9].complete}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h4>Weapon Check</h4>
+                <table class="table">
+                    <tr ng-repeat="weapon in weaponScore">
+                        <td>{{weapon.title}}</td>
+                        <td ng-bind-html="weapon.complete | booleanFilter">{{weapon.complete}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
