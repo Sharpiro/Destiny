@@ -25,6 +25,7 @@ class DestinyBlService implements IDestinyBlService
     public handleGetAccountInfoResponse = (data: any): Array<ICharacterData> =>
     {
         const accountInfoData = data.Response.data;
+        const itemDefinitions: Array<any> = data.Response.definitions.items;
         let characterData: Array<ICharacterData> = [];
         for (let i = 0; i < accountInfoData.characters.length; i++)
         {
@@ -32,6 +33,12 @@ class DestinyBlService implements IDestinyBlService
             const charactersOverview: string = this.getCharacterOverviewObject(currentCharacterData);
             const equipmentData: Array<IEquipmentData> = this.getEquipmentDataObject(currentCharacterData);
             const characterId = currentCharacterData.characterBase.characterId;
+            for (let j = 0; j < equipmentData.length; j++)
+            {
+                let hash = equipmentData[j].itemHash;
+                equipmentData[j].itemName = itemDefinitions[hash].itemName;
+                equipmentData[j].icon = itemDefinitions[hash].icon;
+            }
             characterData.push({ charactersOverview: charactersOverview, equipmentData: equipmentData, characterId: characterId });
         }
         return characterData;
@@ -60,6 +67,64 @@ class DestinyBlService implements IDestinyBlService
         }
         return gearScoreList;
     }
+
+    public handleSearchPlayerResponse = (data: any): IAccountDetails =>
+    {
+        const dataResponse = data.Response[0];
+        const accountDetails: IAccountDetails = {
+            membershipId: dataResponse.membershipId,
+            platform: dataResponse.membershipType,
+            displayName: dataResponse.displayName,
+            platformIcon: dataResponse.iconPath
+        };
+        this.destinyDataService.setStoredPlayerData(accountDetails);
+        return accountDetails;
+    }
+
+    public handleGetCharactersInventoryResponse = (rawData: any, characterData: Array<ICharacterData>) =>
+    {
+        const characterNumberResponse = rawData.CharacterNumber;
+        const inventoryDataResponse = rawData.Response.Response.data.buckets.Equippable;
+        for (let i = 0; i < inventoryDataResponse.length; i++)
+        {
+            const currentCharacterEquipment = characterData[characterNumberResponse].equipmentData;
+            for (let j = 0; j < currentCharacterEquipment.length; j++)
+            {
+                if (inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
+                {
+                    const bucketHash = <ICategoryHash>this.sharedFunctionsService.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
+                    if (bucketHash.category === ITEMCATEGORY.Weapon)
+                    {
+                        const itemDetails: IEquipmentDataDetails = {
+                            primaryStat: inventoryDataResponse[i].items[0].primaryStat.value,
+                            damageType: inventoryDataResponse[i].items[0].damageType
+                        };
+                        characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
+                    }
+                    else if (bucketHash.category === ITEMCATEGORY.Armor)
+                    {
+                        if (inventoryDataResponse[i].items[0].stats[0])
+                        {
+                            const itemDetails: IEquipmentDataDetails = {
+                                primaryStat: inventoryDataResponse[i].items[0].stats[0].value,
+                                damageType: null
+                            };
+                            characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public handleGetItemResponse = (rawData: any, characterData: Array<ICharacterData>) =>
+    {
+        const listNumber = rawData.ListNumber;
+        const listPosition = rawData.ListPosition;
+        const itemData = rawData.Response.Response.data.inventoryItem;
+        characterData[listNumber].equipmentData[listPosition].icon = itemData.icon;
+        characterData[listNumber].equipmentData[listPosition].itemName = itemData.itemName;
+    };
 
     //#endregion
 

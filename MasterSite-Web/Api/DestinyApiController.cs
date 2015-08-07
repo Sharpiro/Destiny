@@ -55,7 +55,7 @@ namespace MasterSite_Web.Api
             object jsonContent;
             using (var client = new HttpClient())
             {
-                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/";
+                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/?definitions=true";
                 try
                 {
                     var request = new HttpRequestMessage()
@@ -203,7 +203,7 @@ namespace MasterSite_Web.Api
             object jsonContent;
             using (var client = new HttpClient())
             {
-                var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/0";
+                var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/0/";
                 try
                 {
                     var request = new HttpRequestMessage()

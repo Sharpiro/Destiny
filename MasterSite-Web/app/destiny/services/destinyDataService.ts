@@ -65,14 +65,14 @@ class DestinyDataService implements IDestinyDataService
     ];
 
     private popularItems: Array<ICategoryHash> = [
-        { starred: true, hash: 3118679308, value: "Ice Breaker", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 1274330687, value: "Gjallarhorn", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 2344494719, value: "Lord of Wolves", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 2612834019, value: "Queenbreakers' Bow", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 2809229973, value: "Necrochasm", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 346443849, value: "Vex Mythoclast", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 3399255907, value: "347 Vesta Dynasty", category: ITEMCATEGORY.Weapon },
-        { starred: true, hash: 1557422751, value: "Dreg's Promise", category: ITEMCATEGORY.Weapon },
+        { starred: true, hash: 3118679308, category: ITEMCATEGORY.Weapon, value: "Ice Breaker" },
+        { starred: true, hash: 1274330687, category: ITEMCATEGORY.Weapon, value: "Gjallarhorn" },
+        { starred: true, hash: 2344494719, category: ITEMCATEGORY.Weapon, value: "Lord of Wolves" },
+        { starred: true, hash: 2612834019, category: ITEMCATEGORY.Weapon, value: "Queenbreakers' Bow" },
+        { starred: true, hash: 2809229973, category: ITEMCATEGORY.Weapon, value: "Necrochasm" },
+        { starred: true, hash: 346443849, category: ITEMCATEGORY.Weapon, value: "Vex Mythoclast" },
+        { starred: true, hash: 3399255907, category: ITEMCATEGORY.Weapon, value: "347 Vesta Dynasty" },
+        { starred: true, hash: 1557422751, category: ITEMCATEGORY.Weapon, value: "Dreg's Promise" }
     ];
 
     //spec-guns-gear-misc//old way!
