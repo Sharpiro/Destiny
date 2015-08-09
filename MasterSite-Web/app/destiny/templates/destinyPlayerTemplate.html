@@ -92,7 +92,7 @@
             </div>
         </div>
         <div class="row gearscore">
-            <div class="col-md-6">
+            <div class="col-md-6 triumphs">
                 <h4>Year 1 Triumphs</h4>
                 <table class="table">
                     <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
@@ -105,14 +105,11 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-md-6">
-                <h4>Weapon Check</h4>
-                <table class="table">
-                    <tr ng-repeat="weapon in weaponScore">
-                        <td>{{weapon.title}}</td>
-                        <td ng-bind-html="weapon.complete | booleanFilter">{{weapon.complete}}</td>
-                    </tr>
-                </table>
+            <div class="col-md-6 weapon-check">
+                <h4 style="text-align: center">Weapon Check</h4>
+                <div ng-repeat="weapon in weaponScore" popover="{{weapon.value}}" popover-trigger="mouseenter">
+                    <img ng-src="https://www.bungie.net{{weapon.icon}}" />
+                </div>
             </div>
         </div>
     </div>

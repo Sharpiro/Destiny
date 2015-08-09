@@ -64,15 +64,15 @@ class DestinyDataService implements IDestinyDataService
         { "hash": -100, "value": "Charge Rate" }
     ];
 
-    private popularItems: Array<ICategoryHash> = [
-        { starred: true, hash: 3118679308, category: ITEMCATEGORY.Weapon, value: "Ice Breaker" },
-        { starred: true, hash: 1274330687, category: ITEMCATEGORY.Weapon, value: "Gjallarhorn" },
-        { starred: true, hash: 2344494719, category: ITEMCATEGORY.Weapon, value: "Lord of Wolves" },
-        { starred: true, hash: 2612834019, category: ITEMCATEGORY.Weapon, value: "Queenbreakers' Bow" },
-        { starred: true, hash: 2809229973, category: ITEMCATEGORY.Weapon, value: "Necrochasm" },
-        { starred: true, hash: 346443849, category: ITEMCATEGORY.Weapon, value: "Vex Mythoclast" },
-        { starred: true, hash: 3399255907, category: ITEMCATEGORY.Weapon, value: "347 Vesta Dynasty" },
-        { starred: true, hash: 1557422751, category: ITEMCATEGORY.Weapon, value: "Dreg's Promise" }
+    private popularItems: Array<IPopularItemHash> = [
+        { starred: true, hash: 3118679308, category: ITEMCATEGORY.Weapon, value: "Ice Breaker", icon: "/common/destiny_content/icons/c1bc7a09b4042a26e0bbfe36fab78842.jpg" },
+        { starred: true, hash: 1274330687, category: ITEMCATEGORY.Weapon, value: "Gjallarhorn", icon: "/common/destiny_content/icons/eb8377390504838c0190d8d56e70d28e.jpg" },
+        { starred: true, hash: 2344494719, category: ITEMCATEGORY.Weapon, value: "Lord of Wolves", icon: "/common/destiny_content/icons/64ef3ce089b88d09b7b8ee72ab2ddc20.jpg" },
+        { starred: true, hash: 2612834019, category: ITEMCATEGORY.Weapon, value: "Queenbreakers' Bow", icon: "/common/destiny_content/icons/1f1477bd77c6eb0e7e7a1b082bb62eed.jpg" },
+        { starred: true, hash: 2809229973, category: ITEMCATEGORY.Weapon, value: "Necrochasm", icon: "/common/destiny_content/icons/e1594f119b3219eeda9fd3f7216e0881.jpg" },
+        { starred: true, hash: 346443849, category: ITEMCATEGORY.Weapon, value: "Vex Mythoclast", icon: "/common/destiny_content/icons/bb7c710c5c143ff80997fdfb7b1216c3.jpg" },
+        { starred: true, hash: 3399255907, category: ITEMCATEGORY.Weapon, value: "347 Vesta Dynasty", icon: "/common/destiny_content/icons/8ccecb1bc9c98201d63394de0fe94ab9.jpg" },
+        { starred: true, hash: 1557422751, category: ITEMCATEGORY.Weapon, value: "Dreg's Promise", icon: "/common/destiny_content/icons/54bf749f882fef3c09367f5e8a8f191b.jpg" }
     ];
 
     //spec-guns-gear-misc//old way!
@@ -173,7 +173,7 @@ class DestinyDataService implements IDestinyDataService
         //{ membershipId: id, displayName: displayName, platform: null, platformIcon: null }
     }
 
-    public getPopularItems = (): Array<ICategoryHash> =>
+    public getPopularItems = (): Array<IPopularItemHash> =>
     {
         return this.popularItems;
     }

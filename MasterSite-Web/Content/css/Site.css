@@ -81,8 +81,8 @@ body {
 
 .popover {
     background-color: black;
-    width: 300px;
-    height: 350px;
+    /*width: 300px;
+    height: 350px;*/
 }
 
     .popover .arrow {
@@ -96,17 +96,29 @@ body {
     visibility:visible;
 }*/
 
-.gearscore img {
+.triumphs img {
     width: 25px;
 }
 
-.gearscore table {
+.triumphs table {
     margin-left: auto;
     margin-right: auto;
 }
-.gearscore h4 {
+.triumphs h4 {
    text-align: center;
 }
 
+.weapon-check {
+    text-align: center;
+}
+
+.weapon-check div {
+    display: inline-block;
+    padding: 5px;
+}
+
+.weapon-check img {
+    width: 75px;
+}
 
 /*#endregion*/
