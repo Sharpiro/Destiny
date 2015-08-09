@@ -35,9 +35,11 @@ class DestinyBlService implements IDestinyBlService
             const characterId = currentCharacterData.characterBase.characterId;
             for (let j = 0; j < equipmentData.length; j++)
             {
-                let hash = equipmentData[j].itemHash;
-                equipmentData[j].itemName = itemDefinitions[hash].itemName;
-                equipmentData[j].icon = itemDefinitions[hash].icon;
+                if (equipmentData[j]) {
+                    let hash = equipmentData[j].itemHash;
+                    equipmentData[j].itemName = itemDefinitions[hash].itemName;
+                    equipmentData[j].icon = itemDefinitions[hash].icon;
+                }
             }
             characterData.push({ charactersOverview: charactersOverview, equipmentData: equipmentData, characterId: characterId });
         }
@@ -46,11 +48,11 @@ class DestinyBlService implements IDestinyBlService
 
 
 
-    public handleGetUniqueWeaponDataResponse = (data: any): Array<ITriumphs> =>
+    public handleGetUniqueWeaponDataResponse = (data: any): Array<IPopularItemHash> =>
     {
         const exoticData: Array<IExoticData> = data.Response.data.weapons;
         const popularItems = this.destinyDataService.getPopularItems();
-        let gearScoreList: Array<ITriumphs> = [];
+        let gearScoreList: Array<IPopularItemHash> = [];
         for (let i = 0; i < exoticData.length; i++)
         {
             for (let j = 0; j < popularItems.length; j++)
@@ -59,7 +61,7 @@ class DestinyBlService implements IDestinyBlService
                 {
                     if (popularItems[j].starred)
                     {
-                        let gearObj: ITriumphs = { title: popularItems[j].value, complete: true };
+                        let gearObj: IPopularItemHash = popularItems[j];
                         gearScoreList.push(gearObj);
                     }
                 }
@@ -90,7 +92,7 @@ class DestinyBlService implements IDestinyBlService
             const currentCharacterEquipment = characterData[characterNumberResponse].equipmentData;
             for (let j = 0; j < currentCharacterEquipment.length; j++)
             {
-                if (inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
+                if (inventoryDataResponse[i].items[0] && inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
                 {
                     const bucketHash = <ICategoryHash>this.sharedFunctionsService.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
                     if (bucketHash.category === ITEMCATEGORY.Weapon)
@@ -147,11 +149,14 @@ class DestinyBlService implements IDestinyBlService
     private getEquipmentDataObject = (charactersDataList: any): Array<IEquipmentData> =>
     {
         const unorderedList: Array<IEquipmentData> = charactersDataList.characterBase.peerView.equipment;
-
+        if (unorderedList.length === 13)
+            return unorderedList;
         let orderedList: Array<IEquipmentData> = [];
         //re-order list
-        for (let j = 0; j < unorderedList.length; j++)
-        {
+        for (let j = 0; j < unorderedList.length; j++) {
+            //if (unorderedList.length === 13) {
+            //    console.log(unorderedList[j].itemHash);
+            //}
             const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
             orderedList.push(unorderedList[orderedListPosition]);
         }

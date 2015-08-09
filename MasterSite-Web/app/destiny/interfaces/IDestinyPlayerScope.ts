@@ -11,7 +11,7 @@
     testing: any;
     $apply: any;
     bind: any;
-    weaponScore: Array<ITriumphs>;
+    weaponScore: Array<IPopularItemHash>;
 }
 
 interface ICharacterData

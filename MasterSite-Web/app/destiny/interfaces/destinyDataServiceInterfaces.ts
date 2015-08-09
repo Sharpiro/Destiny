@@ -15,6 +15,11 @@ interface ICategoryHash extends IHash
     starred?: boolean;
 }
 
+interface IPopularItemHash extends ICategoryHash
+{
+    icon: string;
+}
+
 interface IStaticTriumphsData
 {
     yearOne: Array<IYearOneTriumph>;
