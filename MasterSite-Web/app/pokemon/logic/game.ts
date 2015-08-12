@@ -1,20 +1,43 @@
 ﻿///<reference path="../logic/interfaces/gameInterfaces.ts"/>
+///<reference path="../logic/wildPokemon.ts"/>
 
 class Game implements IPokeGame
 {
-    private static textArray: Array<string> = [];
+    private canvas: HTMLCanvasElement;
+    private context: CanvasRenderingContext2D;
     private gameState = GameState.Normal;
-    private battleState = BattleState.BattleStart;
-    private currentInput: string;
-    private enemyHealth = 100;
-    private playerHealth = 100;
-    private abilities: Array<IAbility>;/*[{ name: "bite", damage: 10, accuracy: 95 }, { name: "crunch", damage: 20, accuracy: 75 }];*/
     private gameLoop: number;
+    private currentEnemy: WildPokemon;
+    private player: Player;
+    private battleStateController: BattleStateController;
 
 
-    constructor() {
-        this.abilities = PokeDataService.getAllMoves();
-        let move = PokeDataService.getMoveByName("crunch");
+    constructor()
+    {
+        this.initCanvas();
+        this.battleStateController;
+        this.player = new Player("Sharpiro");
+    }
+
+    private initCanvas = () =>
+    {
+        this.canvas = document.createElement("canvas");
+        this.canvas.id = "canvas";
+        this.canvas.width = 1024;
+        this.canvas.height = 500;
+        this.canvas.style.position = "absolute";
+        this.canvas.style.border = "1px solid";
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(this.canvas);
+        this.context = this.canvas.getContext("2d");
+    }
+
+    private updateScoreboard = (enemyHealth: number, playerHealth: number) =>
+    {
+        this.context.strokeStyle = "White";
+        this.context.font = "40px Consolas";
+        this.context.strokeText(`Enemy: ${enemyHealth}%`, 50, 50);
+        this.context.strokeText(`Player: ${playerHealth}%`, 350, 50);
     }
 
     public static writeToConsole = (input: string): void =>
@@ -22,7 +45,7 @@ class Game implements IPokeGame
         let textarea: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("textArea");
         let textBox: HTMLInputElement = <HTMLInputElement>document.getElementById("inputTextBox");
         textarea.scrollTop = textarea.scrollHeight;
-        Game.textArray.push(input);
+        //Game.textArray.push(input);
         textarea.value += `${input}\n`;
         textBox.value = "";
         //console.log(input);
@@ -34,18 +57,42 @@ class Game implements IPokeGame
         this.gameLoop = setInterval(() =>
         {
             this.loop();
+            this.render();
         }, 3000);
     }
 
     public stop = (): void =>
     {
         Game.writeToConsole("Stopping...");
+        this.createDownloadFile();
         clearInterval(this.gameLoop);
+    }
+
+    private createDownloadFile = () =>
+    {
+        let textarea: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("textArea");
+        let content = textarea.value;
+        let download = <HTMLAnchorElement>document.getElementById("dl");
+        download.href = `data:text/plain,${encodeURIComponent(content) }`;
     }
 
     public updateInput = (input: string): void =>
     {
-        this.currentInput = input;
+        if (input === "start")
+        {
+            this.start();
+        }
+        else if (input === ".win")
+        {
+            this.currentEnemy.setHealth(0);
+        }
+        else
+        {
+            PokeDataService.setCurrentInput(input);
+            if (input)
+                Game.writeToConsole(input);
+            //Game.writeToConsole("Error: Unknown Command");
+        }
     }
 
     private loop = (): void =>
@@ -56,7 +103,31 @@ class Game implements IPokeGame
                 this.updateNormalGameState();
                 break;
             case GameState.Battle:
-                this.updateBattleGameState();
+                this.updateBattleState();
+                break;
+        }
+    }
+
+    private updateBattleState = (): void =>
+    {
+        if (this.battleStateController.getBattleState() === BattleState.Ended)
+        {
+            this.gameState = GameState.Normal;
+            this.battleStateController = null;
+            return;
+        }
+        this.battleStateController.update();
+    }
+
+    private render = (): void =>
+    {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        switch (this.gameState)
+        {
+            case GameState.Normal:
+                break;
+            case GameState.Battle:
+                this.updateScoreboard(this.currentEnemy.getHealth(), this.player.getHealth());
                 break;
         }
     }
@@ -67,86 +138,11 @@ class Game implements IPokeGame
         let startBattle: boolean = Math.floor(Math.random() * chance) === 0;
         if (startBattle)
         {
-            const randomPokemon = PokeDataService.getRandomPokemon();
-            Game.writeToConsole(`a wild ${randomPokemon.name} appeared!`);
+            const randomPokemonName = PokeDataService.getRandomPokemon().name;
+            this.currentEnemy = new WildPokemon(randomPokemonName);
+            Game.writeToConsole(`a wild ${this.currentEnemy.getName() } appeared!`);
             this.gameState = GameState.Battle;
+            this.battleStateController = new BattleStateController(this.player, this.currentEnemy);
         }
-    }
-
-    private updateBattleGameState = (): void =>
-    {
-        //check win condition
-        if (this.enemyHealth <= 0 || this.playerHealth <= 0)
-        {
-            Game.writeToConsole("Game Over!");
-            this.stop();
-            return;
-        }
-        switch (this.battleState)
-        {
-            case BattleState.BattleStart:
-                Game.writeToConsole("Go Mr. Pokemon!");
-                this.battleState = BattleState.PlayerTurnStart;
-                break;
-            case BattleState.PlayerTurnStart:
-                Game.writeToConsole(`Select a move: 1: ${this.abilities[0].name}, 2: ${this.abilities[1].name}`);
-                this.updateInput(null);
-                this.battleState = BattleState.SelectMove;
-                break;
-            case BattleState.SelectMove:
-                this.attack();
-                break;
-            case BattleState.EnemyMove:
-                this.enemyAttack();
-                break;
-        }
-    }
-
-    private attack = (): void =>
-    {
-        if (this.currentInput)
-        {
-            let moveNumber = parseInt(this.currentInput) - 1;
-            let hitSuccess = this.chance(this.abilities[moveNumber].accuracy);
-            if (hitSuccess)
-            {
-                this.enemyHealth -= this.abilities[moveNumber].damage;
-                Game.writeToConsole(`Player's ${this.abilities[moveNumber].name} successfully hit!`);
-            }
-            else
-                Game.writeToConsole(`Player's ${this.abilities[moveNumber].name} missed!`);
-            Game.writeToConsole(`Enemy HP: ${this.enemyHealth}%`);
-
-            this.battleState = BattleState.EnemyMove;
-        }
-    }
-
-    private enemyAttack = () =>
-    {
-        let moveNumber = this.getRandomNumber(0, 1);
-        let hitSuccess = this.chance(this.abilities[moveNumber].accuracy);
-        if (hitSuccess)
-        {
-            this.playerHealth -= this.abilities[moveNumber].damage;
-            Game.writeToConsole(`Enemy's ${this.abilities[moveNumber].name} successfully hit!`);
-        }
-        else
-            Game.writeToConsole(`Enemy's ${this.abilities[moveNumber].name} missed!`);
-        Game.writeToConsole(`Player HP: ${this.playerHealth}%`);
-
-        this.battleState = BattleState.PlayerTurnStart;
-    }
-
-    private chance = (chanceRating: number): boolean =>
-    {
-        let randomNumber = Math.floor(Math.random() * 100) + 1;
-        let isTrue = randomNumber <= chanceRating;
-        console.log(`${isTrue}: ${randomNumber}`);
-        return isTrue;
-    }
-
-    private getRandomNumber = (min: number, max: number) =>
-    {
-        return Math.floor(Math.random() * (max + 1)) + min;
     }
 }

@@ -253,8 +253,13 @@
     <TypeScriptCompile Include="app\pokemon\controllers\pokemonController.ts" />
     <TypeScriptCompile Include="app\pokemon\interfaces\pokeDataServiceInterfaces.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\game.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\actor.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\interfaces\gameInterfaces.ts" />
-    <TypeScriptCompile Include="app\pokemon\services\pokeDataService.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\player.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\sharedFunctions.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\stateControllers\battleStateController.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\wildPokemon.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\pokeDataService.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\angular-ui-router.d.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\definitelytyped\jquery.d.ts" />
@@ -304,7 +309,9 @@
     <Content Include="Content\font-awesome\scss\_variables.scss" />
     <None Include="Properties\PublishProfiles\sharpiro-mastersite.pubxml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="app\pokemon\services\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
