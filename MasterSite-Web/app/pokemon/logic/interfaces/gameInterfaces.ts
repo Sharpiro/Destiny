@@ -9,6 +9,15 @@ interface IAbility
     accuracy: number;
     name: string;
     damage: number;
+    hitSuccess?: boolean;
+    critSuccess?: boolean;
+}
+
+interface IAttack
+{
+    damageDone: number;
+    attackType: ATTACK_TYPE;
+    hitSuccess: boolean;
 }
 
 enum GameState
@@ -18,5 +27,15 @@ enum GameState
 
 enum BattleState
 {
-    BattleStart, PlayerTurnStart, SelectMove, EnemyMove
+    Started, PlayerTurnStart, SelectMove, EnemyMove, Ended
+}
+
+enum ActorType
+{
+    Player, Trainer, Monster
+}
+
+enum ATTACK_TYPE
+{
+    Damage, Status
 }
