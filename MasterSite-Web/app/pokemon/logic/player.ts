@@ -6,14 +6,10 @@ class Player extends Actor
 {
     constructor(name: string)
     {
-        super(name, ActorType.Monster);
-        //let abilityNames = PokeDataService.getAllMovesByPokemon(this.getName());
-        //for (let i = 0; i < abilityNames.length; i++)
-        //{
-        //}
-            this.abilities.push(PokeDataService.getMoveByName("bite"));
-            this.abilities.push(PokeDataService.getMoveByName("godmode"));
-        
+        super(name, ActorType.Player);
+        this.abilities.push(PokeDataService.getMoveByName("bite"));
+        this.abilities.push(PokeDataService.getMoveByName("godmode"));
+
     }
 
     public attack = (currentInput: string): IAbility =>
@@ -27,6 +23,8 @@ class Player extends Actor
         }
         return move;
     }
-    public test = () => {
+
+    public test = () =>
+    {
     }
 }
