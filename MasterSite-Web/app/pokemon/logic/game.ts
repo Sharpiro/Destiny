@@ -11,70 +11,99 @@ class Game implements IPokeGame
     private player: Player;
     private battleStateController: BattleStateController;
     private engine: any = {};
-    private images: Array<HTMLImageElement> = [];
+    private images: Array<IImageObject> = [];
     private spriteIndex: HTMLImageElement;
+    private moving = false;
+    private direction = "down";
+    private startTime: number = null;
+    private playerOffsetX = 0;
+    private playerOffsetY = 0;
 
     constructor()
     {
         this.loadImages();
-        this.spriteIndex = this.images[3];
+        this.spriteIndex = this.images[3].image;
         this.initCanvas();
         this.initEngine();
         this.player = new Player("Sharpiro");
         window.addEventListener("keydown", this.keyDownCallback.bind(this));
+        window.addEventListener("keyup", this.keyUpCallback.bind(this));
     }
 
     private loadImages()
     {
-        let emptyImage = new Image();
-        emptyImage.src = "/content/images/pokemon/map/empty.png";
-        let grassImage = new Image();
-        grassImage.src = "/content/images/pokemon/map/grass.png";
-        let rockImage = new Image();
-        rockImage.src = "/content/images/pokemon/map/rock.png";
-        let playerImage = new Image();
-        playerImage.src = "/content/images/pokemon/character/scientist_s0.png";
-        let playerImageUp = new Image();
-        playerImageUp.src = "/content/images/pokemon/character/scientist_n0.png";
-        let playerImageRight = new Image();
-        playerImageRight.src = "/content/images/pokemon/character/scientist_e0.png";
-        let playerImageLeft = new Image();
-        playerImageLeft.src = "/content/images/pokemon/character/scientist_w0.png";
-        this.images.push(emptyImage);
-        this.images.push(grassImage);
-        this.images.push(rockImage);
-        this.images.push(playerImage);
-        this.images.push(playerImageUp);
-        this.images.push(playerImageRight);
-        this.images.push(playerImageLeft);
-
+        //let emptyImage = new Image();
+        //emptyImage.src = "/content/images/pokemon/map/empty.png";
+        this.loadImage("/content/images/pokemon/map/empty.png");
+        this.loadImage("/content/images/pokemon/map/grass.png");
+        this.loadImage("/content/images/pokemon/map/rock.png");
+        this.loadImage("/content/images/pokemon/character/scientist_s0.png");
+        this.loadImage("/content/images/pokemon/character/scientist_s1.png");
+        this.loadImage("/content/images/pokemon/character/scientist_s2.png");
+        this.loadImage("/content/images/pokemon/character/scientist_n0.png");
+        this.loadImage("/content/images/pokemon/character/scientist_n1.png");
+        this.loadImage("/content/images/pokemon/character/scientist_n2.png");
+        this.loadImage("/content/images/pokemon/character/scientist_e0.png");
+        this.loadImage("/content/images/pokemon/character/scientist_e1.png");
+        this.loadImage("/content/images/pokemon/character/scientist_e2.png");
+        this.loadImage("/content/images/pokemon/character/scientist_w0.png");
+        this.loadImage("/content/images/pokemon/character/scientist_w1.png");
+        this.loadImage("/content/images/pokemon/character/scientist_w2.png");
     }
 
     private keyDownCallback = (event: KeyboardEvent) =>
     {
         let keys: any = { 37: "left", 39: "right", 38: "up", 40: "down" };
-        if (keys[event.keyCode]) {
+        if (keys[event.keyCode])
+        {
+            this.moving = true;
             console.log(keys[event.keyCode]);
         }
-        if (keys[event.keyCode] === "left") {
-            this.engine.viewport.x--;
-            this.spriteIndex = this.images[6];
+        if (keys[event.keyCode] === "left")
+        {
+            //this.engine.viewport.x--;
+            this.direction = "left";
+            this.spriteIndex = this.images[12].image;
         }
-        if (keys[event.keyCode] === "right") {
-            this.engine.viewport.x++;
-            this.spriteIndex = this.images[5];
-            
+        if (keys[event.keyCode] === "right")
+        {
+            //this.engine.viewport.x++;
+            this.direction = "right";
+            this.spriteIndex = this.images[9].image;
+
         }
-        if (keys[event.keyCode] === "up") {
-            this.engine.viewport.y--;
-            this.spriteIndex = this.images[4];
-            
+        if (keys[event.keyCode] === "up")
+        {
+            //this.engine.viewport.y--;
+            this.direction = "up";
+            this.spriteIndex = this.images[6].image;
+
         }
-        if (keys[event.keyCode] === "down") {
-            this.engine.viewport.y++;
-            this.spriteIndex = this.images[3];
+        if (keys[event.keyCode] === "down")
+        {
+            //this.engine.viewport.y++;
+            this.direction = "down";
+            this.spriteIndex = this.images[3].image;
         }
         //console.log(event.keyCode);
+    }
+
+    private loadImage(imgSrc: string, name?: string)
+    {
+        if (!name)
+        {
+            const stringArr = imgSrc.split("\\");
+            name = stringArr[stringArr.length];
+        }
+        const image = new Image();
+        image.src = imgSrc;
+        const imageObj: IImageObject = { image: image, name: name };
+        this.images.push(imageObj);
+    }
+
+    private keyUpCallback = (event: KeyboardEvent) =>
+    {
+        this.moving = false;
     }
 
     private initEngine()
@@ -110,12 +139,14 @@ class Game implements IPokeGame
         //this.context.fillStyle = "White";
         //this.context.font = "16px Consolas";
         //this.context.fillText(tile, x * 16, y * 16);
-        let img = this.retrieve(tile);
-        let grass = this.retrieve("g");
-        let playerPosition = this.getPlayerPosition();
+        const rx = x * 16 + this.playerOffsetX;
+        const ry = y * 16 + this.playerOffsetY;
+        const img = this.retrieve(tile);
+        const grass = this.retrieve("g");
+        const playerPosition = this.getPlayerPosition();
         if (tile !== " ")
-            this.context.drawImage(grass, x * 16, y * 16);
-        this.context.drawImage(img, x * 16, y * 16);
+            this.context.drawImage(grass, rx, ry);
+        this.context.drawImage(img, rx, ry);
         this.context.drawImage(this.spriteIndex, playerPosition.left, playerPosition.top);
     }
 
@@ -139,11 +170,11 @@ class Game implements IPokeGame
     private retrieve(tile: string): HTMLImageElement
     {
         if (tile === " ")
-            return this.images[0];
+            return this.images[0].image;
         if (tile === "g")
-            return this.images[1];
+            return this.images[1].image;
         if (tile === "r")
-            return this.images[2];
+            return this.images[2].image;
         return null;
     }
 
@@ -179,9 +210,9 @@ class Game implements IPokeGame
 
         //console.log(`drawing map from ${this.engine.viewport.x},${this.engine.viewport.y} to ${this.engine.viewport.x + this.engine.screen.tilesX},${this.engine.viewport.y + this.engine.screen.tilesY}`);
 
-        for (let j = 0; j < this.engine.screen.tilesY; j++)
+        for (let j = -1; j < this.engine.screen.tilesY + 1; j++)
         {
-            for (let i = 0; i < this.engine.screen.tilesX; i++)
+            for (let i = -1; i < this.engine.screen.tilesX + 1; i++)
             {
                 let mapX = i + this.engine.viewport.x;
                 let mapY = j + this.engine.viewport.y;
@@ -217,11 +248,12 @@ class Game implements IPokeGame
     public start = (): void =>
     {
         Game.writeToConsole("Starting...");
-        this.gameLoop = setInterval(() =>
-        {
-            this.loop();
-            this.render();
-        }, 30);
+        window.requestAnimationFrame(this.tick.bind(this));
+        //this.gameLoop = setInterval(() =>
+        //{
+        //    this.loop();
+        //    this.render();
+        //}, 30);
     }
 
     public stop = (): void =>
@@ -258,7 +290,21 @@ class Game implements IPokeGame
         }
     }
 
-    private loop = (): void =>
+    private tick = (timeStamp?: number): void =>
+    {
+        if (!this.startTime)
+            this.startTime = timeStamp;
+        let progress = timeStamp - this.startTime;
+        if (progress > 500)
+        {
+            this.update();
+            this.startTime = timeStamp;
+        }
+        this.render();
+        window.requestAnimationFrame(this.tick.bind(this));
+    }
+
+    private update()
     {
         switch (this.gameState)
         {
@@ -296,17 +342,65 @@ class Game implements IPokeGame
         }
     }
 
+    private move()
+    {
+        //console.log(this.moving);
+        //console.log(this.direction);
+        if (this.moving)
+        {
+            switch (this.direction)
+            {
+                case "up":
+                    this.playerOffsetY = 8;
+                    break;
+                case "down":
+                    this.playerOffsetY = -8;
+                    break;
+                case "left":
+                    this.playerOffsetX = 8;
+                    break;
+                case "right":
+                    this.playerOffsetX = -8;
+                    break;
+            }
+            setTimeout(this.reset.bind(this), 300);
+        }
+    }
+
+    private reset()
+    {
+        console.log("resetting...");
+        switch (this.direction)
+        {
+            case "up":
+                this.engine.viewport.y--;
+                break;
+            case "down":
+                this.engine.viewport.y++;
+                break;
+            case "left":
+                this.engine.viewport.x--;
+                break;
+            case "right":
+                this.engine.viewport.x++;
+                break;
+        }
+        this.playerOffsetX = 0;
+        this.playerOffsetY = 0;
+    }
+
     private updateGameState = (): void =>
     {
-        let chance = 1;
-        let startBattle: boolean = Math.floor(Math.random() * chance) === 0;
-        if (startBattle)
-        {
-            const randomPokemonName = PokeDataService.getRandomPokemon().name;
-            this.currentEnemy = new WildPokemon(randomPokemonName);
-            Game.writeToConsole(`a wild ${this.currentEnemy.getName() } appeared!`);
-            this.gameState = GameState.Battle;
-            this.battleStateController = new BattleStateController(this.player, this.currentEnemy);
-        }
+        this.move();
+        //let chance = 1;
+        //let startBattle: boolean = Math.floor(Math.random() * chance) === 0;
+        //if (startBattle)
+        //{
+        //    const randomPokemonName = PokeDataService.getRandomPokemon().name;
+        //    this.currentEnemy = new WildPokemon(randomPokemonName);
+        //    Game.writeToConsole(`a wild ${this.currentEnemy.getName() } appeared!`);
+        //    this.gameState = GameState.Battle;
+        //    this.battleStateController = new BattleStateController(this.player, this.currentEnemy);
+        //}
     }
 }

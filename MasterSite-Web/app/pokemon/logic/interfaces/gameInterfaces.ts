@@ -20,6 +20,11 @@ interface IAttack
     hitSuccess: boolean;
 }
 
+interface IImageObject {
+    image: HTMLImageElement;
+    name: string;
+}
+
 enum GameState
 {
     Normal, Battle
