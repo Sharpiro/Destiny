@@ -21,5 +21,11 @@ class PokemonController
     {
         this.game.updateInput(data);
     }
+
+    private loadMap = (data: string) => {
+        console.log(data);
+        this.game.setCurrentLevel(data);
+        var reader = new FileReader();
+    }
 }
 pokeApp.controller("pokemonController", ["$scope", PokemonController]); 

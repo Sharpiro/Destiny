@@ -218,9 +218,13 @@
     <Content Include="Content\images\pokemon\character\scientist_w0.png" />
     <Content Include="Content\images\pokemon\character\scientist_w1.png" />
     <Content Include="Content\images\pokemon\character\scientist_w2.png" />
+    <Content Include="Content\images\pokemon\map\cave.png" />
     <Content Include="Content\images\pokemon\map\empty.png" />
     <Content Include="Content\images\pokemon\map\grass.png" />
+    <Content Include="Content\images\pokemon\map\ladderdown.png" />
+    <Content Include="Content\images\pokemon\map\ladderup.png" />
     <Content Include="Content\images\pokemon\map\rock.png" />
+    <Content Include="Content\images\pokemon\map\sign.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\css\Site.css" />
@@ -270,6 +274,7 @@
     <TypeScriptCompile Include="app\pokemon\logic\game.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\actor.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\interfaces\gameInterfaces.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\levels\levelOne.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\player.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\sharedFunctions.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\stateControllers\battleStateController.ts" />
