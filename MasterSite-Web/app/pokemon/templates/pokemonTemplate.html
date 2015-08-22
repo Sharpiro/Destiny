@@ -1,9 +1,25 @@
-﻿<form class="form-inline" role="form">
-    <div class="form-group">
-        <textarea id="textArea" class="form-control" style="resize: none; height: 20em" readonly=""></textarea>
-        <input id="inputTextBox" type="text" class="form-control" ng-model="text">
+﻿<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <canvas id="canvas"></canvas>
+            <a class="btn btn-default" id="mapDownload" download="game.txt">map download</a>
+            <form id="mapForm" class="form-inline" role="form">
+                <div class="form-group">
+                    <input id="fileUpload" class="form-control" type="file" ng-model="file" />
+                </div>
+                <!--<button ng-click="vm.loadMap(file)" class="btn btn-default">Load Map</button>-->
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <textarea id="textArea" class="form-control" style="resize: none; height: 20em" readonly=""></textarea>
+                    <input id="inputTextBox" type="text" class="form-control" ng-model="text">
+                </div>
+                <button ng-click="vm.submit(text)" class="btn btn-default">Submit</button>
+            </form>
+            <a id="battleTextDownload" download="game.txt">game download</a>
+        </div>
     </div>
-    <button ng-click="vm.submit(text)" class="btn btn-default">Submit</button>
-</form>
-
-<a id="dl" download="game.txt">game download</a>
+</div>

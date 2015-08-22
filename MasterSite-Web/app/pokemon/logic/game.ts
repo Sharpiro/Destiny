@@ -13,14 +13,17 @@ class Game implements IPokeGame
     private engine: any = {};
     private images: Array<IImageObject> = [];
     private spriteIndex: HTMLImageElement;
-    private moving = false;
+    private canInput = true;
     private direction = "down";
+    private oldDirection = "down";
     private startTime: number = null;
     private playerOffsetX = 0;
     private playerOffsetY = 0;
+    private currentLevel: Array<Array<string>>;
 
     constructor()
     {
+        this.currentLevel = mapData;
         this.loadImages();
         this.spriteIndex = this.images[3].image;
         this.initCanvas();
@@ -28,6 +31,9 @@ class Game implements IPokeGame
         this.player = new Player("Sharpiro");
         window.addEventListener("keydown", this.keyDownCallback.bind(this));
         window.addEventListener("keyup", this.keyUpCallback.bind(this));
+        //document.forms['mapForm'].elements['fileUpload'].onchange = (data: any) => this.uploadMap(data);
+        var mapForm = <HTMLElement>document.getElementById("fileUpload");
+        mapForm.onchange = (event: any) => this.uploadMap(event);
     }
 
     private loadImages()
@@ -49,43 +55,83 @@ class Game implements IPokeGame
         this.loadImage("/content/images/pokemon/character/scientist_w0.png");
         this.loadImage("/content/images/pokemon/character/scientist_w1.png");
         this.loadImage("/content/images/pokemon/character/scientist_w2.png");
+        this.loadImage("/content/images/pokemon/map/sign.png");//16
     }
 
     private keyDownCallback = (event: KeyboardEvent) =>
     {
-        let keys: any = { 37: "left", 39: "right", 38: "up", 40: "down" };
-        if (keys[event.keyCode])
+        if (this.canInput)
         {
-            this.moving = true;
-            console.log(keys[event.keyCode]);
-        }
-        if (keys[event.keyCode] === "left")
-        {
-            //this.engine.viewport.x--;
-            this.direction = "left";
-            this.spriteIndex = this.images[12].image;
-        }
-        if (keys[event.keyCode] === "right")
-        {
-            //this.engine.viewport.x++;
-            this.direction = "right";
-            this.spriteIndex = this.images[9].image;
+            //console.log(event.keyCode);
+            let keys: any = { 37: "left", 39: "right", 38: "up", 40: "down", 69: "e", 82: "r", 81: "q", 46: "delete" };
+            //if (keys[event.keyCode])
+            //{
+            //    console.log(keys[event.keyCode]);
+            //}
+            this.oldDirection = this.direction;
 
-        }
-        if (keys[event.keyCode] === "up")
-        {
-            //this.engine.viewport.y--;
-            this.direction = "up";
-            this.spriteIndex = this.images[6].image;
+            if (keys[event.keyCode] === "left")
+            {
+                this.direction = "left";
+                const directionChanged = this.direction !== this.oldDirection;
+                this.spriteIndex = this.images[12].image;
+                if (!directionChanged)
+                {
+                    this.canInput = false;
+                    this.move();
+                }
 
+            }
+            else if (keys[event.keyCode] === "right")
+            {
+                this.direction = "right";
+                const directionChanged = this.direction !== this.oldDirection;
+                this.spriteIndex = this.images[9].image;
+                if (!directionChanged)
+                {
+                    this.canInput = false;
+                    this.move();
+                }
+
+            }
+            else if (keys[event.keyCode] === "up")
+            {
+                this.direction = "up";
+                const directionChanged = this.direction !== this.oldDirection;
+                this.spriteIndex = this.images[6].image;
+                if (!directionChanged)
+                {
+                    this.canInput = false;
+                    this.move();
+                }
+
+            }
+            else if (keys[event.keyCode] === "down")
+            {
+                this.direction = "down";
+                const directionChanged = this.direction !== this.oldDirection;
+                this.spriteIndex = this.images[3].image;
+                if (!directionChanged)
+                {
+                    this.canInput = false;
+                    this.move();
+                }
+            }
+            else if (keys[event.keyCode] === "r")
+            {
+                this.canInput = false;
+                this.placeRock();
+            }
+            else if (keys[event.keyCode] === "q")
+            {
+                this.canInput = false;
+                this.deleteItem();
+            }
+            if (keys[event.keyCode] === "e")
+            {
+                this.interact();
+            }
         }
-        if (keys[event.keyCode] === "down")
-        {
-            //this.engine.viewport.y++;
-            this.direction = "down";
-            this.spriteIndex = this.images[3].image;
-        }
-        //console.log(event.keyCode);
     }
 
     private loadImage(imgSrc: string, name?: string)
@@ -103,7 +149,7 @@ class Game implements IPokeGame
 
     private keyUpCallback = (event: KeyboardEvent) =>
     {
-        this.moving = false;
+
     }
 
     private initEngine()
@@ -123,31 +169,16 @@ class Game implements IPokeGame
 
     private initCanvas = () =>
     {
-        this.canvas = document.createElement("canvas");
+        //this.canvas = document.createElement("canvas");
+        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.canvas.id = "canvas";
-        this.canvas.width = 240;
-        this.canvas.height = 144;
-        this.canvas.style.position = "absolute";
-        this.canvas.style.border = "1px solid";
-        var body = document.getElementsByTagName("body")[0];
-        body.appendChild(this.canvas);
+        this.canvas.width = 400;
+        this.canvas.height = 240;
+        //this.canvas.style.position = "absolute";
+        //this.canvas.style.border = "1px solid";
+        //var body = document.getElementsByTagName("body")[0];
+        //body.appendChild(this.canvas);
         this.context = this.canvas.getContext("2d");
-    }
-
-    private drawTile(x: number, y: number, tile: string)
-    {
-        //this.context.fillStyle = "White";
-        //this.context.font = "16px Consolas";
-        //this.context.fillText(tile, x * 16, y * 16);
-        const rx = x * 16 + this.playerOffsetX;
-        const ry = y * 16 + this.playerOffsetY;
-        const img = this.retrieve(tile);
-        const grass = this.retrieve("g");
-        const playerPosition = this.getPlayerPosition();
-        if (tile !== " ")
-            this.context.drawImage(grass, rx, ry);
-        this.context.drawImage(img, rx, ry);
-        this.context.drawImage(this.spriteIndex, playerPosition.left, playerPosition.top);
     }
 
     private getPlayerPosition()
@@ -175,39 +206,29 @@ class Game implements IPokeGame
             return this.images[1].image;
         if (tile === "r")
             return this.images[2].image;
+        if (tile === "s")
+            return this.images[15].image;
         return null;
+    }
+
+    private drawTile(x: number, y: number, tile: string)
+    {
+        //this.context.fillStyle = "White";
+        //this.context.font = "16px Consolas";
+        //this.context.fillText(tile, x * 16, y * 16);
+        const rx = x * 16 + this.playerOffsetX;
+        const ry = y * 16 + this.playerOffsetY;
+        const img = this.retrieve(tile);
+        const grass = this.retrieve("g");
+        const playerPosition = this.getPlayerPosition();
+        if (tile !== " ")
+            this.context.drawImage(grass, rx, ry);
+        this.context.drawImage(img, rx, ry);
+        this.context.drawImage(this.spriteIndex, playerPosition.left, playerPosition.top);
     }
 
     private drawMap(x?: number, y?: number, mapData?: Array<Array<string>>)
     {
-        mapData =
-        [
-            ["r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "r", "r", "g", "g", "g", "g", "r", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "r", "r", "g", "g", "g", "g", "r", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "r", "g", "g", "g", "g", "g", "r", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "g", "r"],
-            ["r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"]
-        ];
-
         //console.log(`drawing map from ${this.engine.viewport.x},${this.engine.viewport.y} to ${this.engine.viewport.x + this.engine.screen.tilesX},${this.engine.viewport.y + this.engine.screen.tilesY}`);
 
         for (let j = -1; j < this.engine.screen.tilesY + 1; j++)
@@ -259,15 +280,14 @@ class Game implements IPokeGame
     public stop = (): void =>
     {
         Game.writeToConsole("Stopping...");
-        this.createDownloadFile();
+        let textarea: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("textArea");
+        this.createDownloadFile("battleTextDownload", textarea.value);
         clearInterval(this.gameLoop);
     }
 
-    private createDownloadFile = () =>
+    private createDownloadFile = (elementId: string, content: string) =>
     {
-        let textarea: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("textArea");
-        let content = textarea.value;
-        let download = <HTMLAnchorElement>document.getElementById("dl");
+        const download = <HTMLAnchorElement>document.getElementById(elementId);
         download.href = `data:text/plain,${encodeURIComponent(content) }`;
     }
 
@@ -328,10 +348,15 @@ class Game implements IPokeGame
         this.battleStateController.update();
     }
 
+    public setCurrentLevel(level: string)
+    {
+        //this.currentLevel = JSON.parse(level);
+    }
+
     private render = (): void =>
     {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawMap(6, 9);
+        this.drawMap(6, 9, this.currentLevel);
         switch (this.gameState)
         {
             case GameState.Normal:
@@ -342,34 +367,135 @@ class Game implements IPokeGame
         }
     }
 
+    private deleteItem()
+    {
+        let facingTile = this.getFacingTile();
+        let toY = facingTile.toY;
+        let toX = facingTile.toX;
+        if (this.currentLevel[toY] && this.currentLevel[toY][toX] && this.currentLevel[toY][toX] !== "g")
+        {
+            this.currentLevel[toY][toX] = "g";
+            console.log("Deleting item!");
+        } else
+        {
+            console.log("Nothing to delete!");
+        }
+        this.canInput = true;
+    }
+
+    private getFacingTile()
+    {
+        let x = 0;
+        let y = 0;
+
+        switch (this.direction)
+        {
+            case "up":
+                y = 1;
+                break;
+            case "down":
+                y = -1;
+                break;
+            case "left":
+                x = 1;
+                break;
+            case "right":
+                x = -1;
+                break;
+        }
+        var toY = this.engine.viewport.y + (this.engine.screen.tilesY / 2 - 0.5) - y;
+        var toX = this.engine.viewport.x + (this.engine.screen.tilesX / 2 - 0.5) - x;
+        return { toY: toY, toX: toX };
+    }
+
+    private interact() {
+        let facingTile = this.getFacingTile();
+        let toY = facingTile.toY;
+        let toX = facingTile.toX;
+        if (this.currentLevel[toY] && this.currentLevel[toY][toX] && this.currentLevel[toY][toX] === "s")
+        {
+            console.log("Random Message!");
+            alert("Random Message");
+        } else
+        {
+            console.log("nothing to interact with!");
+        }
+    }
+
+    private placeRock()
+    {
+        let facingTile = this.getFacingTile();
+        let toY = facingTile.toY;
+        let toX = facingTile.toX;
+        if (this.currentLevel[toY] && this.currentLevel[toY][toX] && this.currentLevel[toY][toX] !== "r")
+        {
+            this.currentLevel[toY][toX] = "r";
+            console.log("placing rock!");
+        } else
+        {
+            console.log("Rock already exists!");
+        }
+        this.canInput = true;
+    }
+
     private move()
     {
         //console.log(this.moving);
         //console.log(this.direction);
-        if (this.moving)
+        let x = 0;
+        let y = 0;
+
+        switch (this.direction)
         {
-            switch (this.direction)
-            {
-                case "up":
-                    this.playerOffsetY = 8;
-                    break;
-                case "down":
-                    this.playerOffsetY = -8;
-                    break;
-                case "left":
-                    this.playerOffsetX = 8;
-                    break;
-                case "right":
-                    this.playerOffsetX = -8;
-                    break;
-            }
-            setTimeout(this.reset.bind(this), 300);
+            case "up":
+                y = 1;
+                break;
+            case "down":
+                y = -1;
+                break;
+            case "left":
+                x = 1;
+                break;
+            case "right":
+                x = -1;
+                break;
+        }
+        var toY = this.engine.viewport.y + (this.engine.screen.tilesY / 2 - 0.5) - y;
+        var toX = this.engine.viewport.x + (this.engine.screen.tilesX / 2 - 0.5) - x;
+        if (this.currentLevel[toY] && this.currentLevel[toY][toX] && this.currentLevel[toY][toX] !== "g")
+        {
+            this.canInput = true;
+            console.log("collision detected!");
+        } else
+        {
+            this.playerOffsetX = x * 5;
+            this.playerOffsetY = y * 5;
+            setTimeout(this.animate.bind(this), 100);
+            setTimeout(this.reset.bind(this), 200);
+        }
+    }
+
+    private animate()
+    {
+        switch (this.direction)
+        {
+            case "up":
+                this.playerOffsetY = 11;
+                break;
+            case "down":
+                this.playerOffsetY = -11;
+                break;
+            case "left":
+                this.playerOffsetX = 11;
+                break;
+            case "right":
+                this.playerOffsetX = -11;
+                break;
         }
     }
 
     private reset()
     {
-        console.log("resetting...");
         switch (this.direction)
         {
             case "up":
@@ -387,11 +513,28 @@ class Game implements IPokeGame
         }
         this.playerOffsetX = 0;
         this.playerOffsetY = 0;
+        this.canInput = true;
+    }
+
+    private uploadMap = (evt: any) =>
+    {
+        var file = evt.target.files[0];
+        var reader = new FileReader();
+        reader.onload = (data: any) =>
+        {
+            let result = data.currentTarget.result;
+            if (result)
+            {
+                this.currentLevel = JSON.parse(result);
+            }
+        };
+        reader.readAsText(file);
     }
 
     private updateGameState = (): void =>
     {
-        this.move();
+        this.createDownloadFile("mapDownload", JSON.stringify(this.currentLevel));
+        //this.move();
         //let chance = 1;
         //let startBattle: boolean = Math.floor(Math.random() * chance) === 0;
         //if (startBattle)

@@ -2,6 +2,7 @@
 {
     start(): void;
     updateInput(input: string): void;
+    setCurrentLevel(level: string): void;
 }
 
 interface IAbility
