@@ -1,8 +1,7 @@
 ﻿interface IPokeGame
 {
     start(): void;
-    updateInput(input: string): void;
-    setCurrentLevel(level: string): void;
+    updateConsoleInput(input: string): void;
 }
 
 interface IAbility
@@ -44,4 +43,8 @@ enum ActorType
 enum ATTACK_TYPE
 {
     Damage, Status
+}
+
+enum KEYS {
+    Left, Right, Up, Down, E, R, Q, Delete, C
 }
