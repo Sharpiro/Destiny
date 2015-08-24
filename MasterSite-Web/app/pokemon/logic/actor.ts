@@ -2,18 +2,18 @@
 {
     protected  health: number;
     protected  abilities: Array<IAbility> = [];
+    protected width: number;
+    protected height: number;
 
     constructor(private name: string, private actorType: ActorType)
     {
         this.health = 100;
+        this.width = 14;
+        this.height = 21;
     }
 
     public attack = (input?: string): IAbility => null;
 
-    public move(): void
-    {
-        console.log("base");
-    }
 
     public doDamage = (damageDone: number): void =>
     {
