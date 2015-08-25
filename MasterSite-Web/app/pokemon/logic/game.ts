@@ -3,21 +3,19 @@
 
 class Game implements IPokeGame
 {
-    private canvas: HTMLCanvasElement;
-    private context: CanvasRenderingContext2D;
     private gameState = GameState.Normal;
     private gameLoop: number;
     private currentEnemy: WildPokemon;
     private player: Player;
     private battleStateController: BattleStateController;
-    private images: Array<IImageObject> = [];
-    private spriteIndex: HTMLImageElement;
     public static canInput = true;
     private direction = KEYS.Down;
     private oldDirection = KEYS.Down;
     private startTime: number = null;
-    public static currentLevel: Array<Array<string>>;
-    public static window = { width: 0, height: 0, viewport: {x: 0, y: 0}, screen: {tilesX: 0, tilesY: 0, tileSize: 16} };
+    public static currentMap: Array<Array<string>>;
+    private window: Window2D;
+    private assetManager: AssetManager;
+    private levelManager: LevelManager;
     private keys: any = {
         37: { value: KEYS.Left, type: "movement", animationIndex: 12 },
         39: { value: KEYS.Right, type: "movement", animationIndex: 9 },
@@ -29,35 +27,17 @@ class Game implements IPokeGame
 
     constructor()
     {
-        Game.currentLevel = mapData;
-        this.loadImages();
-        this.spriteIndex = this.images[3].image;
-        this.initCanvas();
+        this.window = new Window2D();
+        this.assetManager = new AssetManager();
+        this.levelManager = new LevelManager();
+        this.levelManager.startLevel(1);
+        Game.currentMap = this.levelManager.getCurrentMap();
         this.player = new Player("Sharpiro");
+        this.player.spriteIndex = this.assetManager.images[3].image;
         window.addEventListener("keydown", this.keyDownCallback.bind(this));
-        window.addEventListener("keyup", this.keyUpCallback.bind(this));
+        //window.addEventListener("keyup", this.keyUpCallback.bind(this));
         var mapForm = <HTMLElement>document.getElementById("fileUpload");
         mapForm.onchange = (event: any) => this.uploadMap(event);
-    }
-
-    private loadImages()
-    {
-        this.loadImage("/content/images/pokemon/map/empty.png");
-        this.loadImage("/content/images/pokemon/map/grass.png");
-        this.loadImage("/content/images/pokemon/map/rock.png");
-        this.loadImage("/content/images/pokemon/character/scientist_s0.png");
-        this.loadImage("/content/images/pokemon/character/scientist_s1.png");
-        this.loadImage("/content/images/pokemon/character/scientist_s2.png");
-        this.loadImage("/content/images/pokemon/character/scientist_n0.png");
-        this.loadImage("/content/images/pokemon/character/scientist_n1.png");
-        this.loadImage("/content/images/pokemon/character/scientist_n2.png");
-        this.loadImage("/content/images/pokemon/character/scientist_e0.png");
-        this.loadImage("/content/images/pokemon/character/scientist_e1.png");
-        this.loadImage("/content/images/pokemon/character/scientist_e2.png");
-        this.loadImage("/content/images/pokemon/character/scientist_w0.png");
-        this.loadImage("/content/images/pokemon/character/scientist_w1.png");
-        this.loadImage("/content/images/pokemon/character/scientist_w2.png");
-        this.loadImage("/content/images/pokemon/map/sign.png");//16
     }
 
     private keyDownCallback = (event: KeyboardEvent) =>
@@ -70,7 +50,7 @@ class Game implements IPokeGame
             {
                 this.oldDirection = this.direction;
                 this.direction = currentKey.value;
-                this.spriteIndex = this.images[currentKey.animationIndex].image;
+                this.player.spriteIndex = this.assetManager.images[currentKey.animationIndex].image;
                 const directionChanged = this.direction !== this.oldDirection;
                 if (!directionChanged)
                 {
@@ -90,76 +70,31 @@ class Game implements IPokeGame
                 this.player.interact(this.direction);
             }
         }
-        
-    }
-
-    private loadImage(imgSrc: string, name?: string)
-    {
-        if (!name)
-        {
-            const stringArr = imgSrc.split("\\");
-            name = stringArr[stringArr.length];
-        }
-        const image = new Image();
-        image.src = imgSrc;
-        const imageObj: IImageObject = { image: image, name: name };
-        this.images.push(imageObj);
-    }
-
-    private keyUpCallback = (event: KeyboardEvent) =>
-    {
-
-    }
-
-    private initCanvas = () =>
-    {
-        this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
-        this.canvas.id = "canvas";
-        this.canvas.width = 400;
-        this.canvas.height = 240;
-        Game.window.width = this.canvas.width;
-        Game.window.height = this.canvas.height;
-        Game.window.screen.tilesX = Game.window.width / Game.window.screen.tileSize;
-        Game.window.screen.tilesY = Game.window.height / Game.window.screen.tileSize;
-        this.context = this.canvas.getContext("2d");
-    }
-
-    private retrieve(tile: string): HTMLImageElement
-    {
-        if (tile === " ")
-            return this.images[0].image;
-        if (tile === "g")
-            return this.images[1].image;
-        if (tile === "r")
-            return this.images[2].image;
-        if (tile === "s")
-            return this.images[15].image;
-        return null;
     }
 
     private drawTile(x: number, y: number, tile: string)
     {
         const rx = x * 16 + this.player.offsetX;
         const ry = y * 16 + this.player.offsetY;
-        const img = this.retrieve(tile);
-        const grass = this.retrieve("g");
+        const img = this.assetManager.getImage(tile);
+        const grass = this.assetManager.getImage("g");
         const playerPosition = this.player.getPosition();
         if (tile !== " ")
-            this.context.drawImage(grass, rx, ry);
-        this.context.drawImage(img, rx, ry);
-        this.context.drawImage(this.spriteIndex, playerPosition.left, playerPosition.top);
+            this.window.context.drawImage(grass, rx, ry);
+        this.window.context.drawImage(img, rx, ry);
+        this.window.context.drawImage(this.player.spriteIndex, playerPosition.left, playerPosition.top);
     }
 
     private drawMap(x?: number, y?: number, mapData?: Array<Array<string>>)
     {
         //console.log(`drawing map from ${Game.window.viewport.x},${Game.window.viewport.y} to ${Game.window.viewport.x + Game.window.screen.tilesX},${Game.window.viewport.y + Game.window.screen.tilesY}`);
 
-        for (let j = -1; j < Game.window.screen.tilesY + 1; j++)
+        for (let j = -1; j < Window2D.screen.tilesY + 1; j++)
         {
-            for (let i = -1; i < Game.window.screen.tilesX + 1; i++)
+            for (let i = -1; i < Window2D.screen.tilesX + 1; i++)
             {
-                let mapX = i + Game.window.viewport.x;
-                let mapY = j + Game.window.viewport.y;
+                let mapX = i + Window2D.viewPort.x;
+                let mapY = j + Window2D.viewPort.y;
 
                 let tile = (mapData[mapY] && mapData[mapY][mapX]) ? mapData[mapY][mapX] : " ";
 
@@ -266,8 +201,8 @@ class Game implements IPokeGame
 
     private render = (): void =>
     {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawMap(6, 9, Game.currentLevel);
+        this.window.context.clearRect(0, 0, Window2D.width, Window2D.height);
+        this.drawMap(6, 9, this.levelManager.getCurrentMap());
         switch (this.gameState)
         {
             case GameState.Normal:
@@ -284,10 +219,10 @@ class Game implements IPokeGame
         var reader = new FileReader();
         reader.onload = (data: any) =>
         {
-            let result = data.currentTarget.result;
+            const result = data.currentTarget.result;
             if (result)
             {
-                Game.currentLevel = JSON.parse(result);
+                this.levelManager.currentLevel.setMapData(JSON.parse(result));
             }
         };
         reader.readAsText(file);
@@ -295,7 +230,7 @@ class Game implements IPokeGame
 
     private updateGameState = (): void =>
     {
-        this.createDownloadFile("mapDownload", JSON.stringify(Game.currentLevel));
+        this.createDownloadFile("mapDownload", JSON.stringify(this.levelManager.getCurrentMap()));
         //let chance = 1;
         //let startBattle: boolean = Math.floor(Math.random() * chance) === 0;
         //if (startBattle)
