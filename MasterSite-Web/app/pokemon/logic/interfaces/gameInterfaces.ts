@@ -20,7 +20,7 @@ interface IAttack
     hitSuccess: boolean;
 }
 
-interface IImageObject {
+interface ITexture {
     image: HTMLImageElement;
     name: string;
 }

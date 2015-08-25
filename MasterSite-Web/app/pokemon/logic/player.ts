@@ -6,13 +6,16 @@ class Player extends Actor
 {
     public offsetX = 0;
     public offsetY = 0;
+    public spriteIndex: HTMLImageElement;
     //private direction: KEYS;
+    public assetManager: AssetManager;
     constructor(name: string)
     {
         super(name, ActorType.Player);
         this.abilities.push(PokeDataService.getMoveByName("bite"));
         this.abilities.push(PokeDataService.getMoveByName("godmode"));
-
+        this.assetManager = new AssetManager();
+        this.spriteIndex = this.assetManager.getImageByName("scientist_s1.png");
     }
 
     public attack = (currentInput: string): IAbility =>
@@ -29,42 +32,23 @@ class Player extends Actor
 
     public getPosition()
     {
-        var x = (Game.window.width / 2) - (this.width / 2);
-        var y = (Game.window.height / 2) + 8 - (this.height);
+        var x = (Window2D.width / 2) - (this.width / 2);
+        var y = (Window2D.height / 2) + 8 - (this.height);
         return { left: x, top: y };
     }
 
     public move(direction: KEYS)
     {
         Game.canInput = false;
-        let x = 0;
-        let y = 0;
-
-        switch (direction)
-        {
-            case KEYS.Up:
-                y = 1;
-                break;
-            case KEYS.Down:
-                y = -1;
-                break;
-            case KEYS.Left:
-                x = 1;
-                break;
-            case KEYS.Right:
-                x = -1;
-                break;
-        }
-        var toY = Game.window.viewport.y + (Game.window.screen.tilesY / 2 - 0.5) - y;
-        var toX = Game.window.viewport.x + (Game.window.screen.tilesX / 2 - 0.5) - x;
-        if (Game.currentLevel[toY] && Game.currentLevel[toY][toX] && Game.currentLevel[toY][toX] !== "g")
-        {
+        const tileInfo = this.getFacingTile(direction);
+        if (tileInfo.facingTile !== "g") {
             Game.canInput = true;
             console.log("collision detected!");
-        } else
+        }
+        else
         {
-            this.offsetX = x * 5;
-            this.offsetY = y * 5;
+            this.offsetX = tileInfo.x * 5;
+            this.offsetY = tileInfo.y * 5;
             setTimeout(() => this.animate(direction), 100);
             setTimeout(() => this.reset(direction), 200);
             console.log("moving...");
@@ -97,16 +81,16 @@ class Player extends Actor
         switch (direction)
         {
             case KEYS.Up:
-                Game.window.viewport.y--;
+                Window2D.viewPort.y--;
                 break;
             case KEYS.Down:
-                Game.window.viewport.y++;
+                Window2D.viewPort.y++;
                 break;
             case KEYS.Left:
-                Game.window.viewport.x--;
+                Window2D.viewPort.x--;
                 break;
             case KEYS.Right:
-                Game.window.viewport.x++;
+                Window2D.viewPort.x++;
                 break;
         }
         this.offsetX = 0;
@@ -116,47 +100,33 @@ class Player extends Actor
 
     public deleteItem(direction: KEYS)
     {
-        let facingTile = this.getFacingTile(direction);
-        let toY = facingTile.toY;
-        let toX = facingTile.toX;
-        if (Game.currentLevel[toY] && Game.currentLevel[toY][toX] && Game.currentLevel[toY][toX] !== "g")
+        const tileInfo = this.getFacingTile(direction);
+        if (tileInfo.facingTile !== "g")
         {
-            Game.currentLevel[toY][toX] = "g";
             console.log("Deleting item!");
-        } else
-        {
-            console.log("Nothing to delete!");
+            this.setFacingTile(tileInfo, "g");
         }
         Game.canInput = true;
     }
 
     public interact(direction: KEYS)
     {
-        let facingTile = this.getFacingTile(direction);
-        let toY = facingTile.toY;
-        let toX = facingTile.toX;
-        if (Game.currentLevel[toY] && Game.currentLevel[toY][toX] && Game.currentLevel[toY][toX] === "s")
+        const tileInfo = this.getFacingTile(direction);
+        if (tileInfo.facingTile === "s")
         {
             console.log("Random Message!");
             alert("Random Message");
-        } else
-        {
-            console.log("nothing to interact with!");
         }
+        Game.canInput = true;
     }
 
     public placeRock(direction: KEYS)
     {
-        let facingTile = this.getFacingTile(direction);
-        let toY = facingTile.toY;
-        let toX = facingTile.toX;
-        if (Game.currentLevel[toY] && Game.currentLevel[toY][toX] && Game.currentLevel[toY][toX] !== "r")
+        const tileInfo = this.getFacingTile(direction);
+        if (tileInfo.facingTile !== "r")
         {
-            Game.currentLevel[toY][toX] = "r";
+            this.setFacingTile(tileInfo, "r");
             console.log("placing rock!");
-        } else
-        {
-            console.log("Rock already exists!");
         }
         Game.canInput = true;
     }
@@ -165,6 +135,7 @@ class Player extends Actor
     {
         let x = 0;
         let y = 0;
+        let facingTile = "";
 
         switch (direction)
         {
@@ -181,8 +152,18 @@ class Player extends Actor
                 x = -1;
                 break;
         }
-        var toY = Game.window.viewport.y + (Game.window.screen.tilesY / 2 - 0.5) - y;
-        var toX = Game.window.viewport.x + (Game.window.screen.tilesX / 2 - 0.5) - x;
-        return { x: x, y: y, toY: toY, toX: toX };
+        const toY = Window2D.viewPort.y + (Window2D.screen.tilesY / 2 - 0.5) - y;
+        const toX = Window2D.viewPort.x + (Window2D.screen.tilesX / 2 - 0.5) - x;
+        if (Game.currentMap[toY] && Game.currentMap[toY][toX])
+        {
+            facingTile = Game.currentMap[toY][toX];
+        }
+
+        return { x: x, y: y, toY: toY, toX: toX, facingTile: facingTile };
+    }
+
+    public setFacingTile(tileInfo: any, value: string)
+    {
+        Game.currentMap[tileInfo.toY][tileInfo.toX] = value;
     }
 }

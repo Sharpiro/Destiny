@@ -272,9 +272,14 @@
     <TypeScriptCompile Include="app\pokemon\app.ts" />
     <TypeScriptCompile Include="app\pokemon\controllers\pokemonController.ts" />
     <TypeScriptCompile Include="app\pokemon\interfaces\pokeDataServiceInterfaces.ts" />
+    <TypeScriptCompile Include="app\pokemon\interfaces\window2DInterfaces.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\game.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\actor.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\graphics\assetManager.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\graphics\window.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\interfaces\gameInterfaces.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\levels\level.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\levels\levelManager.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\levels\levelOne.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\player.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\sharedFunctions.ts" />
