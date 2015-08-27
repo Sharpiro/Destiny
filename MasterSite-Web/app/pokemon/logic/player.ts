@@ -6,17 +6,24 @@ class Player extends Actor
 {
     public offsetX = 0;
     public offsetY = 0;
-    public spriteIndex: HTMLImageElement;
-    //private direction: KEYS;
-    public assetManager: AssetManager;
+    public direction = KEYS.Up;
+    public oldDirection = KEYS.Up;
+    public spriteIndex = 3;
+    public leftLeg = false;
+    //public currentPlayerTexture: HTMLImageElement;
+    public playerTextures = <Array<ITexture>>[];
 
     constructor(name: string)
     {
         super(name, ActorType.Player);
         this.abilities.push(PokeDataService.getMoveByName("bite"));
         this.abilities.push(PokeDataService.getMoveByName("godmode"));
-        this.assetManager = new AssetManager();
-        this.spriteIndex = this.assetManager.getImageByName("scientist_s1.png");
+    }
+
+    public setPlayerImages(playerImages: Array<ITexture>)
+    {
+        this.playerTextures = playerImages;
+        //this.currentPlayerTexture = this.playerTextures[this.spriteIndex].image;
     }
 
     public attack = (currentInput: string): IAbility =>
@@ -38,10 +45,10 @@ class Player extends Actor
         return { left: x, top: y };
     }
 
-    public move(direction: KEYS)
+    public move()
     {
         Game.canInput = false;
-        const tileInfo = this.getFacingTile(direction);
+        const tileInfo = this.getFacingTile();
         if (tileInfo.facingTile.type !== "grass")
         {
             Game.canInput = true;
@@ -51,14 +58,14 @@ class Player extends Actor
         {
             this.offsetX = tileInfo.x * 5;
             this.offsetY = tileInfo.y * 5;
-            setTimeout(() => this.animate(direction), 100);
-            setTimeout(() => this.reset(direction), 200);
+            setTimeout(() => this.animate(), 100);
+            setTimeout(() => this.reset(), 200);
         }
     }
 
-    private animate = (direction: KEYS) =>
+    private animate = () =>
     {
-        switch (direction)
+        switch (this.direction)
         {
             case KEYS.Up:
                 this.offsetY = 11;
@@ -73,23 +80,29 @@ class Player extends Actor
                 this.offsetX = -11;
                 break;
         }
+        this.spriteIndex += (this.leftLeg) ? 1 : 2;
+        this.leftLeg = !this.leftLeg;
     }
 
-    private reset = (direction: KEYS) =>
+    private reset = () =>
     {
-        switch (direction)
+        switch (this.direction)
         {
             case KEYS.Up:
                 Window2D.viewPort.y--;
+                this.spriteIndex = 3;
                 break;
             case KEYS.Down:
                 Window2D.viewPort.y++;
+                this.spriteIndex = 0;
                 break;
             case KEYS.Left:
                 Window2D.viewPort.x--;
+                this.spriteIndex = 9;
                 break;
             case KEYS.Right:
                 Window2D.viewPort.x++;
+                this.spriteIndex = 6;
                 break;
         }
         this.offsetX = 0;
@@ -97,9 +110,9 @@ class Player extends Actor
         Game.canInput = true;
     }
 
-    public deleteItem(direction: KEYS)
+    public deleteItem()
     {
-        const tileInfo = this.getFacingTile(direction);
+        const tileInfo = this.getFacingTile();
         if (tileInfo.facingTile.type !== "grass")
         {
             console.log("Deleting item!");
@@ -108,9 +121,9 @@ class Player extends Actor
         Game.canInput = true;
     }
 
-    public interact(direction: KEYS)
+    public interact()
     {
-        const tileInfo = this.getFacingTile(direction);
+        const tileInfo = this.getFacingTile();
         if (tileInfo.facingTile.value)
         {
             //GameConsole.writeToConsole("Here is a random message with some Long text.  It has been split up into 5 words per page so that it fits in this text box");
@@ -119,9 +132,9 @@ class Player extends Actor
         Game.canInput = true;
     }
 
-    public setValue(direction: KEYS, value?: string)
+    public setValue(value?: string)
     {
-        const tileInfo = this.getFacingTile(direction);
+        const tileInfo = this.getFacingTile();
         if (tileInfo.facingTile.value)
         {
             let input = prompt("Enter a value");
@@ -135,9 +148,9 @@ class Player extends Actor
         }
     }
 
-    public placeRock(direction: KEYS)
+    public placeRock()
     {
-        const tileInfo = this.getFacingTile(direction);
+        const tileInfo = this.getFacingTile();
         if (tileInfo.facingTile.type !== "rock")
         {
             this.setFacingTile(tileInfo, "rock");
@@ -146,13 +159,13 @@ class Player extends Actor
         Game.canInput = true;
     }
 
-    public getFacingTile(direction: KEYS)
+    public getFacingTile()
     {
         let x = 0;
         let y = 0;
         let facingTile = { type: " ", value: "" };
 
-        switch (direction)
+        switch (this.direction)
         {
             case KEYS.Up:
                 y = 1;
