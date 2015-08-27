@@ -9,19 +9,17 @@ class Game implements IPokeGame
     private player: Player;
     private battleStateController: BattleStateController;
     public static canInput = true;
-    private direction = KEYS.Up;
-    private oldDirection = KEYS.Up;
     private startTime: number = null;
     public static currentMap: Array<Array<any>>;
     private window: Window2D;
     private assetManager: AssetManager;
     private levelManager: LevelManager;
-    private textarea: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("textArea");
+    private textarea = <HTMLTextAreaElement>document.getElementById("textArea");
     private keys: any = {
-        37: { value: KEYS.Left, type: "movement", animationIndex: 12 },
-        39: { value: KEYS.Right, type: "movement", animationIndex: 9 },
-        38: { value: KEYS.Up, type: "movement", animationIndex: 6 },
-        40: { value: KEYS.Down, type: "movement", animationIndex: 3 },
+        40: { value: KEYS.Down, type: "movement", animationIndex: 0 },
+        38: { value: KEYS.Up, type: "movement", animationIndex: 3 },
+        39: { value: KEYS.Right, type: "movement", animationIndex: 6 },
+        37: { value: KEYS.Left, type: "movement", animationIndex: 9 },
         67: KEYS.C, 69: KEYS.E, 82: KEYS.R, 81: KEYS.Q, 46: KEYS.Delete, 86: KEYS.V
     };
 
@@ -34,10 +32,10 @@ class Game implements IPokeGame
         this.levelManager.startLevel(1);
         Game.currentMap = this.levelManager.getCurrentMap();
         this.player = new Player("Sharpiro");
-        this.player.spriteIndex = this.assetManager.images[6].image;
+        this.player.setPlayerImages(this.assetManager.getPlayerImages());
         window.addEventListener("keydown", this.keyDownCallback.bind(this));
         //window.addEventListener("keyup", this.keyUpCallback.bind(this));
-        var mapForm = <HTMLElement>document.getElementById("fileUpload");
+        const mapForm = document.getElementById("fileUpload");
         mapForm.onchange = (event: any) => this.uploadMap(event);
     }
 
@@ -46,39 +44,41 @@ class Game implements IPokeGame
         const currentKey = this.keys[event.keyCode];
         if (GameConsole.showConsole)
         {
-            if (this.keys[event.keyCode] === KEYS.C) {
+            if (this.keys[event.keyCode] === KEYS.C)
+            {
                 GameConsole.nextText();
             }
-        }
-        else if (Game.canInput)
+        } else if (Game.canInput)
         {
             //console.log(event.keyCode);
             if (currentKey && currentKey.type === "movement")
             {
-                this.oldDirection = this.direction;
-                this.direction = currentKey.value;
-                this.player.spriteIndex = this.assetManager.images[currentKey.animationIndex].image;
-                const directionChanged = this.direction !== this.oldDirection;
+                this.player.oldDirection = this.player.direction;
+                this.player.direction = currentKey.value;
+                if (this.player.playerTextures[currentKey.animationIndex])
+                    this.player.spriteIndex = currentKey.animationIndex;
+                    //this.player.currentPlayerTexture = this.player.playerTextures[currentKey.animationIndex].image;
+                else
+                    console.warn("No textures loaded for player");
+                const directionChanged = this.player.direction !== this.player.oldDirection;
                 if (!directionChanged)
-                {
-                    this.player.move(this.direction);
-                }
+                    this.player.move();
             }
             else if (this.keys[event.keyCode] === KEYS.R)
             {
-                this.player.placeRock(this.direction);
+                this.player.placeRock();
             }
             else if (this.keys[event.keyCode] === KEYS.Q)
             {
-                this.player.deleteItem(this.direction);
+                this.player.deleteItem();
             }
             else if (this.keys[event.keyCode] === KEYS.C)
             {
-                this.player.interact(this.direction);
+                this.player.interact();
             }
             else if (this.keys[event.keyCode] === KEYS.V)
             {
-                this.player.setValue(this.direction);
+                this.player.setValue();
             }
         }
     }
@@ -88,18 +88,19 @@ class Game implements IPokeGame
         const rx = x * 16 + this.player.offsetX;
         const ry = y * 16 + this.player.offsetY;
         const currentTileImage = this.assetManager.getImage(tile);
-        const grassImage = this.assetManager.getImage({ type: "grass"});
+        const grassImage = this.assetManager.getImage({ type: "grass" });
         const playerPosition = this.player.getPosition();
         if (tile !== " ")
             this.window.context.drawImage(grassImage, rx, ry);
         this.window.context.drawImage(currentTileImage, rx, ry);
-        this.window.context.drawImage(this.player.spriteIndex, playerPosition.left, playerPosition.top);
+        const playerTexture = this.player.playerTextures[this.player.spriteIndex];
+        if (playerTexture)
+            this.window.context.drawImage(playerTexture.image, playerPosition.left, playerPosition.top);
     }
 
     private drawMap(x?: number, y?: number, mapData?: Array<Array<any>>)
     {
         //console.log(`drawing map from ${Game.window.viewport.x},${Game.window.viewport.y} to ${Game.window.viewport.x + Game.window.screen.tilesX},${Game.window.viewport.y + Game.window.screen.tilesY}`);
-
         for (let j = -1; j < Window2D.screen.tilesY + 1; j++)
         {
             for (let i = -1; i < Window2D.screen.tilesX + 1; i++)
@@ -107,7 +108,7 @@ class Game implements IPokeGame
                 let mapX = i + Window2D.viewPort.x;
                 let mapY = j + Window2D.viewPort.y;
 
-                let tile = (mapData[mapY] && mapData[mapY][mapX]) ? mapData[mapY][mapX] : { type: " "};
+                let tile = (mapData[mapY] && mapData[mapY][mapX]) ? mapData[mapY][mapX] : { type: " " };
 
                 this.drawTile(i, j, tile);
             }
@@ -122,8 +123,6 @@ class Game implements IPokeGame
         //this.context.strokeText(`Player: ${playerHealth}%`, 350, 50);
     }
 
-
-
     public start = (): void =>
     {
         //Game.writeToConsole("Starting...");
@@ -133,7 +132,7 @@ class Game implements IPokeGame
     public stop = (): void =>
     {
         GameConsole.writeToConsole("Stopping...");
-        
+
         this.createDownloadFile("battleTextDownload", this.textarea.value);
         clearInterval(this.gameLoop);
     }
@@ -162,16 +161,6 @@ class Game implements IPokeGame
             //Game.writeToConsole("Error: Unknown Command");
         }
     }
-
-    //private tryClearConsole(): boolean
-    //{
-    //    if (GameConsole.currentConsoleText)
-    //    {
-    //        GameConsole.currentConsoleText = null;
-    //        return true;
-    //    }
-    //    return false;
-    //}
 
     private tick = (timeStamp?: number): void =>
     {

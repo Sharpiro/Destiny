@@ -49,6 +49,16 @@
         return null;
     }
 
+    public getPlayerImages(): Array<ITexture>
+    {
+        let playerImages: Array<ITexture> = [];
+        for (let i = 3; i < 15; i++)
+        {
+            playerImages.push(this.images[i]);
+        }
+        return playerImages;
+    }
+
     private loadTextures(): void
     {
         this.loadImage("/content/images/pokemon/map/empty.png");
