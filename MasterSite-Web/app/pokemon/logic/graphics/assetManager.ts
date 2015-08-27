@@ -21,17 +21,17 @@
         //return texture;
     }
 
-    public getImage(tile: string): HTMLImageElement
+    public getImage(tile: any): HTMLImageElement
     {
-        switch (tile)
+        switch (tile.type)
         {
             case " ":
                 return this.images[0].image;
-            case "g":
+            case "grass":
                 return this.images[1].image;
-            case "r":
+            case "rock":
                 return this.images[2].image;
-            case "s":
+            case "sign":
                 return this.images[15].image;
             default:
                 return null;

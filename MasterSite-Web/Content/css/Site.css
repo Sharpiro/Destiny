@@ -104,21 +104,35 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+
 .triumphs h4 {
-   text-align: center;
+    text-align: center;
 }
 
 .weapon-check {
     text-align: center;
 }
 
-.weapon-check div {
-    display: inline-block;
-    padding: 5px;
-}
+    .weapon-check div {
+        display: inline-block;
+        padding: 5px;
+    }
 
-.weapon-check img {
-    width: 75px;
-}
+    .weapon-check img {
+        width: 75px;
+    }
 
 /*#endregion*/
+
+/*#region Pokemon*/
+.container-pokemon {
+    padding: 15px 15px 15px 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.keybinds {
+    font-size: 200%;
+    font-family: "consolas";
+}
+/*#endregion Pokemon*/

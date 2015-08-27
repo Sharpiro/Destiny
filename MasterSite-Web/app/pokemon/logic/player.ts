@@ -9,6 +9,7 @@ class Player extends Actor
     public spriteIndex: HTMLImageElement;
     //private direction: KEYS;
     public assetManager: AssetManager;
+
     constructor(name: string)
     {
         super(name, ActorType.Player);
@@ -41,7 +42,8 @@ class Player extends Actor
     {
         Game.canInput = false;
         const tileInfo = this.getFacingTile(direction);
-        if (tileInfo.facingTile !== "g") {
+        if (tileInfo.facingTile.type !== "grass")
+        {
             Game.canInput = true;
             console.log("collision detected!");
         }
@@ -51,13 +53,11 @@ class Player extends Actor
             this.offsetY = tileInfo.y * 5;
             setTimeout(() => this.animate(direction), 100);
             setTimeout(() => this.reset(direction), 200);
-            console.log("moving...");
         }
     }
 
     private animate = (direction: KEYS) =>
     {
-        console.log("animating...");
         switch (direction)
         {
             case KEYS.Up:
@@ -77,7 +77,6 @@ class Player extends Actor
 
     private reset = (direction: KEYS) =>
     {
-        console.log("reset");
         switch (direction)
         {
             case KEYS.Up:
@@ -101,10 +100,10 @@ class Player extends Actor
     public deleteItem(direction: KEYS)
     {
         const tileInfo = this.getFacingTile(direction);
-        if (tileInfo.facingTile !== "g")
+        if (tileInfo.facingTile.type !== "grass")
         {
             console.log("Deleting item!");
-            this.setFacingTile(tileInfo, "g");
+            this.setFacingTile(tileInfo, "grass");
         }
         Game.canInput = true;
     }
@@ -112,20 +111,36 @@ class Player extends Actor
     public interact(direction: KEYS)
     {
         const tileInfo = this.getFacingTile(direction);
-        if (tileInfo.facingTile === "s")
+        if (tileInfo.facingTile.value)
         {
-            console.log("Random Message!");
-            alert("Random Message");
+            //GameConsole.writeToConsole("Here is a random message with some Long text.  It has been split up into 5 words per page so that it fits in this text box");
+            GameConsole.writeToConsole(tileInfo.facingTile.value);
         }
         Game.canInput = true;
+    }
+
+    public setValue(direction: KEYS, value?: string)
+    {
+        const tileInfo = this.getFacingTile(direction);
+        if (tileInfo.facingTile.value)
+        {
+            let input = prompt("Enter a value");
+            if (input)
+            {
+                this.setFacingTile(tileInfo, tileInfo.facingTile.type, input);
+                //GameConsole.writeToConsole(tileInfo.facingTile.value);
+                console.log("Value set!");
+
+            }
+        }
     }
 
     public placeRock(direction: KEYS)
     {
         const tileInfo = this.getFacingTile(direction);
-        if (tileInfo.facingTile !== "r")
+        if (tileInfo.facingTile.type !== "rock")
         {
-            this.setFacingTile(tileInfo, "r");
+            this.setFacingTile(tileInfo, "rock");
             console.log("placing rock!");
         }
         Game.canInput = true;
@@ -135,7 +150,7 @@ class Player extends Actor
     {
         let x = 0;
         let y = 0;
-        let facingTile = "";
+        let facingTile = { type: " ", value: "" };
 
         switch (direction)
         {
@@ -162,8 +177,8 @@ class Player extends Actor
         return { x: x, y: y, toY: toY, toX: toX, facingTile: facingTile };
     }
 
-    public setFacingTile(tileInfo: any, value: string)
+    public setFacingTile(tileInfo: any, type: string, value?: string)
     {
-        Game.currentMap[tileInfo.toY][tileInfo.toX] = value;
+        Game.currentMap[tileInfo.toY][tileInfo.toX] = { type: type, value: value }
     }
 }

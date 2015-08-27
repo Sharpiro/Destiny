@@ -13,11 +13,11 @@
         switch (this.battleState)
         {
             case BattleState.Started:
-                Game.writeToConsole("Go Mr. Pokemon!");
+                GameConsole.writeToConsole("Go Mr. Pokemon!");
                 this.battleState = BattleState.PlayerTurnStart;
                 break;
             case BattleState.PlayerTurnStart:
-                Game.writeToConsole(`Select a move: 1: ${this.player.getAbilities()[0].name}, 2: ${this.player.getAbilities()[1].name}`);
+                GameConsole.writeToConsole(`Select a move: 1: ${this.player.getAbilities()[0].name}, 2: ${this.player.getAbilities()[1].name}`);
                 PokeDataService.setCurrentInput(null);
                 this.battleState = BattleState.SelectMove;
                 break;
@@ -42,11 +42,11 @@
             {
                 //TODO: Should this be modifying values?
                 this.currentEnemy.doDamage(attackData.damage);
-                Game.writeToConsole(`${this.player.getName() }'s ${attackData.name} successfully hit for ${attackData.damage}!`);
+                GameConsole.writeToConsole(`${this.player.getName() }'s ${attackData.name} successfully hit for ${attackData.damage}!`);
             }
             else
-                Game.writeToConsole(`${this.player.getName() }'s ${attackData.name} missed!`);
-            Game.writeToConsole(`Enemy HP: ${this.currentEnemy.getHealth() }%`);
+                GameConsole.writeToConsole(`${this.player.getName() }'s ${attackData.name} missed!`);
+            GameConsole.writeToConsole(`Enemy HP: ${this.currentEnemy.getHealth() }%`);
             this.battleState = BattleState.EnemyMove;
         }
     }
@@ -58,11 +58,11 @@
         if (attackData.hitSuccess)
         {
             this.player.doDamage(attackData.damage);
-            Game.writeToConsole(`Enemy ${this.currentEnemy.getName() }'s ${attackData.name} successfully hit for ${attackData.damage}!`);
+            GameConsole.writeToConsole(`Enemy ${this.currentEnemy.getName() }'s ${attackData.name} successfully hit for ${attackData.damage}!`);
         }
         else
-            Game.writeToConsole(`Enemy ${this.currentEnemy.getName() }'s ${attackData.name} missed!`);
-        Game.writeToConsole(`Player HP: ${this.player.getHealth() }%`);
+            GameConsole.writeToConsole(`Enemy ${this.currentEnemy.getName() }'s ${attackData.name} missed!`);
+        GameConsole.writeToConsole(`Player HP: ${this.player.getHealth() }%`);
         this.battleState = BattleState.PlayerTurnStart;
     }
 
@@ -72,7 +72,7 @@
         if (this.currentEnemy.getHealth() <= 0 || this.player.getHealth() <= 0)
         {
             //download.click();
-            Game.writeToConsole("Game Over!");
+            GameConsole.writeToConsole("Game Over!");
             this.battleState = BattleState.Ended;
             //this.stop();
             return;

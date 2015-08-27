@@ -46,5 +46,5 @@ enum ATTACK_TYPE
 }
 
 enum KEYS {
-    Left, Right, Up, Down, E, R, Q, Delete, C
+    Left, Right, Up, Down, E, R, Q, Delete, C, V
 }

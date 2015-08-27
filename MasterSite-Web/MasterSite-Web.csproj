@@ -273,6 +273,7 @@
     <TypeScriptCompile Include="app\pokemon\controllers\pokemonController.ts" />
     <TypeScriptCompile Include="app\pokemon\interfaces\pokeDataServiceInterfaces.ts" />
     <TypeScriptCompile Include="app\pokemon\interfaces\window2DInterfaces.ts" />
+    <TypeScriptCompile Include="app\pokemon\logic\gameConsole.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\game.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\actor.ts" />
     <TypeScriptCompile Include="app\pokemon\logic\graphics\assetManager.ts" />
