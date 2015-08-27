@@ -1,16 +1,34 @@
-﻿<div class="container">
+﻿<div class="container-pokemon">
     <div class="row">
-        <div class="col-md-4">
-            <canvas id="canvas"></canvas>
-            <a class="btn btn-default" id="mapDownload" download="game.txt">map download</a>
-            <form id="mapForm" class="form-inline" role="form">
-                <div class="form-group">
-                    <input id="fileUpload" class="form-control" type="file" />
-                </div>
-                <!--<button ng-click="vm.loadMap(file)" class="btn btn-default">Load Map</button>-->
-            </form>
+        <div class="col-md-3 keybinds">
+            <div>
+                <h1>Keybinds</h1>
+                <span>C: Use</span>
+            </div>
+            <div>
+                <span>Q: Delete</span>
+            </div>
+            <div>
+                <span>R: Add Rock</span>
+            </div>
+            <div>
+                <span>V: Set Value</span>
+            </div>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div>
+                <canvas id="canvas"></canvas>
+            </div>
+            <div>
+                <a class="btn btn-default" id="mapDownload" download="game.txt">map download</a>
+                <form id="mapForm" class="form-inline" role="form">
+                    <div class="form-group">
+                        <input id="fileUpload" class="form-control" type="file" />
+                    </div>
+                    <!--<button ng-click="vm.loadMap(file)" class="btn btn-default">Load Map</button>-->
+                </form>
+            </div>
+        </div>
         <div class="col-md-4">
             <form class="form-inline" role="form">
                 <div class="form-group">

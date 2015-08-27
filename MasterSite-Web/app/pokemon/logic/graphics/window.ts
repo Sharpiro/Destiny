@@ -3,7 +3,7 @@
     //public static window = { width: 0, height: 0, viewport: {x: 0, y: 0}, screen: {tilesX: 0, tilesY: 0, tileSize: 16} };
     public canvas: HTMLCanvasElement;
     public context: CanvasRenderingContext2D;
-    public static viewPort = { x: 0, y: 0 };
+    public static viewPort = { x: -5, y: -4 };
     public static screen: IScreen = { tilesX: 0, tilesY: 0, tileSize: 16 };
     public static width = 0;
     public static height = 0;
