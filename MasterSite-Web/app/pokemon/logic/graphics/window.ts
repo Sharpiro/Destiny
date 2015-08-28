@@ -14,6 +14,7 @@
         this.canvas.id = "canvas";
         this.canvas.width = 400;
         this.canvas.height = 240;
+        this.canvas.oncontextmenu = () => false;
         Window2D.width = this.canvas.width;
         Window2D.height = this.canvas.height;
         Window2D.screen.tilesX = Window2D.width / Window2D.screen.tileSize;
