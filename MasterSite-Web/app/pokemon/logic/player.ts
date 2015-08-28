@@ -110,13 +110,17 @@ class Player extends Actor
         Game.canInput = true;
     }
 
-    public deleteItem()
+    public deleteItem(tile?: any)
     {
         const tileInfo = this.getFacingTile();
-        if (tileInfo.facingTile.type !== "grass")
+        if (tile)
+        {
+            this.setTileMouse(tile);
+        }
+        else if (tileInfo.facingTile.type !== "grass")
         {
             console.log("Deleting item!");
-            this.setFacingTile(tileInfo, "grass");
+            this.setTile(tileInfo, "grass");
         }
         Game.canInput = true;
     }
@@ -140,7 +144,7 @@ class Player extends Actor
             let input = prompt("Enter a value");
             if (input)
             {
-                this.setFacingTile(tileInfo, tileInfo.facingTile.type, input);
+                this.setTile(tileInfo, tileInfo.facingTile.type, input);
                 //GameConsole.writeToConsole(tileInfo.facingTile.value);
                 console.log("Value set!");
 
@@ -153,7 +157,7 @@ class Player extends Actor
         const tileInfo = this.getFacingTile();
         if (tileInfo.facingTile.type !== "rock")
         {
-            this.setFacingTile(tileInfo, "rock");
+            this.setTile(tileInfo, "rock");
             console.log("placing rock!");
         }
         Game.canInput = true;
@@ -190,8 +194,16 @@ class Player extends Actor
         return { x: x, y: y, toY: toY, toX: toX, facingTile: facingTile };
     }
 
-    public setFacingTile(tileInfo: any, type: string, value?: string)
+    public setTile(tileInfo: any, type: string, value?: string)
     {
         Game.currentMap[tileInfo.toY][tileInfo.toX] = { type: type, value: value }
+    }
+    public setTileMouse(tileInfo: any) {
+        const selectedY = tileInfo.toY + Window2D.viewPort.y;
+        const selectedX = tileInfo.toX + Window2D.viewPort.x;
+        Game.currentMap[selectedY][selectedX] = { type: "grass" }
+        console.log(`${selectedX}, ${selectedY}`);
+        //console.log(`${tileInfo.toX}, ${tileInfo.toY}`);
+        //console.log(`${Window2D.viewPort.x}, ${Window2D.viewPort.y}`);
     }
 }

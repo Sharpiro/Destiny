@@ -15,6 +15,7 @@ class Game implements IPokeGame
     private assetManager: AssetManager;
     private levelManager: LevelManager;
     private textarea = <HTMLTextAreaElement>document.getElementById("textArea");
+    private mouseData = { x: 0, y: 0, selectedBlock: { x: 0, y: 0 } };
     private keys: any = {
         40: { value: KEYS.Down, type: "movement", animationIndex: 0 },
         38: { value: KEYS.Up, type: "movement", animationIndex: 3 },
@@ -33,10 +34,30 @@ class Game implements IPokeGame
         Game.currentMap = this.levelManager.getCurrentMap();
         this.player = new Player("Sharpiro");
         this.player.setPlayerImages(this.assetManager.getPlayerImages());
-        window.addEventListener("keydown", this.keyDownCallback.bind(this));
-        //window.addEventListener("keyup", this.keyUpCallback.bind(this));
+        window.addEventListener("keydown", (event: KeyboardEvent) => this.keyDownCallback(event));
+        this.window.canvas.addEventListener("mousemove", (event: MouseEvent) => this.mouseMoveCallback(event));
+        this.window.canvas.addEventListener("mousedown", (event: MouseEvent) => this.mouseDownCallback(event));
         const mapForm = document.getElementById("fileUpload");
         mapForm.onchange = (event: any) => this.uploadMap(event);
+    }
+
+    private mouseMoveCallback = (event: MouseEvent) =>
+    {
+        this.mouseData = { x: event.clientX, y: event.clientY, selectedBlock: { x: 0, y: 0 } };
+        //console.log(`${mouseX}, ${mouseY}`);
+    }
+
+    private mouseDownCallback = (event: MouseEvent) =>
+    {
+        //Game.currentMap[tileInfo.toY][tileInfo.toX] = { type: type, value: value }
+        const x = this.mouseData.selectedBlock.x;
+        const y = this.mouseData.selectedBlock.y;
+        //{ x: x, y: y, toY: toY, toX: toX, facingTile: facingTile }
+        const tile = { toY: y, toX: x, facingTile: Game.currentMap[y][x] }
+        //if (event.button === 0)
+        //    console.log(`${tile.toX}, ${tile.toY}`);
+        if (event.button === 2)
+            this.player.deleteItem(tile);
     }
 
     private keyDownCallback = (event: KeyboardEvent) =>
@@ -57,12 +78,13 @@ class Game implements IPokeGame
                 this.player.direction = currentKey.value;
                 if (this.player.playerTextures[currentKey.animationIndex])
                     this.player.spriteIndex = currentKey.animationIndex;
-                    //this.player.currentPlayerTexture = this.player.playerTextures[currentKey.animationIndex].image;
+                //this.player.currentPlayerTexture = this.player.playerTextures[currentKey.animationIndex].image;
                 else
                     console.warn("No textures loaded for player");
                 const directionChanged = this.player.direction !== this.player.oldDirection;
                 if (!directionChanged)
                     this.player.move();
+                console.log();
             }
             else if (this.keys[event.keyCode] === KEYS.R)
             {
@@ -95,7 +117,10 @@ class Game implements IPokeGame
         this.window.context.drawImage(currentTileImage, rx, ry);
         const playerTexture = this.player.playerTextures[this.player.spriteIndex];
         if (playerTexture)
+        {
             this.window.context.drawImage(playerTexture.image, playerPosition.left, playerPosition.top);
+            //console.log(`${playerPosition.left}, ${playerPosition.top}`);
+        }
     }
 
     private drawMap(x?: number, y?: number, mapData?: Array<Array<any>>)
@@ -109,7 +134,6 @@ class Game implements IPokeGame
                 let mapY = j + Window2D.viewPort.y;
 
                 let tile = (mapData[mapY] && mapData[mapY][mapX]) ? mapData[mapY][mapX] : { type: " " };
-
                 this.drawTile(i, j, tile);
             }
         }
@@ -202,17 +226,32 @@ class Game implements IPokeGame
 
     private renderText()
     {
+        this.window.context.fillStyle = "white";
         this.window.context.fillRect(0, Window2D.height / 1.5, Window2D.width, Window2D.height);
         this.window.context.fillStyle = "black";
         this.window.context.font = "16px Consolas";
         this.window.context.fillText(GameConsole.currentConsoleText, 15, 200);
     }
 
+    public drawSqure(x?: number, y?: number)
+    {
+        //TODO: Draw Temp Rect
+        const tileBoardX = Math.floor((this.mouseData.x - 495) / 16);
+        const tileBoardY = Math.floor((this.mouseData.y - 15) / 16);
+        const rx = tileBoardX * 16;
+        const ry = tileBoardY * 16;
+        this.window.context.fillStyle = "rgba(255, 0, 0, .4)";
+        this.window.context.fillRect(rx, ry, 16, 16);
+        //console.log(`${tileBoardX }, ${tileBoardY}`);
+        this.mouseData.selectedBlock = { x: tileBoardX, y: tileBoardY };
+        //501, 24
+    }
+
     private render = (): void =>
     {
         this.window.context.clearRect(0, 0, Window2D.width, Window2D.height);
-        this.window.context.fillStyle = "white";
         this.drawMap(6, 9, this.levelManager.getCurrentMap());
+        this.drawSqure();
         if (GameConsole.showConsole)
         {
             this.renderText();
