@@ -37,5 +37,15 @@ class PokeDataController
         });
         console.log(name);
     }
+
+    private getMoveByPokemon(pokemonName: string)
+    {
+        this.pokeApiService.getMoveByPokemon(pokemonName).then((data: any) =>
+        {
+            this.scope.moves = data.data;
+            console.log(data);
+        });
+        console.log(name);
+    }
 }
 pokeApp.controller("pokeDataController", ["$scope", "pokeApiService", PokeDataController]); 

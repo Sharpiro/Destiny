@@ -29,5 +29,11 @@ namespace MasterSite_Web.Api.Pokemon
             var moves = repository.GetMovesByType(type);
             return Ok(moves);
         }
+
+        public IHttpActionResult GetMovesByPokemon(string pokemonName)
+        {
+            var moves = repository.GetMovesByPokemon(pokemonName);
+            return Ok(moves);
+        }
     }
 }
