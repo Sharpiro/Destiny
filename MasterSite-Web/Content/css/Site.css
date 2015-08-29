@@ -135,4 +135,15 @@ body {
     font-size: 200%;
     font-family: "consolas";
 }
+
+.pokeData-mainContainer {
+    padding-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+.form-control {
+    width: auto;
+}
 /*#endregion Pokemon*/

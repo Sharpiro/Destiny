@@ -169,7 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\DestinyApiController.cs" />
-    <Compile Include="Api\PokeApiController.cs" />
+    <Compile Include="Api\Pokemon\PokeApiController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -195,6 +195,7 @@
     <Content Include="app\destiny\index.html" />
     <Content Include="app\index.html" />
     <Content Include="app\pokemon\index.html" />
+    <Content Include="app\pokemon\templates\pokeDataTemplate.html" />
     <Content Include="app\pokemon\templates\pokemonTemplate.html" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
@@ -264,12 +265,14 @@
     <TypeScriptCompile Include="app\destiny\interfaces\destinyDataServiceInterfaces.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\IDestinyPlayerScope.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\SharedFunctionsServiceInterface.ts" />
+    <TypeScriptCompile Include="app\pokemon\services\pokeApiService.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyApiService.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyBLService.ts" />
     <TypeScriptCompile Include="app\destiny\interfaces\destinyBLInterfaces.ts" />
     <TypeScriptCompile Include="app\destiny\services\destinyDataService.ts" />
     <TypeScriptCompile Include="app\destiny\services\sharedFunctionsService.ts" />
     <TypeScriptCompile Include="app\pokemon\app.ts" />
+    <TypeScriptCompile Include="app\pokemon\controllers\pokeDataController.ts" />
     <TypeScriptCompile Include="app\pokemon\controllers\pokemonController.ts" />
     <TypeScriptCompile Include="app\pokemon\interfaces\pokeDataServiceInterfaces.ts" />
     <TypeScriptCompile Include="app\pokemon\interfaces\window2DInterfaces.ts" />
@@ -336,8 +339,12 @@
     <Content Include="Content\font-awesome\scss\_variables.scss" />
     <None Include="Properties\PublishProfiles\sharpiro-mastersite.pubxml" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="app\pokemon\services\" />
+    <ProjectReference Include="..\MasterSite-Core\MasterSite-Core.csproj">
+      <Project>{b09e865d-9232-461f-b8c1-ff98abba77f7}</Project>
+      <Name>MasterSite-Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
