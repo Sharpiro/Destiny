@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B09E865D-9232-461F-B8C1-FF98ABBA77F7}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{C259C827-9DBA-4959-ABDE-9AFD0E1FD781}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MasterSite_Core</RootNamespace>
-    <AssemblyName>MasterSite-Core</AssemblyName>
+    <RootNamespace>MasterSite_Console</RootNamespace>
+    <AssemblyName>MasterSite-Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -38,10 +41,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -53,45 +52,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataRepository.cs" />
-    <Compile Include="Entities\Move.cs" />
-    <Compile Include="Entities\Pokemon.cs" />
-    <Compile Include="Entities\Pokemon_Moves.cs" />
-    <Compile Include="Migrations\201508290230152_WHATEVER.cs" />
-    <Compile Include="Migrations\201508290230152_WHATEVER.Designer.cs">
-      <DependentUpon>201508290230152_WHATEVER.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201508291643380_Junction.cs" />
-    <Compile Include="Migrations\201508291643380_Junction.Designer.cs">
-      <DependentUpon>201508291643380_Junction.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201508291657305_08-29-1.cs" />
-    <Compile Include="Migrations\201508291657305_08-29-1.Designer.cs">
-      <DependentUpon>201508291657305_08-29-1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\PokeApi\PokeApi_Move.cs" />
-    <Compile Include="Models\PokeApi\PokeApi_Pokemon.cs" />
-    <Compile Include="PokeApiHandler.cs" />
-    <Compile Include="PokeContext.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\Powershell\UpdateDatabase.txt" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201508290230152_WHATEVER.resx">
-      <DependentUpon>201508290230152_WHATEVER.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201508291643380_Junction.resx">
-      <DependentUpon>201508291643380_Junction.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201508291657305_08-29-1.resx">
-      <DependentUpon>201508291657305_08-29-1.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\MasterSite-Core\MasterSite-Core.csproj">
+      <Project>{b09e865d-9232-461f-b8c1-ff98abba77f7}</Project>
+      <Name>MasterSite-Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

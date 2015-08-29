@@ -23,5 +23,10 @@ class PokeApiService
     {
         return this.$http.get(`/api/pokeapi/getmovesbytype?type=${name}`);
     }
+
+    public getMoveByPokemon(pokemonName: string): ng.IPromise<any>
+    {
+        return this.$http.get(`/api/pokeapi/getmovesbypokemon?pokemonname=${pokemonName}`);
+    }
 }
 pokeApp.service("pokeApiService", ["$http", "$q", PokeApiService]); 
