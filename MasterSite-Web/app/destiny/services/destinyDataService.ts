@@ -65,21 +65,34 @@ class DestinyDataService implements IDestinyDataService
     ];
 
     private popularItems: Array<IPopularItemHash> = [
-        { starred: true, hash: 3118679308, category: ITEMCATEGORY.Weapon, value: "Ice Breaker", icon: "/common/destiny_content/icons/c1bc7a09b4042a26e0bbfe36fab78842.jpg" },
+        { starred: false, hash: 3118679308, category: ITEMCATEGORY.Weapon, value: "Ice Breaker", icon: "/common/destiny_content/icons/c1bc7a09b4042a26e0bbfe36fab78842.jpg" },
         { starred: true, hash: 1274330687, category: ITEMCATEGORY.Weapon, value: "Gjallarhorn", icon: "/common/destiny_content/icons/eb8377390504838c0190d8d56e70d28e.jpg" },
-        { starred: true, hash: 2344494719, category: ITEMCATEGORY.Weapon, value: "Lord of Wolves", icon: "/common/destiny_content/icons/64ef3ce089b88d09b7b8ee72ab2ddc20.jpg" },
-        { starred: true, hash: 2612834019, category: ITEMCATEGORY.Weapon, value: "Queenbreakers' Bow", icon: "/common/destiny_content/icons/1f1477bd77c6eb0e7e7a1b082bb62eed.jpg" },
-        { starred: true, hash: 2809229973, category: ITEMCATEGORY.Weapon, value: "Necrochasm", icon: "/common/destiny_content/icons/e1594f119b3219eeda9fd3f7216e0881.jpg" },
+        { starred: true, hash: 2344494719, category: ITEMCATEGORY.Weapon, value: "Lord of Wolves", icon: "/common/destiny_content/icons/ee5a93a819b51f395781a3175efa2005.jpg" },
+        { starred: true, hash: 2612834019, category: ITEMCATEGORY.Weapon, value: "Queenbreakers' Bow", icon: "/common/destiny_content/icons/c41001ba36e4a32cd223573f1a150e81.jpg" },
+        { starred: true, hash: 2809229973, category: ITEMCATEGORY.Weapon, value: "Necrochasm", icon: "/common/destiny_content/icons/d5f5eff03eb6952beeb78bda5316d359.jpg" },
         { starred: true, hash: 346443849, category: ITEMCATEGORY.Weapon, value: "Vex Mythoclast", icon: "/common/destiny_content/icons/bb7c710c5c143ff80997fdfb7b1216c3.jpg" },
-        { starred: true, hash: 3399255907, category: ITEMCATEGORY.Weapon, value: "347 Vesta Dynasty", icon: "/common/destiny_content/icons/8ccecb1bc9c98201d63394de0fe94ab9.jpg" },
-        { starred: true, hash: 1557422751, category: ITEMCATEGORY.Weapon, value: "Dreg's Promise", icon: "/common/destiny_content/icons/54bf749f882fef3c09367f5e8a8f191b.jpg" }
+        { starred: true, hash: 3688594188, category: ITEMCATEGORY.Weapon, value: "Boolean Gemini", icon: "/common/destiny_content/icons/2fc2da2b4dc4c0a4ca034a8cf0a5df54.jpg" },
+        { starred: true, hash: 3675783241, category: ITEMCATEGORY.Weapon, value: "The Chaperone", icon: "/common/destiny_content/icons/31ebf0d88cfa310be9aa7ab5fb25c4c4.jpg" },
+        { starred: true, hash: 3012398148, category: ITEMCATEGORY.Weapon, value: "Telesto", icon: "/common/destiny_content/icons/0f282e925a856d0d77924cf8d3e67ba2.jpg" },
+        { starred: true, hash: 255654879, category: ITEMCATEGORY.Weapon, value: "Zhalo Supercell", icon: "/common/destiny_content/icons/4b485eff91fb941b12a69c9f18191068.jpg" },
+        { starred: true, hash: 2748609458, category: ITEMCATEGORY.Weapon, value: "Fabian Strategy", icon: "/common/destiny_content/icons/345b954d6e650201b93942bd332ddcf2.jpg" },
+        { starred: true, hash: 552354419, category: ITEMCATEGORY.Weapon, value: "Ace of Spades", icon: "/common/destiny_content/icons/5457f39e4bf30f875d0a445d5b234af7.jpg" },
+        { starred: true, hash: 803312564, category: ITEMCATEGORY.Weapon, value: "Tlaloc", icon: "/common/destiny_content/icons/4e9c55ea26034047aa07823c9c6c7689.jpg" },
+        { starred: true, hash: 987423912, category: ITEMCATEGORY.Weapon, value: "The First Curse", icon: "/common/destiny_content/icons/e6039a08ae23d6853651154a5397d015.jpg" },
+        { starred: true, hash: 3227022823, category: ITEMCATEGORY.Weapon, value: "Hereafter", icon: "/common/destiny_content/icons/f680592704842cba76aec140291ab7db.jpg" },
+        { starred: true, hash: 4100639362, category: ITEMCATEGORY.Weapon, value: "Bolt-Caster", icon: "/common/destiny_content/icons/29e92609abd13888c9ef0aa1660dd6e6.jpg" },
+        { starred: true, hash: 4100639364, category: ITEMCATEGORY.Weapon, value: "Dark-Drinker", icon: "/common/destiny_content/icons/2c963ee0f41829ef361c71560bd9a74c.jpg" },
+        { starred: true, hash: 4100639365, category: ITEMCATEGORY.Weapon, value: "Raze-Lighter", icon: "/common/destiny_content/icons/c217646ddd8c12674126633cc4a51481.jpg" },
+        { starred: true, hash: 3688594189, category: ITEMCATEGORY.Weapon, value: "Touch of Malice", icon: "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg" },
+        { starred: true, hash: 4100639363, category: ITEMCATEGORY.Weapon, value: "Void Edge", icon: "/common/destiny_content/icons/f9d8242f2f6ad362cbde98887eabae6e.jpg" },
+        { starred: true, hash: 1550781863, category: ITEMCATEGORY.Weapon, value: "The Scholar (Adept)", icon: "/common/destiny_content/icons/050ef13595025cf39b7f96456efeb6b2.jpg" }
     ];
 
     //spec-guns-gear-misc//old way!
     //private itemOrder: Array<number> = [0, 4, 5, 6, 7, 8, 1, 2, 3, 11, 10, 9, 13, 12];
 
     //spec-guns-gear-misc//new way
-    private itemOrder: Array<number> = [0, 6, 7, 8, 1, 2, 3, 4, 5, 11, 10, 9, 13, 12];
+    private itemOrder: Array<number> = [0, 6, 7, 8, 1, 2, 3, 4, 5, 15, 11, 10, 9, 13, 12, 14];
 
     //account triumphs
     private accountTriumphs: IStaticTriumphsData = {
@@ -107,11 +120,13 @@ class DestinyDataService implements IDestinyDataService
         { hash: 14239492, value: "Chest", category: ITEMCATEGORY.Armor },
         { hash: 20886954, value: "Legs", category: ITEMCATEGORY.Armor },
         { hash: 1585787867, value: "Class Item", category: ITEMCATEGORY.Armor },
-        { hash: 4023194814, value: "Ghost Shell", category: ITEMCATEGORY.Misc },
+        { hash: 434908299, value: "Artifact", category: ITEMCATEGORY.Armor },
+        { hash: 4023194814, value: "Ghost Shell", category: ITEMCATEGORY.Armor },
         { hash: 2025709351, value: "Sparrow", category: ITEMCATEGORY.Misc },
         { hash: 284967655, value: "Ship", category: ITEMCATEGORY.Misc },
         { hash: 2973005342, value: "Shader", category: ITEMCATEGORY.Misc },
-        { hash: 4274335291, value: "Emblem", category: ITEMCATEGORY.Misc }
+        { hash: 4274335291, value: "Emblem", category: ITEMCATEGORY.Misc },
+        { hash: 3054419239, value: "Emotes", category: ITEMCATEGORY.Misc }
     ];
 
     private damageTypeHahes: Array<IHash> = [

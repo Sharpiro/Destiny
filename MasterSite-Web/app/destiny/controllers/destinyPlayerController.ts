@@ -15,6 +15,7 @@ class DestinyPlayerController
         }
         else
         {
+            this.scope.weaponScore = [];
             //get general account information
             this.destinyApiService.getAccountInfo(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
                 (data: any) =>
@@ -32,7 +33,11 @@ class DestinyPlayerController
                 (data: any) => this.setPageError(data));
             //get unique weapon data
             this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (data: any) => this.scope.weaponScore = destinyBlService.handleGetUniqueWeaponDataResponse(data.data),
+                (data: any) =>
+                {
+                    var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response.data.weapons));
+                    this.scope.weaponScore = this.getDistinct(concatArray);
+                },
                 (data: any) => this.setPageError(data));
         }
     }
@@ -67,6 +72,9 @@ class DestinyPlayerController
                 {
                     //modifying this.scope.characterData as object is passed by reference
                     this.destinyBlService.handleGetCharactersInventoryResponse(data.data, this.scope.characterData);
+                    var uniqueEquippedWeapons = this.destinyBlService.handleLegendaries(data.data.Response.Response.data.buckets.Equippable);
+                    let concatArray = this.scope.weaponScore.concat(uniqueEquippedWeapons);
+                    this.scope.weaponScore = this.getDistinct(concatArray);
                 });
         }
     }
@@ -92,12 +100,29 @@ class DestinyPlayerController
 
     private rowClicked = (itemHash: any) =>
     {
+        var temp = this.scope.weaponScore;
         //window.open(`${this.destinyDataService.getDestinyLinks().databases.destinydb}${itemHash}`, "_blank");
     }
 
     private mouseOverRow(item: IEquipmentData)
     {
+        var temp = this.scope.weaponScore;
         //console.log(item.itemName);
+    }
+
+    private getDistinct(list: Array<any>)
+    {
+        let n: any = {}
+        let r: any = [];
+        for (let i = 0; i < list.length; i++)
+        {
+            if (!n[list[i].hash])
+            {
+                n[list[i].hash] = true;
+                r.push(list[i]);
+            }
+        }
+        return r;
     }
 
     private updateAccountDetails = (stateParams: any): boolean =>
