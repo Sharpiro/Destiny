@@ -54,8 +54,8 @@
             <div class="col-sm-4 col-md-4" style="border-style: none">
                 <h4>{{characterData[0].charactersOverview}}</h4>
                 <table class="table equipment">
-                    <tr ng-repeat="item in characterData[0].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
-                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName | itemNameFilter}}</a></td>
+                    <tr ng-repeat="item in characterData[0].equipmentData" ng-click="" ng-mouseover="vm.mouseOverRow(item)">
+                        <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup="{{item.itemHash}}" ng-src="https://www.bungie.net{{item.icon}}" alt="" /></a>{{item.itemName | itemNameFilter}}</td>
                         <td>{{item.details.primaryStat}}</td>
                         <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
                         <td class="testingPopup" ng-show="showDetails">
@@ -67,7 +67,7 @@
             <div class="col-sm-4 col-md-4" style="border-style: none">
                 <h4>{{characterData[1].charactersOverview}}</h4>
                 <table class="table equipment">
-                    <tr ng-repeat="item in characterData[1].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                    <tr ng-repeat="item in characterData[1].equipmentData" ng-click="" ng-mouseover="vm.mouseOverRow(item)">
                         <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName | itemNameFilter}}</a></td>
                         <td>{{item.details.primaryStat}}</td>
                         <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>
@@ -80,7 +80,7 @@
             <div class="col-sm-4 col-md-4" style="border-style: none">
                 <h4>{{characterData[2].charactersOverview}}</h4>
                 <table class="table equipment">
-                    <tr ng-repeat="item in characterData[2].equipmentData" ng-click="showDetails = !showDetails" ng-mouseover="vm.mouseOverRow(item)">
+                    <tr ng-repeat="item in characterData[2].equipmentData" ng-click="" ng-mouseover="vm.mouseOverRow(item)">
                         <td><a href="http://destinydb.com/items/{{item.itemHash}}" target="_blank"><img popup ng-src="https://www.bungie.net{{item.icon}}" alt="" />{{item.itemName | itemNameFilter}}</a></td>
                         <td>{{item.details.primaryStat}}</td>
                         <td ng-bind-html="item.details.damageType | damageTypeFilter"></td>

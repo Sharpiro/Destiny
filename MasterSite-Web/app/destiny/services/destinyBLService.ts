@@ -35,10 +35,18 @@ class DestinyBlService implements IDestinyBlService
             const characterId = currentCharacterData.characterBase.characterId;
             for (let j = 0; j < equipmentData.length; j++)
             {
-                if (equipmentData[j]) {
-                    let hash = equipmentData[j].itemHash;
-                    equipmentData[j].itemName = itemDefinitions[hash].itemName;
-                    equipmentData[j].icon = itemDefinitions[hash].icon;
+                if (equipmentData[j])
+                {
+                    const hash = equipmentData[j].itemHash;
+                    if (itemDefinitions[hash])
+                    {
+                        equipmentData[j].itemName = itemDefinitions[hash].itemName;
+                        equipmentData[j].icon = itemDefinitions[hash].icon;
+                    } else
+                    {
+                        equipmentData[j].itemName = "LOL not in DB";
+                        equipmentData[j].icon = "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg";
+                    }
                 }
             }
             characterData.push({ charactersOverview: charactersOverview, equipmentData: equipmentData, characterId: characterId });
@@ -48,16 +56,36 @@ class DestinyBlService implements IDestinyBlService
 
 
 
-    public handleGetUniqueWeaponDataResponse = (data: any): Array<IPopularItemHash> =>
+    public handleGetExoticWeapons = (inputList: any): Array<IPopularItemHash> =>
     {
-        const exoticData: Array<IExoticData> = data.Response.data.weapons;
         const popularItems = this.destinyDataService.getPopularItems();
         let gearScoreList: Array<IPopularItemHash> = [];
-        for (let i = 0; i < exoticData.length; i++)
+        for (let i = 0; i < inputList.length; i++)
         {
             for (let j = 0; j < popularItems.length; j++)
             {
-                if (exoticData[i].referenceId === popularItems[j].hash)
+                if (inputList[i].referenceId === popularItems[j].hash)
+                {
+                    if (popularItems[j].starred)
+                    {
+                        let gearObj: IPopularItemHash = popularItems[j];
+                        gearScoreList.push(gearObj);
+                    }
+                }
+            }
+        }
+        return gearScoreList;
+    }
+
+    public handleLegendaries = (inputList: any): Array<IPopularItemHash> =>
+    {
+        const popularItems = this.destinyDataService.getPopularItems();
+        let gearScoreList: Array<IPopularItemHash> = [];
+        for (let i = 0; i < inputList.length; i++)
+        {
+            for (let j = 0; j < popularItems.length; j++)
+            {
+                if (inputList[i].items[0] && inputList[i].items[0].itemHash === popularItems[j].hash)
                 {
                     if (popularItems[j].starred)
                     {
@@ -85,17 +113,18 @@ class DestinyBlService implements IDestinyBlService
 
     public handleGetCharactersInventoryResponse = (rawData: any, characterData: Array<ICharacterData>) =>
     {
-        const characterNumberResponse = rawData.CharacterNumber;
         const inventoryDataResponse = rawData.Response.Response.data.buckets.Equippable;
+        const characterNumberResponse = rawData.CharacterNumber;
         for (let i = 0; i < inventoryDataResponse.length; i++)
         {
             const currentCharacterEquipment = characterData[characterNumberResponse].equipmentData;
             for (let j = 0; j < currentCharacterEquipment.length; j++)
             {
-                if (inventoryDataResponse[i].items[0] && inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
+                if (inventoryDataResponse[i].items[0] && currentCharacterEquipment[j] && inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
                 {
                     const bucketHash = <ICategoryHash>this.sharedFunctionsService.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
-                    if (bucketHash.category === ITEMCATEGORY.Weapon)
+                    if (!bucketHash) return;
+                    if (bucketHash.category === ITEMCATEGORY.Weapon || bucketHash.category === ITEMCATEGORY.Armor)
                     {
                         const itemDetails: IEquipmentDataDetails = {
                             primaryStat: inventoryDataResponse[i].items[0].primaryStat.value,
@@ -103,19 +132,28 @@ class DestinyBlService implements IDestinyBlService
                         };
                         characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
                     }
-                    else if (bucketHash.category === ITEMCATEGORY.Armor)
-                    {
-                        if (inventoryDataResponse[i].items[0].stats[0])
-                        {
-                            const itemDetails: IEquipmentDataDetails = {
-                                primaryStat: inventoryDataResponse[i].items[0].stats[0].value,
-                                damageType: null
-                            };
-                            characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
-                        }
-                    }
+                    //else if (bucketHash.category === ITEMCATEGORY.Armor)
+                    //{
+                    //    if (inventoryDataResponse[i].items[0].stats[0])
+                    //    {
+                    //        const itemDetails: IEquipmentDataDetails = {
+                    //            primaryStat: inventoryDataResponse[i].items[0].stats[0].value,
+                    //            damageType: null
+                    //        };
+                    //        characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
+                    //    }
+                    //}
                 }
             }
+        }
+    }
+
+    public checkInterestingGear(data: any)
+    {
+        var characterEquipmentData = data.Response.Response.data.buckets.Equippable;
+        for (let i = 0; i < characterEquipmentData.length; i++)
+        {
+
         }
     }
 
@@ -153,12 +191,14 @@ class DestinyBlService implements IDestinyBlService
             return unorderedList;
         let orderedList: Array<IEquipmentData> = [];
         //re-order list
-        for (let j = 0; j < unorderedList.length; j++) {
+        for (let j = 0; j < unorderedList.length; j++)
+        {
             //if (unorderedList.length === 13) {
             //    console.log(unorderedList[j].itemHash);
             //}
             const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
-            orderedList.push(unorderedList[orderedListPosition]);
+            if (unorderedList[orderedListPosition])
+                orderedList.push(unorderedList[orderedListPosition]);
         }
         return orderedList;
     }
