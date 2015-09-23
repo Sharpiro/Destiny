@@ -7,11 +7,4 @@
         public string Message { get; set; }
         public T Response { get; set; }
     }
-
-    public class InventoryItem
-    {
-        public string ItemName { get; set; }
-        public string ItemDescription { get; set; }
-        public string Icon { get; set; }
-    }
 }
