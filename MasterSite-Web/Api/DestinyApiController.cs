@@ -5,8 +5,11 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
+using MasterSite_Web.HttpClientWrapper;
 using MasterSite_Web.Models;
+using MasterSite_Web.Models.Destiny;
 using Microsoft.Owin.Security.Provider;
 
 namespace MasterSite_Web.Api
@@ -33,7 +36,7 @@ namespace MasterSite_Web.Api
                     var task = client.SendAsync(request);
                     var result = task.Result;
                     content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
+                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(content);
                     if (responseModel.ErrorCode != 1)
                     {
                         return InternalServerError(new Exception(responseModel.Message));
@@ -67,7 +70,7 @@ namespace MasterSite_Web.Api
                     var task = client.SendAsync(request);
                     var result = task.Result;
                     var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
+                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(content);
                     if (responseModel.ErrorCode != 1)
                     {
                         return InternalServerError(new Exception(responseModel.Message));
@@ -84,83 +87,100 @@ namespace MasterSite_Web.Api
         }
 
         [HttpGet]
-        public IHttpActionResult GetItem(uint itemId, int? listNumber = null, int? listPosition = null)
+        public IHttpActionResult GetItemSummary(uint itemId, int? listNumber = null, int? listPosition = null)
         {
-            object jsonContent;
-            using (var client = new HttpClient())
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetItem(uint itemId, int? listNumber = null, int? listPosition = null)
+        {
+            var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{itemId}/";
+            var headers = new HeaderModel
             {
-                var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{itemId}/";
-                try
-                {
-                    var request = new HttpRequestMessage()
-                    {
-                        RequestUri = new Uri(url),
-                        Method = HttpMethod.Get,
-                    };
-                    request.Headers.Add("X-API-Key", _bungieApiKey);
-                    var task = client.SendAsync(request);
-                    var result = task.Result;
-                    var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
-                    if (responseModel.ErrorCode != 1)
-                    {
-                        return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-                    }
-                    jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Async Request Failed...");
-                    return InternalServerError(ex);
-                };
-            }
-            var testModel = new ItemModel
-            {
-                Response = jsonContent,
-                ListNumber = listNumber,
-                ListPosition = listPosition
+                Name = "X-API-Key",
+                Value = _bungieApiKey
             };
+            var result = await WebHelper.GetASync(url, headers);
+            dynamic responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(result);
+            var item = new InventoryItem
+            {
+                ItemName = responseModel.Response.Data.InventoryItem.ItemName
+            };
+            return Ok();
+            //using (var client = new HttpClient())
+            //{
+            //    var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{itemId}/";
+            //    try
+            //    {
+            //        var request = new HttpRequestMessage()
+            //        {
+            //            RequestUri = new Uri(url),
+            //            Method = HttpMethod.Get,
+            //        };
+            //        request.Headers.Add(, );
+            //        var task = client.SendAsync(request);
+            //        var result = task.Result;
+            //        var content = result.Content.ReadAsStringAsync().Result;
+            //        var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
+            //        if (responseModel.ErrorCode != 1)
+            //        {
+            //            return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
+            //        }
+            //        jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Async Request Failed...");
+            //        return InternalServerError(ex);
+            //    };
+            //}
+            //var testModel = new ItemModel
+            //{
+            //    Response = jsonContent,
+            //    ListNumber = listNumber,
+            //    ListPosition = listPosition
+            //};
             //var returnModel = Newtonsoft.Json.JsonConvert.SerializeObject(testModel);
-            return Ok(testModel);
         }
 
         [HttpGet]
         public IHttpActionResult GetCharacterInventory(int platform, ulong membershipId, ulong characterId, int? characterNumber = null)
         {
-            object jsonContent;
-            using (var client = new HttpClient())
-            {
-                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
-                try
-                {
-                    var request = new HttpRequestMessage()
-                    {
-                        RequestUri = new Uri(url),
-                        Method = HttpMethod.Get,
-                    };
-                    request.Headers.Add("X-API-Key", _bungieApiKey);
-                    var task = client.SendAsync(request);
-                    var result = task.Result;
-                    var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
-                    if (responseModel.ErrorCode != 1)
-                    {
-                        return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-                    }
-                    jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Async Request Failed...");
-                    return InternalServerError(ex);
-                };
-            }
-            var testModel = new CharacterInventoryModel
-            {
-                Response = jsonContent,
-                CharacterNumber = characterNumber
-            };
-            return Ok(testModel);
+            //object jsonContent;
+            //using (var client = new HttpClient())
+            //{
+            //    var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
+            //    try
+            //    {
+            //        var request = new HttpRequestMessage()
+            //        {
+            //            RequestUri = new Uri(url),
+            //            Method = HttpMethod.Get,
+            //        };
+            //        request.Headers.Add("X-API-Key", _bungieApiKey);
+            //        var task = client.SendAsync(request);
+            //        var result = task.Result;
+            //        var content = result.Content.ReadAsStringAsync().Result;
+            //        var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<T>(content);
+            //        if (responseModel.ErrorCode != 1)
+            //        {
+            //            return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
+            //        }
+            //        jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Async Request Failed...");
+            //        return InternalServerError(ex);
+            //    };
+            //}
+            //var testModel = new CharacterInventoryModel
+            //{
+            //    Response = jsonContent,
+            //    CharacterNumber = characterNumber
+            //};
+            return Ok();
         }
 
         [HttpGet]
@@ -181,7 +201,7 @@ namespace MasterSite_Web.Api
                     var task = client.SendAsync(request);
                     var result = task.Result;
                     var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
+                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(content);
                     if (responseModel.ErrorCode != 1)
                     {
                         return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
@@ -215,7 +235,7 @@ namespace MasterSite_Web.Api
                     var task = client.SendAsync(request);
                     var result = task.Result;
                     var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
+                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(content);
                     if (responseModel.ErrorCode != 1)
                     {
                         return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));

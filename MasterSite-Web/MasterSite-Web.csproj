@@ -182,10 +182,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CharacterInventoryModel.cs" />
-    <Compile Include="Models\ResponseModel.cs" />
-    <Compile Include="Models\ItemModel.cs" />
-    <Compile Include="Models\SearchDestinyPlayerModel.cs" />
+    <Compile Include="HttpClientWrapper\HeaderModel.cs" />
+    <Compile Include="HttpClientWrapper\WebHelper.cs" />
+    <Compile Include="Models\Destiny\CharacterInventoryModel.cs" />
+    <Compile Include="Models\Destiny\ResponseModel.cs" />
+    <Compile Include="Models\Destiny\ItemModel.cs" />
+    <Compile Include="Models\Destiny\SearchDestinyPlayerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
