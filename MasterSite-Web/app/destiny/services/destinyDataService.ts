@@ -85,7 +85,10 @@ class DestinyDataService implements IDestinyDataService
         { starred: true, hash: 4100639365, category: ITEMCATEGORY.Weapon, value: "Raze-Lighter", icon: "/common/destiny_content/icons/c217646ddd8c12674126633cc4a51481.jpg" },
         { starred: true, hash: 3688594189, category: ITEMCATEGORY.Weapon, value: "Touch of Malice", icon: "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg" },
         { starred: true, hash: 4100639363, category: ITEMCATEGORY.Weapon, value: "Void Edge", icon: "/common/destiny_content/icons/f9d8242f2f6ad362cbde98887eabae6e.jpg" },
+        { starred: true, hash: 1550781863, category: ITEMCATEGORY.Weapon, value: "The Scholar (Adept)", icon: "/common/destiny_content/icons/050ef13595025cf39b7f96456efeb6b2.jpg" },
+        { starred: true, hash: 1550781863, category: ITEMCATEGORY.Weapon, value: "The Scholar (Adept)", icon: "/common/destiny_content/icons/050ef13595025cf39b7f96456efeb6b2.jpg" },
         { starred: true, hash: 1550781863, category: ITEMCATEGORY.Weapon, value: "The Scholar (Adept)", icon: "/common/destiny_content/icons/050ef13595025cf39b7f96456efeb6b2.jpg" }
+
     ];
 
     //spec-guns-gear-misc//old way!
