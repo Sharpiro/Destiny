@@ -14,6 +14,7 @@ using System.Web.Http;
 using MasterSite_Core.HttpClientWrapper;
 using MasterSite_Web.Models;
 using MasterSite_Web.Models.Destiny;
+using Microsoft.Ajax.Utilities;
 using Microsoft.Owin.Security.Provider;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -55,25 +56,24 @@ namespace MasterSite_Web.Api
         {
             var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/?definitions=true";
             var result = await WebHelper.GetASync(url, _bungieHeader);
-            JObject data = JObject.Parse(result);
-            dynamic dynamicData = JsonConvert.DeserializeObject(result);
-            var definitions = dynamicData.Response.definitions.items;
+            var data = JObject.Parse(result);
+            var definitions = data.SelectToken("Response.definitions.items");
+            var itemHashResponse = new JObject();
             foreach (var definition in definitions)
             {
-                var tempJObject = new JObject();
-                try
+                var children = (JObject)definition.First;
+                var subObject = new JObject
                 {
-                    tempJObject.Add(definition.Value.Property("itemName"));
-                    tempJObject.Add(definition.Value.Property("icon"));
-                    tempJObject.Add(definition.Value.Property("itemDescription"));
-                }
-                catch (Exception)
-                {
-                    // one or more properties was not available
-                }
-                definition.Value = tempJObject;
+                    new JProperty("ItemHash", (string)children["itemHash"]),
+                    new JProperty("icon", (string)children["icon"]),
+                    new JProperty("itemDescription", (string)children["itemDescription"])
+                };
+                var propertyName = ((JProperty)definition).Name;
+                if (propertyName != null)
+                    itemHashResponse.Add(new JProperty(propertyName, subObject));
             }
-            JArray jList = (JArray)data.SelectToken("Response.data.characters");
+
+            var jList = (JArray)data.SelectToken("Response.data.characters");
             var characters = jList.Select(c => new CharacterModel
             {
                 BackgroundPath = c.Value<string>("backgroundPath"),
@@ -86,21 +86,18 @@ namespace MasterSite_Web.Api
                 RaceHash = c.SelectToken("characterBase").Value<ulong>("raceHash"),
                 PowerLevel = c.SelectToken("characterBase").Value<int>("powerLevel"),
                 EquipmentList = ((JArray)c.SelectToken("characterBase.peerView.equipment"))
-                                .Select(p => p.Value<string>("itemHash")).ToList()
+                                .Select(p => (string)p["itemHash"]).ToList()
             });
 
             var response = new ResponseModel<AccountInfoModel>
             {
-                ErrorCode = dynamicData.ErrorCode,
-                ErrorStatus = dynamicData.ErrorStatus,
-                Message = dynamicData.Message,
+                ErrorCode = (int)data["ErrorCode"],
+                ErrorStatus = (string)data["ErrorStatus"],
+                Message = (string)data["Message"],
                 Response = new AccountInfoModel
                 {
-                    HashDefinitions = new HashDefinitions
-                    {
-                        Items = definitions
-                    },
-                    CharacterModels = characters
+                    HashDefinitions = itemHashResponse,
+                    Characters = characters
                 }
             };
             return Ok(response);

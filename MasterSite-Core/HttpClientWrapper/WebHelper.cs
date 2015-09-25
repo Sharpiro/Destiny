@@ -19,17 +19,8 @@ namespace MasterSite_Core.HttpClientWrapper
                 var task = client.SendAsync(request);
                 var result = await task;
                 var content = await result.Content.ReadAsStringAsync();
-                //var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel>(content);
-
-                //if (responseModel.ErrorCode != 1)
-                //{
-                //    return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-                //}
-                //var jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
                 return content;
             }
-            //var data = "this is a sync data";
-            //return Task.FromResult(data);
         }
     }
 }
