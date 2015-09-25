@@ -20,15 +20,15 @@ namespace MasterSite_Web.Models.Destiny
 
     public class CharacterModel
     {
-        public ulong CharacterId { get; set; }
+        public string CharacterId { get; set; }
         public string BackgroundPath { get; set; }
         public int BaseCharacterLevel { get; set; }
-        public string EmblemHash { get; set; }
+        public ulong EmblemHash { get; set; }
         public string EmblemPath { get; set; }
         public ulong ClassHash { get; set; }
         public ulong GenderHash { get; set; }
         public ulong RaceHash { get; set; }
-        public List<Equipment> EquipmentList { get; set; }
+        public List<string> EquipmentList { get; set; }
         public int PowerLevel { get; set; }
     }
 

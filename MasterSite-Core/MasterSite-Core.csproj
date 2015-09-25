@@ -57,6 +57,8 @@
     <Compile Include="Entities\Move.cs" />
     <Compile Include="Entities\Pokemon.cs" />
     <Compile Include="Entities\Pokemon_Moves.cs" />
+    <Compile Include="HttpClientWrapper\HeaderModel.cs" />
+    <Compile Include="HttpClientWrapper\WebHelper.cs" />
     <Compile Include="Migrations\201508290230152_WHATEVER.cs" />
     <Compile Include="Migrations\201508290230152_WHATEVER.Designer.cs">
       <DependentUpon>201508290230152_WHATEVER.cs</DependentUpon>

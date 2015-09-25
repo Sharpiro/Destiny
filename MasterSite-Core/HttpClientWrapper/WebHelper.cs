@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MasterSite_Web.Models;
-using MasterSite_Web.Models.Destiny;
 
-namespace MasterSite_Web.HttpClientWrapper
+namespace MasterSite_Core.HttpClientWrapper
 {
     public static class WebHelper
     {
