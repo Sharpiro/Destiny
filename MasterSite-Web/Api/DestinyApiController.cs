@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using MasterSite_Web.HttpClientWrapper;
+using MasterSite_Core.HttpClientWrapper;
 using MasterSite_Web.Models;
 using MasterSite_Web.Models.Destiny;
 using Microsoft.Owin.Security.Provider;
@@ -55,9 +55,9 @@ namespace MasterSite_Web.Api
         {
             var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/?definitions=true";
             var result = await WebHelper.GetASync(url, _bungieHeader);
+            JObject data = JObject.Parse(result);
             dynamic dynamicData = JsonConvert.DeserializeObject(result);
             var definitions = dynamicData.Response.definitions.items;
-
             foreach (var definition in definitions)
             {
                 var tempJObject = new JObject();
@@ -73,19 +73,20 @@ namespace MasterSite_Web.Api
                 }
                 definition.Value = tempJObject;
             }
-            IEnumerable<dynamic> list = dynamicData.Response.data.characters;
-            var characters = list.Select(c => new CharacterModel
+            JArray jList = (JArray)data.SelectToken("Response.data.characters");
+            var characters = jList.Select(c => new CharacterModel
             {
-                BackgroundPath = c.backgroundPath,
-                BaseCharacterLevel = c.baseCharacterLevel,
-                EmblemHash = c.emblemHash,
-                EmblemPath = c.emblemPath,
-                CharacterId = c.characterBase.characterId,
-                ClassHash = c.characterBase.classHash,
-                GenderHash = c.characterBase.genderHash,
-                RaceHash = c.characterBase.raceHash,
-                PowerLevel = c.characterBase.powerLevel,
-                EquipmentList = c.characterBase.peerView.equipment.ToObject<IList<Equipment>>()
+                BackgroundPath = c.Value<string>("backgroundPath"),
+                BaseCharacterLevel = c.Value<int>("baseCharacterLevel"),
+                EmblemHash = c.Value<ulong>("emblemHash"),
+                EmblemPath = c.Value<string>("emblemPath"),
+                CharacterId = c.SelectToken("characterBase").Value<string>("characterId"),
+                ClassHash = c.SelectToken("characterBase").Value<ulong>("classHash"),
+                GenderHash = c.SelectToken("characterBase").Value<ulong>("genderHash"),
+                RaceHash = c.SelectToken("characterBase").Value<ulong>("raceHash"),
+                PowerLevel = c.SelectToken("characterBase").Value<int>("powerLevel"),
+                EquipmentList = ((JArray)c.SelectToken("characterBase.peerView.equipment"))
+                                .Select(p => p.Value<string>("itemHash")).ToList()
             });
 
             var response = new ResponseModel<AccountInfoModel>
