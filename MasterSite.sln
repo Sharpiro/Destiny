@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterSite-Web", "MasterSite-Web\MasterSite-Web.csproj", "{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterSite.Core", "MasterSite.Core\MasterSite.Core.csproj", "{B09E865D-9232-461F-B8C1-FF98ABBA77F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterSite-Core", "MasterSite-Core\MasterSite-Core.csproj", "{B09E865D-9232-461F-B8C1-FF98ABBA77F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterSite.Tests", "MasterSite.Test\MasterSite.Tests.csproj", "{41DC7F69-BCDE-4011-8459-BBAFB53AC3F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterSite-Tests", "MasterSite-Test\MasterSite-Tests.csproj", "{41DC7F69-BCDE-4011-8459-BBAFB53AC3F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterSite.Web", "MasterSite.Web\MasterSite.Web.csproj", "{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B09E865D-9232-461F-B8C1-FF98ABBA77F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B09E865D-9232-461F-B8C1-FF98ABBA77F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B09E865D-9232-461F-B8C1-FF98ABBA77F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{41DC7F69-BCDE-4011-8459-BBAFB53AC3F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41DC7F69-BCDE-4011-8459-BBAFB53AC3F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41DC7F69-BCDE-4011-8459-BBAFB53AC3F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4702DBC4-5093-46A2-B2C7-7C4D52EFA719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
