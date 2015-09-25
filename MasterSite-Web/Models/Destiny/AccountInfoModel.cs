@@ -9,13 +9,8 @@ namespace MasterSite_Web.Models.Destiny
 {
     public class AccountInfoModel
     {
-        public HashDefinitions HashDefinitions { get; set; }
-        public IEnumerable<CharacterModel> CharacterModels { get; set; }
-    }
-
-    public class HashDefinitions
-    {
-        public dynamic Items { get; set; }
+        public JObject HashDefinitions { get; set; }
+        public IEnumerable<CharacterModel> Characters { get; set; }
     }
 
     public class CharacterModel
@@ -30,11 +25,5 @@ namespace MasterSite_Web.Models.Destiny
         public ulong RaceHash { get; set; }
         public List<string> EquipmentList { get; set; }
         public int PowerLevel { get; set; }
-    }
-
-    public class Equipment
-    {
-        [JsonProperty("itemHash")]
-        public ulong ItemHash { get; set; }
     }
 }
