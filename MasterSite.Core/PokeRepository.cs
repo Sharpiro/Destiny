@@ -77,7 +77,7 @@ namespace MasterSite.Core
                         .Where(selection => selection.PM.PokemonId == pokemon.PokeId).Select(final => final.M)
                         .ToList();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine("No Data available");
                 }

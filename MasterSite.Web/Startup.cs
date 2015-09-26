@@ -18,6 +18,14 @@ namespace MasterSite.Web
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
                 );
+            //force json
+            app.Use(async (environment, next) =>
+            {
+                var requestHeaders = environment.Request.Headers;
+                requestHeaders.Set("Accept", "application/json");
+                string value;
+                await next();
+            });
             app.UseNinjectMiddleware(() => new StandardKernel());
             app.UseNinjectWebApi(config);
         }
