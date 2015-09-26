@@ -8,6 +8,7 @@ using System.Web.Http;
 using MasterSite.Core.BusinessLogic;
 using MasterSite.Core.HttpClientWrapper;
 using MasterSite.Core.Models.Destiny;
+using Newtonsoft.Json.Linq;
 
 namespace MasterSite.Web.Api
 {
@@ -29,17 +30,17 @@ namespace MasterSite.Web.Api
         [HttpGet]
         public async Task<IHttpActionResult> SearchDestinyPlayer(int platform, string displayName)
         {
-            var url = $"http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/{platform}/{displayName}/";
-            var jsonResult = await WebHelper.GetASync(url, _bungieHeader);
-            dynamic responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResult);
-            var response = new ResponseModel<object>
+            try
             {
-                ErrorCode = responseModel.ErrorCode,
-                ErrorStatus = responseModel.ErrorStatus,
-                Message = responseModel.Message,
-                Response = responseModel.Response
-            };
-            return Ok(response);
+                var url = $"http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/{platform}/{displayName}/";
+                var jsonResult = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.SearchDestinyPlayer(jsonResult);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         [HttpGet]
@@ -59,165 +60,68 @@ namespace MasterSite.Web.Api
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> GetItem(uint itemId, int? listNumber = null, int? listPosition = null)
+        public async Task<IHttpActionResult> GetItem(uint id, int? listNumber = null, int? listPosition = null)
         {
-            var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{itemId}/";
-            var result = await WebHelper.GetASync(url, _bungieHeader);
-            dynamic responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
-            var response = new ResponseModel<ItemModel>
+            try
             {
-                ErrorCode = responseModel.ErrorCode,
-                ErrorStatus = responseModel.ErrorStatus,
-                Message = responseModel.Message,
-                Response = new ItemModel
-                {
-                    ItemName = responseModel.Response.data.inventoryItem.itemName,
-                    ItemDescription = responseModel.Response.data.inventoryItem.itemDescription,
-                    Icon = responseModel.Response.data.inventoryItem.icon
-                }
-            };
-            return Ok(response);
+                var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{id}/";
+                var result = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.GetItem(result);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         [HttpGet]
-        public IHttpActionResult GetCharacterInventory(int platform, ulong membershipId, ulong characterId, int? characterNumber = null)
+        public async Task<IHttpActionResult> GetCharacterInventory(int platform, ulong membershipId, ulong characterId, int? characterNumber = null)
         {
-            //object jsonContent;
-            //using (var client = new HttpClient())
-            //{
-            //    var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
-            //    try
-            //    {
-            //        var request = new HttpRequestMessage()
-            //        {
-            //            RequestUri = new Uri(url),
-            //            Method = HttpMethod.Get,
-            //        };
-            //        request.Headers.Add("X-API-Key", _bungieApiKey);
-            //        var task = client.SendAsync(request);
-            //        var result = task.Result;
-            //        var content = result.Content.ReadAsStringAsync().Result;
-            //        var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<T>(content);
-            //        if (responseModel.ErrorCode != 1)
-            //        {
-            //            return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-            //        }
-            //        jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("Async Request Failed...");
-            //        return InternalServerError(ex);
-            //    };
-            //}
-            //var testModel = new CharacterInventoryModel
-            //{
-            //    Response = jsonContent,
-            //    CharacterNumber = characterNumber
-            //};
-            return Ok();
+            try
+            {
+                var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
+                var result = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.GetCharacterInventory(result);
+                responseModel.Response.CharacterNumber = characterNumber;
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         [HttpGet]
-        public IHttpActionResult GetAccountTriumphs(int platform, ulong membershipId)
+        public async Task<IHttpActionResult> GetAccountTriumphs(int platform, ulong membershipId)
         {
-            object jsonContent;
-            using (var client = new HttpClient())
+            try
             {
                 var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Triumphs/";
-                try
-                {
-                    var request = new HttpRequestMessage()
-                    {
-                        RequestUri = new Uri(url),
-                        Method = HttpMethod.Get,
-                    };
-                    request.Headers.Add("X-API-Key", "");
-                    var task = client.SendAsync(request);
-                    var result = task.Result;
-                    var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(content);
-                    if (responseModel.ErrorCode != 1)
-                    {
-                        return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-                    }
-                    jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Async Request Failed...");
-                    return InternalServerError(ex);
-                };
+                var result = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.GetAccountTriumphs(result);
+                return Ok(responseModel);
             }
-            return Ok(jsonContent);
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         [HttpGet]
-        public IHttpActionResult GetUniqueWeaponData(int platform, ulong membershipId)
+        public async Task<IHttpActionResult> GetUniqueWeaponData(int platform, ulong membershipId)
         {
-            object jsonContent;
-            using (var client = new HttpClient())
+            try
             {
                 var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/0/";
-                try
-                {
-                    var request = new HttpRequestMessage()
-                    {
-                        RequestUri = new Uri(url),
-                        Method = HttpMethod.Get,
-                    };
-                    request.Headers.Add("X-API-Key", "");
-                    var task = client.SendAsync(request);
-                    var result = task.Result;
-                    var content = result.Content.ReadAsStringAsync().Result;
-                    var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseModel<string>>(content);
-                    if (responseModel.ErrorCode != 1)
-                    {
-                        return InternalServerError(new Exception($"Error Code: {responseModel.ErrorCode}\nStatus: {responseModel.ErrorStatus}\nMessage: {responseModel.Message}"));
-                    }
-                    jsonContent = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Async Request Failed...");
-                    return InternalServerError(ex);
-                };
+                var result = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.GetUniqueWeaponData(result);
+                return Ok(responseModel);
             }
-            return Ok(jsonContent);
-        }
-
-        [HttpGet]
-        public HttpResponseMessage GetImage(string iconLocation)
-        {
-            HttpResponseMessage responseMessage;
-            using (var client = new HttpClient())
+            catch (Exception ex)
             {
-                var url = $"http://www.bungie.net{iconLocation}";
-                try
-                {
-                    var request = new HttpRequestMessage()
-                    {
-                        RequestUri = new Uri(url),
-                        Method = HttpMethod.Get,
-                    };
-                    request.Headers.Add("X-API-Key", "");
-                    var task = client.SendAsync(request);
-                    var result = task.Result;
-                    var content = result.Content.ReadAsByteArrayAsync().Result;
-                    //TODO: Error handling
-                    responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new ByteArrayContent(content),
-                    };
-                    responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Async Request Failed...");
-                    return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                };
+                return InternalServerError(ex);
             }
-            return responseMessage;
         }
     }
 }
