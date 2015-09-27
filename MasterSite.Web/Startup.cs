@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using Microsoft.Owin;
 using Ninject;
 using Ninject.Web.Common.OwinHost;
 using Ninject.Web.WebApi.OwinHost;
@@ -8,6 +9,7 @@ namespace MasterSite.Web
 {
     public class Startup
     {
+        public readonly PathString ApiPath = new PathString("/api");
         public void Configuration(IAppBuilder app)
         {
             var config = new HttpConfiguration();
@@ -21,9 +23,11 @@ namespace MasterSite.Web
             //force json
             app.Use(async (environment, next) =>
             {
-                var requestHeaders = environment.Request.Headers;
-                requestHeaders.Set("Accept", "application/json");
-                string value;
+                if (environment.Request.Path.StartsWithSegments(ApiPath))
+                {
+                    var requestHeaders = environment.Request.Headers;
+                    requestHeaders.Set("Accept", "application/json");
+                }
                 await next();
             });
             app.UseNinjectMiddleware(() => new StandardKernel());

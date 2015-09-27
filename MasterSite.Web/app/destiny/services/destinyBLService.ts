@@ -24,12 +24,12 @@ class DestinyBlService implements IDestinyBlService
 
     public handleGetAccountInfoResponse = (data: any): Array<ICharacterData> =>
     {
-        const accountInfoData = data.Response.data;
-        const itemDefinitions: Array<any> = data.Response.definitions.items;
+        const accountInfoData = data.Response;
+        const itemDefinitions: Array<any> = data.Response.HashDefinitions;
         let characterData: Array<ICharacterData> = [];
-        for (let i = 0; i < accountInfoData.characters.length; i++)
+        for (let i = 0; i < accountInfoData.Characters.length; i++)
         {
-            let currentCharacterData = accountInfoData.characters[i];
+            let currentCharacterData = accountInfoData.Characters[i];
             const charactersOverview: string = this.getCharacterOverviewObject(currentCharacterData);
             const equipmentData: Array<IEquipmentData> = this.getEquipmentDataObject(currentCharacterData);
             const characterId = currentCharacterData.characterBase.characterId;
@@ -175,10 +175,10 @@ class DestinyBlService implements IDestinyBlService
         const classHashes = this.destinyDataService.getClassHashes();
         const genderHashes = this.destinyDataService.getGenderHashes();
 
-        const characterOneRace = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.characterBase.raceHash).value;
-        const characterOneClass = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.characterBase.classHash).value;
-        const characterOneGender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.characterBase.genderHash).value;
-        const characterOneLevel = charactersDataList.characterLevel;
+        const characterOneRace = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
+        const characterOneClass = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.RaceHash).value;
+        const characterOneGender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.RaceHash).value;
+        const characterOneLevel = charactersDataList.CharacterLevel;
         const characterOverview = `${characterOneLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`;
 
         return characterOverview;
