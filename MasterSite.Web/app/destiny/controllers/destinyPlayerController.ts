@@ -28,17 +28,17 @@ class DestinyPlayerController
                 },
                 (data: any) => this.setPageError(data.ExceptionMessage));
             //get Account triumphs
-            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data),
-                (data: any) => this.setPageError(data));
+            //this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+            //    (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data),
+            //    (data: any) => this.setPageError(data));
             //get unique weapon data
-            this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (data: any) =>
-                {
-                    var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response.data.weapons));
-                    this.scope.weaponScore = this.getDistinct(concatArray);
-                },
-                (data: any) => this.setPageError(data));
+            //this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+            //    (data: any) =>
+            //    {
+            //        var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response.data.weapons));
+            //        this.scope.weaponScore = this.getDistinct(concatArray);
+            //    },
+            //    (data: any) => this.setPageError(data));
         }
     }
 

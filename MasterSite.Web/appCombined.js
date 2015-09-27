@@ -16,6 +16,48 @@ masterSite.config(["$stateProvider", "$urlRouterProvider", function ($stateProvi
         });
     }]);
 ///<reference path="../app.ts"/>
+var DestinyHeaderController = (function () {
+    function DestinyHeaderController(scope, location, stateParams) {
+        var _this = this;
+        this.scope = scope;
+        this.location = location;
+        this.toggled = true;
+        this.myElement = angular.element(document.querySelector('.side-nav'));
+        this.myFunElement = angular.element(document.querySelector('body'));
+        this.myPageElement = angular.element(document.querySelector('#page-wrapper'));
+        this.slideOut = function () {
+            console.log("slide all Out");
+            _this.myElement.addClass('slideOut');
+            _this.myElement.removeClass('slideIn');
+            _this.myPageElement.addClass('slideOut');
+            _this.myPageElement.removeClass('slideIn');
+        };
+        this.slideIn = function () {
+            console.log("slide all In");
+            _this.myElement.addClass('slideIn');
+            _this.myElement.removeClass('slideOut');
+            _this.myPageElement.addClass('slideIn');
+            _this.myPageElement.removeClass('slideOut');
+        };
+        this.toggleHideAll = function () {
+            console.log("toggling all");
+            _this.myElement.removeClass('side-nav-partial');
+            _this.myElement.toggleClass('toggle');
+            _this.toggled = !_this.toggled;
+            _this.myPageElement.toggleClass('toggle');
+        };
+        scope.vm = this;
+    }
+    DestinyHeaderController.prototype.isActive = function (viewLocation) {
+        var path = this.location.path();
+        if (viewLocation === "/destiny/details" && path !== "/destiny")
+            viewLocation = path;
+        return viewLocation === path;
+    };
+    return DestinyHeaderController;
+})();
+masterSite.controller("destinyHeaderController", ["$scope", "$location", "$stateParams", DestinyHeaderController]);
+///<reference path="../app.ts"/>
 var DestinyDataService = (function () {
     function DestinyDataService($http, $q) {
         var _this = this;
@@ -255,11 +297,6 @@ var DestinyPlayerController = (function () {
                 _this.getCharactersInventory(_this.scope.characterData);
                 _this.scope.showPageContent = true;
             }, function (data) { return _this.setPageError(data.ExceptionMessage); });
-            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(function (data) { return _this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data); }, function (data) { return _this.setPageError(data); });
-            this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(function (data) {
-                var concatArray = _this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response.data.weapons));
-                _this.scope.weaponScore = _this.getDistinct(concatArray);
-            }, function (data) { return _this.setPageError(data); });
         }
     }
     DestinyPlayerController.prototype.mouseOverRow = function (item) {
@@ -287,48 +324,6 @@ var DestinyPlayerController = (function () {
 })();
 masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",
     "destinyDataService", "$stateParams", "$state", "destinyBlService", "sharedFunctionsService", DestinyPlayerController]);
-///<reference path="../app.ts"/>
-var DestinyHeaderController = (function () {
-    function DestinyHeaderController(scope, location, stateParams) {
-        var _this = this;
-        this.scope = scope;
-        this.location = location;
-        this.toggled = true;
-        this.myElement = angular.element(document.querySelector('.side-nav'));
-        this.myFunElement = angular.element(document.querySelector('body'));
-        this.myPageElement = angular.element(document.querySelector('#page-wrapper'));
-        this.slideOut = function () {
-            console.log("slide all Out");
-            _this.myElement.addClass('slideOut');
-            _this.myElement.removeClass('slideIn');
-            _this.myPageElement.addClass('slideOut');
-            _this.myPageElement.removeClass('slideIn');
-        };
-        this.slideIn = function () {
-            console.log("slide all In");
-            _this.myElement.addClass('slideIn');
-            _this.myElement.removeClass('slideOut');
-            _this.myPageElement.addClass('slideIn');
-            _this.myPageElement.removeClass('slideOut');
-        };
-        this.toggleHideAll = function () {
-            console.log("toggling all");
-            _this.myElement.removeClass('side-nav-partial');
-            _this.myElement.toggleClass('toggle');
-            _this.toggled = !_this.toggled;
-            _this.myPageElement.toggleClass('toggle');
-        };
-        scope.vm = this;
-    }
-    DestinyHeaderController.prototype.isActive = function (viewLocation) {
-        var path = this.location.path();
-        if (viewLocation === "/destiny/details" && path !== "/destiny")
-            viewLocation = path;
-        return viewLocation === path;
-    };
-    return DestinyHeaderController;
-})();
-masterSite.controller("destinyHeaderController", ["$scope", "$location", "$stateParams", DestinyHeaderController]);
 ///<reference path="../app.ts"/>
 ///<reference path="../services/destinyDataService.ts"/>
 var TestController = (function () {
@@ -481,43 +476,6 @@ var AccountDetails = (function () {
     }
     return AccountDetails;
 })();
-///<reference path="../../Scripts/definitelytyped/angular.d.ts"/>
-///<reference path="../../Scripts/definitelytyped/angular-ui-router.d.ts"/>
-var pokeApp = angular.module("pokeApp", ["ui.router", "ngAnimate", "ui.bootstrap"]);
-pokeApp.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise("/pokedata");
-        $stateProvider
-            .state("test", {
-            url: "/test",
-            templateUrl: "/app/pokemon/templates/pokemonTemplate.html",
-            controller: "pokemonController"
-        }).state("pokeData", {
-            url: "/pokedata",
-            templateUrl: "/app/pokemon/templates/pokeDataTemplate.html",
-            controller: "pokeDataController"
-        });
-    }]);
-///<reference path="../app.ts"/>
-var PokeApiService = (function () {
-    function PokeApiService($http, $q) {
-        this.$http = $http;
-        this.$q = $q;
-    }
-    PokeApiService.prototype.getMovesList = function () {
-        return this.$http.get("/api/pokeapi/getmoves");
-    };
-    PokeApiService.prototype.getMoveByName = function (name) {
-        return this.$http.get("/api/pokeapi/getmovebyname?name=" + name);
-    };
-    PokeApiService.prototype.getMovesByType = function (name) {
-        return this.$http.get("/api/pokeapi/getmovesbytype?type=" + name);
-    };
-    PokeApiService.prototype.getMoveByPokemon = function (pokemonName) {
-        return this.$http.get("/api/pokeapi/getmovesbypokemon?pokemonname=" + pokemonName);
-    };
-    return PokeApiService;
-})();
-pokeApp.service("pokeApiService", ["$http", "$q", PokeApiService]);
 ///<reference path="../app.ts"/>
 ///<reference path="../interfaces/IDestinyApiService.ts"/>
 var DestinyApiService = (function () {
@@ -600,11 +558,11 @@ var DestinyBlService = (function () {
             return triumphObjects;
         };
         this.handleGetAccountInfoResponse = function (data) {
-            var accountInfoData = data.Response.data;
-            var itemDefinitions = data.Response.definitions.items;
+            var accountInfoData = data.Response;
+            var itemDefinitions = data.Response.HashDefinitions;
             var characterData = [];
-            for (var i = 0; i < accountInfoData.characters.length; i++) {
-                var currentCharacterData = accountInfoData.characters[i];
+            for (var i = 0; i < accountInfoData.Characters.length; i++) {
+                var currentCharacterData = accountInfoData.Characters[i];
                 var charactersOverview = _this.getCharacterOverviewObject(currentCharacterData);
                 var equipmentData = _this.getEquipmentDataObject(currentCharacterData);
                 var characterId = currentCharacterData.characterBase.characterId;
@@ -698,10 +656,10 @@ var DestinyBlService = (function () {
             var raceHashes = _this.destinyDataService.getRaceHashes();
             var classHashes = _this.destinyDataService.getClassHashes();
             var genderHashes = _this.destinyDataService.getGenderHashes();
-            var characterOneRace = _this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.characterBase.raceHash).value;
-            var characterOneClass = _this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.characterBase.classHash).value;
-            var characterOneGender = _this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.characterBase.genderHash).value;
-            var characterOneLevel = charactersDataList.characterLevel;
+            var characterOneRace = _this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
+            var characterOneClass = _this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.RaceHash).value;
+            var characterOneGender = _this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.RaceHash).value;
+            var characterOneLevel = charactersDataList.CharacterLevel;
             var characterOverview = characterOneLevel + " " + characterOneRace + " " + characterOneClass + " - " + characterOneGender;
             return characterOverview;
         };
@@ -741,6 +699,22 @@ var SharedFunctionsService = (function () {
     return SharedFunctionsService;
 })();
 masterSite.service("sharedFunctionsService", [SharedFunctionsService]);
+///<reference path="../../Scripts/definitelytyped/angular.d.ts"/>
+///<reference path="../../Scripts/definitelytyped/angular-ui-router.d.ts"/>
+var pokeApp = angular.module("pokeApp", ["ui.router", "ngAnimate", "ui.bootstrap"]);
+pokeApp.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise("/pokedata");
+        $stateProvider
+            .state("test", {
+            url: "/test",
+            templateUrl: "/app/pokemon/templates/pokemonTemplate.html",
+            controller: "pokemonController"
+        }).state("pokeData", {
+            url: "/pokedata",
+            templateUrl: "/app/pokemon/templates/pokeDataTemplate.html",
+            controller: "pokeDataController"
+        });
+    }]);
 ///<reference path="../app.ts"/>
 var PokeDataController = (function () {
     function PokeDataController(scope, pokeApiService) {
@@ -1558,4 +1532,25 @@ var BattleStateController = (function () {
     }
     return BattleStateController;
 })();
+///<reference path="../app.ts"/>
+var PokeApiService = (function () {
+    function PokeApiService($http, $q) {
+        this.$http = $http;
+        this.$q = $q;
+    }
+    PokeApiService.prototype.getMovesList = function () {
+        return this.$http.get("/api/pokeapi/getmoves");
+    };
+    PokeApiService.prototype.getMoveByName = function (name) {
+        return this.$http.get("/api/pokeapi/getmovebyname?name=" + name);
+    };
+    PokeApiService.prototype.getMovesByType = function (name) {
+        return this.$http.get("/api/pokeapi/getmovesbytype?type=" + name);
+    };
+    PokeApiService.prototype.getMoveByPokemon = function (pokemonName) {
+        return this.$http.get("/api/pokeapi/getmovesbypokemon?pokemonname=" + pokemonName);
+    };
+    return PokeApiService;
+})();
+pokeApp.service("pokeApiService", ["$http", "$q", PokeApiService]);
 //# sourceMappingURL=appCombined.js.map
