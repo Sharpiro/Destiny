@@ -12,12 +12,12 @@ class DestinyBlService implements IDestinyBlService
 
     public handleGetAccountTriumphsResponse = (data: any): Array<ITriumphs> =>
     {
-        const triumphs = data.Response.data.triumphSets[0].triumphs;
+        const triumphs: Array<boolean> = data;
         const staticTriumphData = this.destinyDataService.getAccountTriumphs().yearOne;
         let triumphObjects: Array<ITriumphs> = [];
         for (let i = 0; i < triumphs.length; i++)
         {
-            triumphObjects[i] = { title: staticTriumphData[i].title, complete: triumphs[i].complete };
+            triumphObjects[i] = { title: staticTriumphData[i].title, complete: triumphs[i] };
         }
         return triumphObjects;
     }
@@ -25,36 +25,41 @@ class DestinyBlService implements IDestinyBlService
     public handleGetAccountInfoResponse = (data: any): Array<ICharacterData> =>
     {
         const accountInfoData = data.Response;
-        const itemDefinitions: Array<any> = data.Response.HashDefinitions;
+        const itemDefinitions: any = accountInfoData.HashDefinitions;
         let characterData: Array<ICharacterData> = [];
         for (let i = 0; i < accountInfoData.Characters.length; i++)
         {
             let currentCharacterData = accountInfoData.Characters[i];
             const charactersOverview: string = this.getCharacterOverviewObject(currentCharacterData);
-            const equipmentData: Array<IEquipmentData> = this.getEquipmentDataObject(currentCharacterData);
-            const characterId = currentCharacterData.characterBase.characterId;
-            for (let j = 0; j < equipmentData.length; j++)
+            const orderedEquipmentHashes: Array<number> = this.getEquipmentDataObject(currentCharacterData);
+            const equipmentData: Array<IEquipmentData> = [];
+            const characterId = currentCharacterData.CharacterId;
+            for (let j = 0; j < orderedEquipmentHashes.length; j++)
             {
-                if (equipmentData[j])
+                if (orderedEquipmentHashes[j])
                 {
-                    const hash = equipmentData[j].itemHash;
+                    const hash = orderedEquipmentHashes[j];
+                    let equipmentObject: any;
                     if (itemDefinitions[hash])
                     {
-                        equipmentData[j].itemName = itemDefinitions[hash].itemName;
-                        equipmentData[j].icon = itemDefinitions[hash].icon;
+                        equipmentObject = {
+                            itemHash: hash,
+                            itemName: itemDefinitions[hash].ItemName,
+                            itemDescription: itemDefinitions[hash].ItemDescription,
+                            icon: itemDefinitions[hash].Icon,
+                            bucketHash: itemDefinitions[hash].BucketHash
+                        };
                     } else
                     {
-                        equipmentData[j].itemName = "LOL not in DB";
-                        equipmentData[j].icon = "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg";
+                        equipmentObject = { itemHash: hash, itemName: "LOL not in DB", icon: "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg" };
                     }
+                    equipmentData.push(equipmentObject);
                 }
             }
             characterData.push({ charactersOverview: charactersOverview, equipmentData: equipmentData, characterId: characterId });
         }
         return characterData;
     }
-
-
 
     public handleGetExoticWeapons = (inputList: any): Array<IPopularItemHash> =>
     {
@@ -64,7 +69,7 @@ class DestinyBlService implements IDestinyBlService
         {
             for (let j = 0; j < popularItems.length; j++)
             {
-                if (inputList[i].referenceId === popularItems[j].hash)
+                if (inputList[i] === popularItems[j].hash)
                 {
                     if (popularItems[j].starred)
                     {
@@ -85,11 +90,11 @@ class DestinyBlService implements IDestinyBlService
         {
             for (let j = 0; j < popularItems.length; j++)
             {
-                if (inputList[i].items[0] && inputList[i].items[0].itemHash === popularItems[j].hash)
+                if (inputList[i] && inputList[i].ItemHash === popularItems[j].hash)
                 {
                     if (popularItems[j].starred)
                     {
-                        let gearObj: IPopularItemHash = popularItems[j];
+                        const gearObj: IPopularItemHash = popularItems[j];
                         gearScoreList.push(gearObj);
                     }
                 }
@@ -113,36 +118,25 @@ class DestinyBlService implements IDestinyBlService
 
     public handleGetCharactersInventoryResponse = (rawData: any, characterData: Array<ICharacterData>) =>
     {
-        const inventoryDataResponse = rawData.Response.Response.data.buckets.Equippable;
-        const characterNumberResponse = rawData.CharacterNumber;
+        const inventoryDataResponse = rawData.Response.Items;
+        const characterNumberResponse = rawData.Response.CharacterNumber;
         for (let i = 0; i < inventoryDataResponse.length; i++)
         {
             const currentCharacterEquipment = characterData[characterNumberResponse].equipmentData;
             for (let j = 0; j < currentCharacterEquipment.length; j++)
             {
-                if (inventoryDataResponse[i].items[0] && currentCharacterEquipment[j] && inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash)
+                if (inventoryDataResponse[i] && currentCharacterEquipment[j] && inventoryDataResponse[i].ItemHash === currentCharacterEquipment[j].itemHash)
                 {
-                    const bucketHash = <ICategoryHash>this.sharedFunctionsService.getHashObject(this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
-                    if (!bucketHash) return;
+                    const bucketHash = <ICategoryHash>this.sharedFunctionsService.getHashObject(this.destinyDataService.getBucketHashes(), currentCharacterEquipment[j].bucketHash);
+                    if (!bucketHash) continue;
                     if (bucketHash.category === ITEMCATEGORY.Weapon || bucketHash.category === ITEMCATEGORY.Armor)
                     {
                         const itemDetails: IEquipmentDataDetails = {
-                            primaryStat: inventoryDataResponse[i].items[0].primaryStat.value,
-                            damageType: inventoryDataResponse[i].items[0].damageType
+                            primaryStat: inventoryDataResponse[i].PrimaryStatValue,
+                            damageType: inventoryDataResponse[i].DamageType
                         };
                         characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
                     }
-                    //else if (bucketHash.category === ITEMCATEGORY.Armor)
-                    //{
-                    //    if (inventoryDataResponse[i].items[0].stats[0])
-                    //    {
-                    //        const itemDetails: IEquipmentDataDetails = {
-                    //            primaryStat: inventoryDataResponse[i].items[0].stats[0].value,
-                    //            damageType: null
-                    //        };
-                    //        characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
-                    //    }
-                    //}
                 }
             }
         }
@@ -175,27 +169,25 @@ class DestinyBlService implements IDestinyBlService
         const classHashes = this.destinyDataService.getClassHashes();
         const genderHashes = this.destinyDataService.getGenderHashes();
 
-        const characterOneRace = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
-        const characterOneClass = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.RaceHash).value;
-        const characterOneGender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.RaceHash).value;
-        const characterOneLevel = charactersDataList.CharacterLevel;
-        const characterOverview = `${characterOneLevel} ${characterOneRace} ${characterOneClass} - ${characterOneGender}`;
+        const Race = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
+        const classType = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.ClassHash).value;
+        const gender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.GenderHash).value;
+        const level = charactersDataList.BaseCharacterLevel;
+        const powerLevel = charactersDataList.PowerLevel;
+        const characterOverview = `${level} ${Race} ${classType} - ${gender} ${powerLevel}`;
 
         return characterOverview;
     }
 
-    private getEquipmentDataObject = (charactersDataList: any): Array<IEquipmentData> =>
+    private getEquipmentDataObject = (characterData: any): Array<number> =>
     {
-        const unorderedList: Array<IEquipmentData> = charactersDataList.characterBase.peerView.equipment;
+        const unorderedList: Array<number> = characterData.EquipmentList;
         if (unorderedList.length === 13)
             return unorderedList;
-        let orderedList: Array<IEquipmentData> = [];
+        let orderedList: Array<number> = [];
         //re-order list
         for (let j = 0; j < unorderedList.length; j++)
         {
-            //if (unorderedList.length === 13) {
-            //    console.log(unorderedList[j].itemHash);
-            //}
             const orderedListPosition = this.destinyDataService.getItemOrderValue(j);
             if (unorderedList[orderedListPosition])
                 orderedList.push(unorderedList[orderedListPosition]);

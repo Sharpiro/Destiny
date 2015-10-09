@@ -6,7 +6,6 @@ namespace MasterSite.Core.Models.Destiny
     {
         public ulong? ItemHash { get; set; }
         public int? DamageType { get; set; }
-        [JsonProperty("equipRequiredLevel")]
         public int? RequiredLevel { get; set; }
         public string ItemName { get; set; }
         public string ItemDescription { get; set; }

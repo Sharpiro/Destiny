@@ -19,7 +19,7 @@ namespace MasterSite.Core.Models.Destiny
         public ulong ClassHash { get; set; }
         public ulong GenderHash { get; set; }
         public ulong RaceHash { get; set; }
-        public List<string> EquipmentList { get; set; }
+        public List<ulong> EquipmentList { get; set; }
         public int PowerLevel { get; set; }
     }
 }

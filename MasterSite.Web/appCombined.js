@@ -144,7 +144,8 @@ var DestinyDataService = (function () {
             { starred: true, hash: 2201079123, category: ITEMCATEGORY.Weapon, value: "Silence of A'arn", icon: "/common/destiny_content/icons/4cb0affbcfcd7e97320291b1ecd13be4.jpg" },
             { starred: true, hash: 2536361593, category: ITEMCATEGORY.Weapon, value: "Smite of Merain", icon: "/common/destiny_content/icons/6c6d5be53bc12ee5b669a328b7a075f0.jpg" },
             { starred: true, hash: 3042333086, category: ITEMCATEGORY.Weapon, value: "Midha's Reckoning", icon: "/common/destiny_content/icons/c3ecb9d6fb9ca71dedcb236474db4917.jpg" },
-            { starred: true, hash: 1397524040, category: ITEMCATEGORY.Weapon, value: "Elulim's Frenzy", icon: "/common/destiny_content/icons/160234fe43be0c031203ad17f8acdc46.jpg" }
+            { starred: true, hash: 1397524040, category: ITEMCATEGORY.Weapon, value: "Elulim's Frenzy", icon: "/common/destiny_content/icons/160234fe43be0c031203ad17f8acdc46.jpg" },
+            { starred: true, hash: 3012398149, category: ITEMCATEGORY.Weapon, value: "Sleeper Simulant", icon: "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg" }
         ];
         this.itemOrder = [0, 6, 7, 8, 1, 2, 3, 4, 5, 15, 11, 10, 9, 13, 12, 14];
         this.accountTriumphs = {
@@ -244,7 +245,7 @@ var DestinyPlayerController = (function () {
             for (var i = 0; i < charactersData.length; i++) {
                 _this.destinyApiService.getCharacterInventory(_this.scope.accountDetails.platform, _this.scope.accountDetails.membershipId, charactersData[i].characterId, i).then(function (data) {
                     _this.destinyBlService.handleGetCharactersInventoryResponse(data.data, _this.scope.characterData);
-                    var uniqueEquippedWeapons = _this.destinyBlService.handleLegendaries(data.data.Response.Response.data.buckets.Equippable);
+                    var uniqueEquippedWeapons = _this.destinyBlService.handleLegendaries(data.data.Response.Items);
                     var concatArray = _this.scope.weaponScore.concat(uniqueEquippedWeapons);
                     _this.scope.weaponScore = _this.getDistinct(concatArray);
                 });
@@ -297,6 +298,11 @@ var DestinyPlayerController = (function () {
                 _this.getCharactersInventory(_this.scope.characterData);
                 _this.scope.showPageContent = true;
             }, function (data) { return _this.setPageError(data.ExceptionMessage); });
+            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(function (data) { return _this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data.Response); }, function (data) { return _this.setPageError(data); });
+            this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(function (data) {
+                var concatArray = _this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response));
+                _this.scope.weaponScore = _this.getDistinct(concatArray);
+            }, function (data) { return _this.setPageError(data); });
         }
     }
     DestinyPlayerController.prototype.mouseOverRow = function (item) {
@@ -549,34 +555,41 @@ var DestinyBlService = (function () {
         this.destinyDataService = destinyDataService;
         this.sharedFunctionsService = sharedFunctionsService;
         this.handleGetAccountTriumphsResponse = function (data) {
-            var triumphs = data.Response.data.triumphSets[0].triumphs;
+            var triumphs = data;
             var staticTriumphData = _this.destinyDataService.getAccountTriumphs().yearOne;
             var triumphObjects = [];
             for (var i = 0; i < triumphs.length; i++) {
-                triumphObjects[i] = { title: staticTriumphData[i].title, complete: triumphs[i].complete };
+                triumphObjects[i] = { title: staticTriumphData[i].title, complete: triumphs[i] };
             }
             return triumphObjects;
         };
         this.handleGetAccountInfoResponse = function (data) {
             var accountInfoData = data.Response;
-            var itemDefinitions = data.Response.HashDefinitions;
+            var itemDefinitions = accountInfoData.HashDefinitions;
             var characterData = [];
             for (var i = 0; i < accountInfoData.Characters.length; i++) {
                 var currentCharacterData = accountInfoData.Characters[i];
                 var charactersOverview = _this.getCharacterOverviewObject(currentCharacterData);
-                var equipmentData = _this.getEquipmentDataObject(currentCharacterData);
-                var characterId = currentCharacterData.characterBase.characterId;
-                for (var j = 0; j < equipmentData.length; j++) {
-                    if (equipmentData[j]) {
-                        var hash = equipmentData[j].itemHash;
+                var orderedEquipmentHashes = _this.getEquipmentDataObject(currentCharacterData);
+                var equipmentData = [];
+                var characterId = currentCharacterData.CharacterId;
+                for (var j = 0; j < orderedEquipmentHashes.length; j++) {
+                    if (orderedEquipmentHashes[j]) {
+                        var hash = orderedEquipmentHashes[j];
+                        var equipmentObject = void 0;
                         if (itemDefinitions[hash]) {
-                            equipmentData[j].itemName = itemDefinitions[hash].itemName;
-                            equipmentData[j].icon = itemDefinitions[hash].icon;
+                            equipmentObject = {
+                                itemHash: hash,
+                                itemName: itemDefinitions[hash].ItemName,
+                                itemDescription: itemDefinitions[hash].ItemDescription,
+                                icon: itemDefinitions[hash].Icon,
+                                bucketHash: itemDefinitions[hash].BucketHash
+                            };
                         }
                         else {
-                            equipmentData[j].itemName = "LOL not in DB";
-                            equipmentData[j].icon = "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg";
+                            equipmentObject = { itemHash: hash, itemName: "LOL not in DB", icon: "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg" };
                         }
+                        equipmentData.push(equipmentObject);
                     }
                 }
                 characterData.push({ charactersOverview: charactersOverview, equipmentData: equipmentData, characterId: characterId });
@@ -588,7 +601,7 @@ var DestinyBlService = (function () {
             var gearScoreList = [];
             for (var i = 0; i < inputList.length; i++) {
                 for (var j = 0; j < popularItems.length; j++) {
-                    if (inputList[i].referenceId === popularItems[j].hash) {
+                    if (inputList[i] === popularItems[j].hash) {
                         if (popularItems[j].starred) {
                             var gearObj = popularItems[j];
                             gearScoreList.push(gearObj);
@@ -603,7 +616,7 @@ var DestinyBlService = (function () {
             var gearScoreList = [];
             for (var i = 0; i < inputList.length; i++) {
                 for (var j = 0; j < popularItems.length; j++) {
-                    if (inputList[i].items[0] && inputList[i].items[0].itemHash === popularItems[j].hash) {
+                    if (inputList[i] && inputList[i].ItemHash === popularItems[j].hash) {
                         if (popularItems[j].starred) {
                             var gearObj = popularItems[j];
                             gearScoreList.push(gearObj);
@@ -625,19 +638,19 @@ var DestinyBlService = (function () {
             return accountDetails;
         };
         this.handleGetCharactersInventoryResponse = function (rawData, characterData) {
-            var inventoryDataResponse = rawData.Response.Response.data.buckets.Equippable;
-            var characterNumberResponse = rawData.CharacterNumber;
+            var inventoryDataResponse = rawData.Response.Items;
+            var characterNumberResponse = rawData.Response.CharacterNumber;
             for (var i = 0; i < inventoryDataResponse.length; i++) {
                 var currentCharacterEquipment = characterData[characterNumberResponse].equipmentData;
                 for (var j = 0; j < currentCharacterEquipment.length; j++) {
-                    if (inventoryDataResponse[i].items[0] && currentCharacterEquipment[j] && inventoryDataResponse[i].items[0].itemHash === currentCharacterEquipment[j].itemHash) {
-                        var bucketHash = _this.sharedFunctionsService.getHashObject(_this.destinyDataService.getBucketHashes(), inventoryDataResponse[i].bucketHash);
+                    if (inventoryDataResponse[i] && currentCharacterEquipment[j] && inventoryDataResponse[i].ItemHash === currentCharacterEquipment[j].itemHash) {
+                        var bucketHash = _this.sharedFunctionsService.getHashObject(_this.destinyDataService.getBucketHashes(), currentCharacterEquipment[j].bucketHash);
                         if (!bucketHash)
-                            return;
+                            continue;
                         if (bucketHash.category === ITEMCATEGORY.Weapon || bucketHash.category === ITEMCATEGORY.Armor) {
                             var itemDetails = {
-                                primaryStat: inventoryDataResponse[i].items[0].primaryStat.value,
-                                damageType: inventoryDataResponse[i].items[0].damageType
+                                primaryStat: inventoryDataResponse[i].PrimaryStatValue,
+                                damageType: inventoryDataResponse[i].DamageType
                             };
                             characterData[characterNumberResponse].equipmentData[j].details = itemDetails;
                         }
@@ -656,15 +669,16 @@ var DestinyBlService = (function () {
             var raceHashes = _this.destinyDataService.getRaceHashes();
             var classHashes = _this.destinyDataService.getClassHashes();
             var genderHashes = _this.destinyDataService.getGenderHashes();
-            var characterOneRace = _this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
-            var characterOneClass = _this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.RaceHash).value;
-            var characterOneGender = _this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.RaceHash).value;
-            var characterOneLevel = charactersDataList.CharacterLevel;
-            var characterOverview = characterOneLevel + " " + characterOneRace + " " + characterOneClass + " - " + characterOneGender;
+            var Race = _this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
+            var classType = _this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.ClassHash).value;
+            var gender = _this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.GenderHash).value;
+            var level = charactersDataList.BaseCharacterLevel;
+            var powerLevel = charactersDataList.PowerLevel;
+            var characterOverview = level + " " + Race + " " + classType + " - " + gender + " " + powerLevel;
             return characterOverview;
         };
-        this.getEquipmentDataObject = function (charactersDataList) {
-            var unorderedList = charactersDataList.characterBase.peerView.equipment;
+        this.getEquipmentDataObject = function (characterData) {
+            var unorderedList = characterData.EquipmentList;
             if (unorderedList.length === 13)
                 return unorderedList;
             var orderedList = [];
@@ -688,6 +702,10 @@ masterSite.service("destinyBlService", ["destinyDataService", "sharedFunctionsSe
 var SharedFunctionsService = (function () {
     function SharedFunctionsService() {
         this.getHashObject = function (hashArray, hash) {
+            if (!hash) {
+                console.warn("Warning: The hash provided was undefined");
+                return null;
+            }
             for (var i = 0; i < hashArray.length; i++) {
                 if (hashArray[i].hash === hash)
                     return hashArray[i];

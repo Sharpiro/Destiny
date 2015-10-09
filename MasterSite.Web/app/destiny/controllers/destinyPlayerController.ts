@@ -28,17 +28,17 @@ class DestinyPlayerController
                 },
                 (data: any) => this.setPageError(data.ExceptionMessage));
             //get Account triumphs
-            //this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-            //    (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data),
-            //    (data: any) => this.setPageError(data));
+            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+                (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data.Response),
+                (data: any) => this.setPageError(data));
             //get unique weapon data
-            //this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-            //    (data: any) =>
-            //    {
-            //        var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response.data.weapons));
-            //        this.scope.weaponScore = this.getDistinct(concatArray);
-            //    },
-            //    (data: any) => this.setPageError(data));
+            this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+                (data: any) =>
+                {
+                    var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response));
+                    this.scope.weaponScore = this.getDistinct(concatArray);
+                },
+                (data: any) => this.setPageError(data));
         }
     }
 
@@ -72,7 +72,7 @@ class DestinyPlayerController
                 {
                     //modifying this.scope.characterData as object is passed by reference
                     this.destinyBlService.handleGetCharactersInventoryResponse(data.data, this.scope.characterData);
-                    var uniqueEquippedWeapons = this.destinyBlService.handleLegendaries(data.data.Response.Response.data.buckets.Equippable);
+                    var uniqueEquippedWeapons = this.destinyBlService.handleLegendaries(data.data.Response.Items);
                     let concatArray = this.scope.weaponScore.concat(uniqueEquippedWeapons);
                     this.scope.weaponScore = this.getDistinct(concatArray);
                 });

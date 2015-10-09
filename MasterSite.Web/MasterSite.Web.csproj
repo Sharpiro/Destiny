@@ -144,7 +144,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="appCombined.js" />
     <Content Include="app\destiny\templates\testTemplate.html" />
     <Content Include="app\destiny\templates\destinyPlayerTemplate.html" />
     <Content Include="app\destiny\index.html" />

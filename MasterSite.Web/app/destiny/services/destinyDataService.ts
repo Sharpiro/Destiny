@@ -90,8 +90,8 @@ class DestinyDataService implements IDestinyDataService
         { starred: true, hash: 2201079123, category: ITEMCATEGORY.Weapon, value: "Silence of A'arn", icon: "/common/destiny_content/icons/4cb0affbcfcd7e97320291b1ecd13be4.jpg" },
         { starred: true, hash: 2536361593, category: ITEMCATEGORY.Weapon, value: "Smite of Merain", icon: "/common/destiny_content/icons/6c6d5be53bc12ee5b669a328b7a075f0.jpg" },
         { starred: true, hash: 3042333086, category: ITEMCATEGORY.Weapon, value: "Midha's Reckoning", icon: "/common/destiny_content/icons/c3ecb9d6fb9ca71dedcb236474db4917.jpg" },
-        { starred: true, hash: 1397524040, category: ITEMCATEGORY.Weapon, value: "Elulim's Frenzy", icon: "/common/destiny_content/icons/160234fe43be0c031203ad17f8acdc46.jpg" }
-
+        { starred: true, hash: 1397524040, category: ITEMCATEGORY.Weapon, value: "Elulim's Frenzy", icon: "/common/destiny_content/icons/160234fe43be0c031203ad17f8acdc46.jpg" },
+        { starred: true, hash: 3012398149, category: ITEMCATEGORY.Weapon, value: "Sleeper Simulant", icon: "/common/destiny_content/icons/01e92aa9288da062ef7cd735e6b25909.jpg" }
     ];
 
     //spec-guns-gear-misc//old way!
