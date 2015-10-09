@@ -34,6 +34,7 @@ interface IEquipmentData
     itemName: string;
     itemHash: number;
     details: IEquipmentDataDetails;
+    bucketHash: number;
 }
 
 interface ITriumphs
@@ -48,6 +49,7 @@ interface IEquipmentDataDetails
     damageType: DAMAGETYPE;
 }
 
-interface IExoticData {
+interface IExoticData
+{
     referenceId: number;
 }

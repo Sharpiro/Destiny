@@ -8,6 +8,11 @@ class SharedFunctionsService implements ISharedFunctionsService
 
     public getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
     {
+        if (!hash)
+        {
+            console.warn("Warning: The hash provided was undefined");
+            return null;
+        }
         for (let i = 0; i < hashArray.length; i++)
         {
             if (hashArray[i].hash === hash)

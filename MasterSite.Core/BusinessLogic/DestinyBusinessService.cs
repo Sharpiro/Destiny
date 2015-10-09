@@ -29,9 +29,11 @@ namespace MasterSite.Core.BusinessLogic
                 var children = (JObject)definition.First;
                 var subObject = new JObject
                 {
-                    new JProperty("ItemHash", (string)children["itemHash"]),
-                    new JProperty("icon", (string)children["icon"]),
-                    new JProperty("itemDescription", (string)children["itemDescription"])
+                    new JProperty("ItemHash", (ulong)children["itemHash"]),
+                    new JProperty("ItemName", (string)children["itemName"]),
+                    new JProperty("Icon", (string)children["icon"]),
+                    new JProperty("ItemDescription", (string)children["itemDescription"]),
+                    new JProperty("BucketHash", (ulong)children["bucketTypeHash"])
                 };
                 var propertyName = ((JProperty)definition).Name;
                 if (propertyName != null)
@@ -51,7 +53,7 @@ namespace MasterSite.Core.BusinessLogic
                 RaceHash = (ulong)c["characterBase"]?["raceHash"],
                 PowerLevel = (int)c["characterBase"]?["powerLevel"],
                 EquipmentList = c["characterBase"]?["peerView"]?["equipment"]?
-                                .Select(p => (string)p["itemHash"]).ToList()
+                                .Select(p => (ulong)p["itemHash"]).ToList()
             });
 
             var response = new ResponseModel<AccountInfoModel>
@@ -98,15 +100,14 @@ namespace MasterSite.Core.BusinessLogic
                 Response = new CharacterInventoryModel
                 {
                     Items = ((JArray)jData["Response"]?["data"]?["buckets"]?["Equippable"])?
-                   .Select(e => e["items"].First)
-                   .Select(i => new ItemModel
-                   {
-                       ItemHash = (ulong?)i["itemHash"],
-                       DamageType = (int?)i["damageType"],
-                       RequiredLevel = (int?)i["equipRequiredLevel"],
-                       PrimaryStatValue = (int?)i["primaryStat"]?["value"]
-                   }).ToList()
-
+                        .Select(e => e["items"].First)
+                        .Select(i => new ItemModel
+                        {
+                            ItemHash = (ulong?)i?["itemHash"],
+                            DamageType = (int?)i?["damageType"],
+                            RequiredLevel = (int?)i?["equipRequiredLevel"],
+                            PrimaryStatValue = (int?)i?["primaryStat"]?["value"]
+                        }).ToList()
                 }
             };
             return responseModel;
