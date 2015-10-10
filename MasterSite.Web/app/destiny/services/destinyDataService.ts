@@ -136,7 +136,7 @@ class DestinyDataService implements IDestinyDataService
     ];
 
     private damageTypeHahes: Array<IHash> = [
-        { hash: 1498876634, value: "Arc", category: DAMAGETYPE.Arc }
+        { hash: 1498876634, value: "Arc" }
     ];
 
     constructor(private $http: ng.IHttpService, private $q: ng.IQService)
