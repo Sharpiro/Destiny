@@ -95,5 +95,17 @@ namespace MasterSite.Tests.Destiny
             Assert.IsNotNull(responseModel);
             Assert.AreEqual(responseModel.Response.Any(), true);
         }
+
+        [TestMethod]
+        public void GetGrimoireTest()
+        {
+            const int platform = 1;
+            const ulong membershipId = 4611686018432239086;
+            var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/";
+            var result = WebHelper.GetASync(url, _bungieHeader).Result;
+            var responseModel = _businessLayer.GetGrimoireCard(123, result);
+            Assert.IsNotNull(responseModel);
+            //Assert.AreEqual(responseModel.Response.Any(), true);
+        }
     }
 }

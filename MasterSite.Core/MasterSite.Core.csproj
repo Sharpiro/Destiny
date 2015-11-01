@@ -56,6 +56,7 @@
     <Compile Include="BusinessLogic\DestinyBusinessService.cs" />
     <Compile Include="Models\Destiny\AccountInfoModel.cs" />
     <Compile Include="Models\Destiny\CharacterInventoryModel.cs" />
+    <Compile Include="Models\Destiny\GrimoireCard.cs" />
     <Compile Include="Models\Destiny\ItemModel.cs" />
     <Compile Include="Models\Destiny\ResponseModel.cs" />
     <Compile Include="Models\Destiny\SearchDestinyPlayerModel.cs" />

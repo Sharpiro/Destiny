@@ -140,5 +140,43 @@ namespace MasterSite.Core.BusinessLogic
             };
             return responseModel;
         }
+
+        public JToken GetPlayerGrimoire(string jsonSource)
+        {
+            var jData = JObject.Parse(jsonSource);
+            var responseModel = new ResponseModel<List<ulong>>
+            {
+                ErrorCode = (int)jData["ErrorCode"],
+                ErrorStatus = (string)jData["ErrorStatus"],
+                Message = (string)jData["Message"],
+                Response = jData["Response"]?["data"]?["weapons"]?
+                    .Select(w => (ulong)w["referenceId"]).ToList()
+            };
+            return jData;
+        }
+
+        public ResponseModel<GrimoireCard> GetGrimoireCard(int cardId, string jsonSource, bool details = false)
+        {
+            var jData = JObject.Parse(jsonSource);
+            var grimoireData = jData["Response"]?["cardDefinitions"]?.First?
+                .Select(cd => new GrimoireCard
+                {
+                    Name = (string)cd?["cardName"],
+                    Intro = (string)cd?["cardIntro"],
+                    Description = (string)cd?["cardDescription"]
+                }).FirstOrDefault();
+            var responseModel = new ResponseModel<GrimoireCard>
+            {
+                ErrorCode = (int)jData["ErrorCode"],
+                ErrorStatus = (string)jData["ErrorStatus"],
+                Message = (string)jData["Message"],
+                Response = grimoireData
+            };
+            if (responseModel.Response == null || !details)
+                responseModel.Response = new GrimoireCard();
+            responseModel.Response.Id = cardId;
+            responseModel.Response.Acquired = grimoireData != null;
+            return responseModel;
+        }
     }
 }
