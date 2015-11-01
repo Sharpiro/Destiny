@@ -35,7 +35,7 @@ interface IAccountDetails
 {
     platform: number;
     displayName: string;
-    membershipId: number;
+    membershipId: string;
     platformIcon: string;
 }
 
@@ -43,6 +43,6 @@ class AccountDetails implements IAccountDetails
 {
     public platform: number = null;
     public displayName: string = null;
-    public membershipId: number = null;
+    public membershipId: string = null;
     public platformIcon: string = null;
 }

@@ -1,0 +1,4 @@
+Oryx: 700470
+Atheon: 603070
+Crota: 601076
+Skolas: 601904

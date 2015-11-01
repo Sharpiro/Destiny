@@ -1,8 +1,22 @@
 ﻿<div id="page-wrapper" class="container">
-    <div>
-        <div ng-repeat="item in testing">
-            <span popup>text</span>
+    <div class="row" style="padding-top:15px">
+        <div class="col-md-12">
+            <label class="control-label">Membership Id</label>
+            <input class="form-control" type="text" ng-model="vm.membershipId" />
         </div>
-        <!--<span popup testattr="unchanged">testing2</span>-->
     </div>
+    <div class="row" style="padding-top:15px">
+        <div class="col-md-12">
+            <input type="checkbox" name="cardDetails" value="Bike" ng-model="vm.cardDetails" />
+            <label>Card Id</label>
+            <input class="form-control" type="text" ng-model="vm.cardId" />
+        </div>
+    </div>
+    <div class="row" style="padding-top:15px">
+        <div class="col-md-12">
+            <button class="btn btn-default" ng-click="vm.getPlayerGrimoire(vm.membershipId)">Get Player Grimoire</button>
+            <button class="btn btn-default" ng-click="vm.getGrimoireCard(vm.membershipId, vm.cardId, vm.cardDetails)">Get Grimoire Card</button>
+        </div>
+    </div>
+    {{vm.data}}
 </div>

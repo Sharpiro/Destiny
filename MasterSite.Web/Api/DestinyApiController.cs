@@ -123,5 +123,37 @@ namespace MasterSite.Web.Api
                 return InternalServerError(ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetPlayerGrimoire(int platform, ulong membershipId)
+        {
+            try
+            {
+                var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/?definitions=true";
+                var result = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.GetPlayerGrimoire(result);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetGrimoireCard(int platform, ulong membershipId, int cardId, bool details = false)
+        {
+            try
+            {
+                var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/?definitions=true&single={cardId}";
+                var result = await WebHelper.GetASync(url, _bungieHeader);
+                var responseModel = _businessLayer.GetGrimoireCard(cardId, result, details);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }

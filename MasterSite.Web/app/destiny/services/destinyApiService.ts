@@ -25,9 +25,11 @@ class DestinyApiService implements IDestinyApiService
                     this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=2&displayName=${displayName}`).then((data: any) =>
                     {
                         const dataObject = data.data;
-                        if (dataObject.Response[0]) {
+                        if (dataObject.Response[0])
+                        {
                             dfd.resolve(data);
-                        } else {
+                        } else
+                        {
                             dfd.reject("Player Not Found");
                         }
                     });
@@ -42,7 +44,7 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public getAccountInfo(platform: number, membershipId: number): ng.IPromise<any>
+    public getAccountInfo(platform: number, membershipId: string): ng.IPromise<any>
     {
         if (platform && membershipId)
             return this.$http.get(`/api/DestinyApi/GetAccountInfo?platform=${platform}&membershipId=${membershipId}`);
@@ -60,7 +62,7 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public getCharacterInventory = (platform: number, membershipId: number, characterId: number, characterNumber?: number): ng.IPromise<any> =>
+    public getCharacterInventory = (platform: number, membershipId: string, characterId: number, characterNumber?: number): ng.IPromise<any> =>
     {
         if (characterId !== undefined)
             return this.$http.get(`/api/DestinyApi/GetCharacterInventory?platform=${platform}&membershipId=${membershipId}&characterId=${characterId}&characterNumber=${characterNumber}`);
@@ -69,28 +71,25 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public getAccountTriumphs = (platform: number, membershipId: number): ng.IPromise<any> =>
+    public getAccountTriumphs = (platform: number, membershipId: string): ng.IPromise<any> =>
     {
         return this.$http.get(`/api/DestinyApi/GetAccountTriumphs?platform=${platform}&membershipId=${membershipId}`);
     }
 
-    public getUniqueWeaponData = (platform: number, membershipId: number): ng.IPromise<any> =>
+    public getUniqueWeaponData = (platform: number, membershipId: string): ng.IPromise<any> =>
     {
         return this.$http.get(`/api/DestinyApi/GetUniqueWeaponData?platform=${platform}&membershipId=${membershipId}`);
     }
 
-    //public getAllItems(itemList: Array<IEquipmentData>): ng.IPromise<any>
-    //{
-    //    if (itemList.length <= 0)
-    //        return;
+    public getPlayerGrimoire = (platform: number, membershipId: string): ng.IPromise<any> =>
+    {
+        return this.$http.get(`/api/DestinyApi/GetPlayerGrimoire?platform=${platform}&membershipId=${membershipId}`);
+    }
 
-    //    for (let i = 0; i < 1; i++)
-    //    {
-    //        this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemList[i].itemHash}`).then((data) =>
-    //        {
-    //        });
-    //    }
-    //    return null;
-    //}
+    public getGrimoireCard = (platform: number, membershipId: string, cardId: number, details: boolean = false): ng.IPromise<any> =>
+    {
+        return this.$http.get(`/api/DestinyApi/GetGrimoireCard?platform=${platform}&membershipId=${membershipId}&cardId=${cardId}&details=${details}`);
+    }
+
 }
 masterSite.service("destinyApiService", ["$http", "$q", DestinyApiService]); 
