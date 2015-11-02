@@ -91,5 +91,11 @@ class DestinyApiService implements IDestinyApiService
         return this.$http.get(`/api/DestinyApi/GetGrimoireCard?platform=${platform}&membershipId=${membershipId}&cardId=${cardId}&details=${details}`);
     }
 
+    public getGrimoireCardBulk = (platform: number, membershipId: string, cardIds: Array<number>, details: boolean = false): ng.IPromise<any> =>
+    {
+        var bulkData = { membershipId: membershipId, platform: platform, details: details, cardIds: cardIds };
+        return this.$http.post("/api/DestinyApi/GetGrimoireCardBulk", bulkData);
+    }
+
 }
 masterSite.service("destinyApiService", ["$http", "$q", DestinyApiService]); 

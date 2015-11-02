@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
 using System.Net.Http;
@@ -148,6 +149,34 @@ namespace MasterSite.Web.Api
                 var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/?definitions=true&single={cardId}";
                 var result = await WebHelper.GetASync(url, _bungieHeader);
                 var responseModel = _businessLayer.GetGrimoireCard(cardId, result, details);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> GetGrimoireCardBulk(GrimoireCardBulkModel bulkModel)
+        {
+            try
+            {
+                var grimoireCards = new List<GrimoireCard>();
+                foreach (var cardId in bulkModel.CardIds)
+                {
+                    var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{bulkModel.Platform}/{bulkModel.MembershipId}/?definitions=true&single={cardId}";
+                    var result = await WebHelper.GetASync(url, _bungieHeader);
+                    var grimoireCard = _businessLayer.GetGrimoireCard(cardId, result, bulkModel.Details).Response;
+                    grimoireCards.Add(grimoireCard);
+                }
+                var responseModel = new ResponseModel<List<GrimoireCard>>
+                {
+                    ErrorCode = 1,
+                    ErrorStatus = "Success",
+                    Message = "Ok",
+                    Response = grimoireCards
+                };
                 return Ok(responseModel);
             }
             catch (Exception ex)

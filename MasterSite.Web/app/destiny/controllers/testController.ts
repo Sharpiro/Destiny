@@ -14,10 +14,11 @@ class TestController
         this.membershipId = "4611686018432239086";
         this.cardId = 700470;
         this.cardDetails = false;
-        //destinyApiService.getGrimoire(1, this.membershipId).then((data) =>
-        //{
-        //    this.data = data.data;
-        //});
+        const cardIds = [700470, 603070, 601076, 601904];
+        destinyApiService.getGrimoireCardBulk(1, this.membershipId, cardIds, true).then((data: any) =>
+        {
+            this.data = data.data.Response;
+        });
     }
 
     private getPlayerGrimoire(membershipId: string)

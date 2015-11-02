@@ -81,6 +81,10 @@
       <Project>{B09E865D-9232-461F-B8C1-FF98ABBA77F7}</Project>
       <Name>MasterSite.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MasterSite.Web\MasterSite.Web.csproj">
+      <Project>{4702dbc4-5093-46a2-b2c7-7c4d52efa719}</Project>
+      <Name>MasterSite.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pokemon\" />

@@ -139,8 +139,34 @@ class DestinyDataService implements IDestinyDataService
         { hash: 1498876634, value: "Arc" }
     ];
 
+    private achievements: Array<IHash> = [
+        { hash: 603070, value: "Defeated Atheon" },
+        { hash: 601076, value: "Defeated Crota" },
+        { hash: 601904, value: "Defeated Skolas" },
+        { hash: 700470, value: "Defeated Oryx" }
+    ];
+
     constructor(private $http: ng.IHttpService, private $q: ng.IQService)
     {
+    }
+
+    public getAchievementHashes(): Array<number>
+    {
+        const achievementHashes = <Array<number>>[];
+        for (var itemNumber in this.achievements)
+        {
+            achievementHashes.push(this.achievements[itemNumber].hash);
+        }
+        return achievementHashes;
+    }
+
+    public getAchievementNameById(id: number): string
+    {
+        for (let i = 0; i < this.achievements.length; i++)
+        {
+            if (this.achievements[i].hash === id)
+                return this.achievements[i].value;
+        }
     }
 
     public getClassHashes = (): Array<IHash>=>
