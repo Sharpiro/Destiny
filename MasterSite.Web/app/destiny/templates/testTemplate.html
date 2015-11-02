@@ -12,10 +12,25 @@
             <input class="form-control" type="text" ng-model="vm.cardId" />
         </div>
     </div>
-    <div class="row" style="padding-top:15px">
+    <div class="row" style="padding-top: 15px">
         <div class="col-md-12">
             <button class="btn btn-default" ng-click="vm.getPlayerGrimoire(vm.membershipId)">Get Player Grimoire</button>
             <button class="btn btn-default" ng-click="vm.getGrimoireCard(vm.membershipId, vm.cardId, vm.cardDetails)">Get Grimoire Card</button>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top:15px">
+        <div class="col-md-12 table">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Completed</th>
+                </tr>
+                <tr ng-repeat="item in vm.data">
+                    <td ng-bind-html="item.name | bindHtmlFilter"></td>
+                    <td ng-bind-html="item.acquired | booleanFilter"></td>
+                </tr>
+            </table>
         </div>
     </div>
     {{vm.data}}

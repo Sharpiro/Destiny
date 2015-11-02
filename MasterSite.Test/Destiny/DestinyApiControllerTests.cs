@@ -1,7 +1,10 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using MasterSite.Core.BusinessLogic;
 using MasterSite.Core.HttpClientWrapper;
+using MasterSite.Core.Models.Destiny;
+using MasterSite.Web.Api;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MasterSite.Tests.Destiny
@@ -105,6 +108,25 @@ namespace MasterSite.Tests.Destiny
             var result = WebHelper.GetASync(url, _bungieHeader).Result;
             var responseModel = _businessLayer.GetGrimoireCard(123, result);
             Assert.IsNotNull(responseModel);
+            //Assert.AreEqual(responseModel.Response.Any(), true);
+        }
+
+        [TestMethod]
+        public void GetGrimoireCardBulkTest()
+        {
+            var controller = new DestinyApiController();
+            var model = new GrimoireCardBulkModel
+            {
+                MembershipId = 4611686018432239086,
+                Platform = 1,
+                Details = false,
+                CardIds = new List<int> { 700470, 603070, 601076, 601904 }
+            };
+            var response = controller.GetGrimoireCardBulk(model);
+            //var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{model.Platform}/{model.MembershipId}/";
+            //var result = WebHelper.GetASync(url, _bungieHeader).Result;
+            //var responseModel = _businessLayer.GetGrimoireCard(123, result);
+            //Assert.IsNotNull(responseModel);
             //Assert.AreEqual(responseModel.Response.Any(), true);
         }
     }

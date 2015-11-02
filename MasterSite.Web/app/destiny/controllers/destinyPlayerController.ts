@@ -3,6 +3,7 @@
 
 class DestinyPlayerController
 {
+    private achievements: any;
     //#region Constructor
     constructor(private scope: IDestinyPlayerScope, private destinyApiService: DestinyApiService, private destinyDataService: DestinyDataService,
         $stateParams: any, private $state: any, private destinyBlService: DestinyBlService, private sharedFunctionsService: SharedFunctionsService)
@@ -22,14 +23,13 @@ class DestinyPlayerController
                 {
                     this.scope.characterData = destinyBlService.handleGetAccountInfoResponse(data.data);
                     this.getCharactersInventory(this.scope.characterData);
-                    //not being used as it is much slower than just getting full definitions from account call.
-                    //this.getEquipmentInfo(this.scope.characterData);
                     this.scope.showPageContent = true;
                 },
                 (data: any) => this.setPageError(data.ExceptionMessage));
             //get Account triumphs
-            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
-                (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data.Response),
+            this.destinyApiService.getGrimoireCardBulk(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId,
+                this.destinyDataService.getAchievementHashes(), true).then(
+                (data: any) => this.achievements = data.data.Response,
                 (data: any) => this.setPageError(data));
             //get unique weapon data
             this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(

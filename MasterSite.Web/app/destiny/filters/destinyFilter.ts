@@ -60,9 +60,34 @@
             }
         };
     }
+
+    public static achievementNameFilter(sce: any, destinyDataService: DestinyDataService)
+    {
+        return (input: number) =>
+        {
+            if (input !== undefined)
+            {
+                const achievementName = destinyDataService.getAchievementNameById(input);
+                return sce.trustAsHtml(achievementName);
+            }
+        };
+    }
+
+    public static bindHtmlFilter(sce: any)
+    {
+        return (input: any) =>
+        {
+            if (input !== undefined)
+            {
+                return sce.trustAsHtml(input);
+            }
+        };
+    }
 }
 
 //masterSite.filter("damageTypeFilter", [DestinyFilter.damageTypeFilter]);
 masterSite.filter("damageTypeFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.damageTypeFilter($sce, destinyDataService));
 masterSite.filter("booleanFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.booleanFilter($sce, destinyDataService));
-masterSite.filter("itemNameFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.itemNameFilter());
+masterSite.filter("itemNameFilter", () => DestinyFilter.itemNameFilter());
+masterSite.filter("bindHtmlFilter", ($sce: any) => DestinyFilter.bindHtmlFilter($sce));
+masterSite.filter("achievementNameFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.achievementNameFilter($sce, destinyDataService));
