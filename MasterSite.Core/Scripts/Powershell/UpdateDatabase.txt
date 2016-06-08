@@ -1,1 +1,0 @@
-﻿Update-Database -Verbose -ProjectName Core -StartUpProjectName Core
