@@ -4,7 +4,7 @@ namespace MasterSite.Core.Models.Destiny
 {
     public class ItemModel
     {
-        public ulong? ItemHash { get; set; }
+        public string ItemHash { get; set; }
         public int? DamageType { get; set; }
         public int? RequiredLevel { get; set; }
         public string ItemName { get; set; }

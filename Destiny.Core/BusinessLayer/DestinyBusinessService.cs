@@ -1,92 +1,79 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using MasterSite.Core.Models.Destiny;
 using Newtonsoft.Json.Linq;
+using MasterSite.Core.DataLayer;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using DotnetCoreTools.Core.Extensions;
 
 namespace MasterSite.Core.BusinessLogic
 {
     public class DestinyBusinessService
     {
-        public ResponseModel<object> SearchDestinyPlayer(string sourceJson)
-        {
-            var jData = JObject.Parse(sourceJson);
-            var responseModel = new ResponseModel<object>
-            {
-                ErrorCode = (int)jData["ErrorCode"],
-                ErrorStatus = (string)jData["ErrorStatus"],
-                Message = (string)jData["Message"],
-                Response = jData["Response"]
-            };
-            return responseModel;
-        }
-        public ResponseModel<AccountInfoModel> GetAccountInfo(string sourceJson)
-        {
-            var jData = JObject.Parse(sourceJson);
-            var definitions = jData.SelectToken("Response.definitions.items");
-            var itemHashResponse = new JObject();
-            foreach (var definition in definitions)
-            {
-                var children = (JObject)definition.First;
-                var subObject = new JObject
-                {
-                    new JProperty("ItemHash", (ulong)children["itemHash"]),
-                    new JProperty("ItemName", (string)children["itemName"]),
-                    new JProperty("Icon", (string)children["icon"]),
-                    new JProperty("ItemDescription", (string)children["itemDescription"]),
-                    new JProperty("BucketHash", (ulong)children["bucketTypeHash"])
-                };
-                var propertyName = ((JProperty)definition).Name;
-                if (propertyName != null)
-                    itemHashResponse.Add(new JProperty(propertyName, subObject));
-            }
+        private readonly ApiHelper _apiHelper;
 
-            var jList = (JArray)jData.SelectToken("Response.data.characters");
-            var characters = jList.Select(c => new CharacterModel
+        public DestinyBusinessService(ApiHelper apiHelper)
+        {
+            _apiHelper = apiHelper;
+        }
+
+        public async Task<SearchPlayerModel> SearchDestinyPlayer(int platform, string displayName)
+        {
+            var sourceJson = await _apiHelper.SearchDestinyPlayer(platform, displayName);
+            var jToken = ((JArray)GetJToken(sourceJson)).FirstOrDefault();
+            var responseJson = jToken.ToString();
+            var model = JsonConvert.DeserializeObject<SearchPlayerModel>(responseJson);
+            return model;
+        }
+
+        public async Task<AccountInfoModel> GetAccountInfo(int platform, string membershipId)
+        {
+            var sourceJson = await _apiHelper.GetAccountInfo(platform, membershipId);
+            var jData = GetJToken(sourceJson);
+            var itemHashes = new JObject((jData.SelectToken("definitions.items").Children<JProperty>())
+                .Select(property => new JProperty(property.Name, new JObject
+                    {
+                        new JProperty("ItemHash", (string)property.Value["itemHash"]),
+                        new JProperty("ItemName", (string)property.Value["itemName"]),
+                        new JProperty("Icon", (string)property.Value["icon"]),
+                        new JProperty("ItemDescription", (string)property.Value["itemDescription"]),
+                        new JProperty("BucketHash", (string)property.Value["bucketTypeHash"])
+                    })));
+            var characters = jData.SelectToken("data.characters").Select(c => new CharacterModel
             {
                 BackgroundPath = (string)c["backgroundPath"],
-                BaseCharacterLevel = (int)c["baseCharacterLevel"],
-                EmblemHash = (ulong)c["emblemHash"],
+                BaseCharacterLevel = (int?)c["baseCharacterLevel"],
+                EmblemHash = (string)c["emblemHash"],
                 EmblemPath = (string)c["emblemPath"],
-                CharacterId = (string)c["characterBase"]?["characterId"],
-                ClassHash = (ulong)c["characterBase"]?["classHash"],
-                GenderHash = (ulong)c["characterBase"]?["genderHash"],
-                RaceHash = (ulong)c["characterBase"]?["raceHash"],
-                PowerLevel = (int)c["characterBase"]?["powerLevel"],
-                EquipmentList = c["characterBase"]?["peerView"]?["equipment"]?
-                                .Select(p => (ulong)p["itemHash"]).ToList()
+                CharacterId = (string)c.SelectToken("characterBase.characterId"),
+                ClassHash = (string)c.SelectToken("characterBase.classHash"),
+                GenderHash = (string)c.SelectToken("characterBase.genderHash"),
+                RaceHash = (string)c.SelectToken("characterBase.raceHash"),
+                PowerLevel = (int?)c.SelectToken("characterBase.powerLevel"),
+                EquipmentList = c.SelectToken("characterBase.peerView.equipment").Select(p => (string)p["itemHash"])
             });
-
-            var response = new ResponseModel<AccountInfoModel>
+            var response = new AccountInfoModel
             {
-                ErrorCode = (int)jData["ErrorCode"],
-                ErrorStatus = (string)jData["ErrorStatus"],
-                Message = (string)jData["Message"],
-                Response = new AccountInfoModel
-                {
-                    HashDefinitions = itemHashResponse,
-                    Characters = characters
-                }
+                HashDefinitions = itemHashes,
+                Characters = characters
             };
             return response;
         }
 
-        public ResponseModel<ItemModel> GetItem(string jsonSource)
+        public async Task<ItemModel> GetItem(string id)
         {
-            var jData = JObject.Parse(jsonSource);
-            var responseModel = new ResponseModel<ItemModel>
+            var jsonSource = await _apiHelper.GetItem(id);
+            var jData = GetJToken(jsonSource);
+            var itemModel = new ItemModel
             {
-                ErrorCode = (int)jData["ErrorCode"],
-                ErrorStatus = (string)jData["ErrorStatus"],
-                Message = (string)jData["Message"],
-                Response = new ItemModel
-                {
-                    ItemHash = (ulong)jData["Response"]?["data"]?["inventoryItem"]?["itemHash"],
-                    ItemName = (string)jData["Response"]?["data"]?["inventoryItem"]?["itemName"],
-                    ItemDescription = (string)jData["Response"]?["data"]?["inventoryItem"]?["itemDescription"],
-                    Icon = (string)jData["Response"]?["data"]?["inventoryItem"]?["icon"]
-                }
+                ItemHash = (string)jData.SelectToken("data.inventoryItem.itemHash"),
+                ItemName = (string)jData.SelectToken("data.inventoryItem.itemName"),
+                ItemDescription = (string)jData.SelectToken("data.inventoryItem.itemDescription"),
+                Icon = (string)jData.SelectToken("data.inventoryItem.icon")
             };
-            return responseModel;
+            return itemModel;
         }
 
         public ResponseModel<CharacterInventoryModel> GetCharacterInventory(string jsonSource)
@@ -103,7 +90,7 @@ namespace MasterSite.Core.BusinessLogic
                         .Select(e => e["items"].First)
                         .Select(i => new ItemModel
                         {
-                            ItemHash = (ulong?)i?["itemHash"],
+                            ItemHash = (string)i?["itemHash"],
                             DamageType = (int?)i?["damageType"],
                             RequiredLevel = (int?)i?["equipRequiredLevel"],
                             PrimaryStatValue = (int?)i?["primaryStat"]?["value"]
@@ -177,6 +164,24 @@ namespace MasterSite.Core.BusinessLogic
             responseModel.Response.Id = cardId;
             responseModel.Response.Acquired = grimoireData != null;
             return responseModel;
+        }
+
+        private JToken GetJToken(string jsonResult)
+        {
+            try
+            {
+                var jData = JObject.Parse(jsonResult);
+                var errorCode = (int)jData["ErrorCode"];
+                if (errorCode != 1)
+                    throw new Exception("Invalid error code from bungie.net");
+                var response = jData["Response"];
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("error parsing response from bungie.net", ex);
+            }
+
         }
     }
 }
