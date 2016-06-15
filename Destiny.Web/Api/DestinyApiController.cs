@@ -45,54 +45,48 @@ namespace Destiny.Web.Api
             }
         }
 
-        //[HttpGet]
-        //public async Task<IHttpActionResult> GetItem(uint id, int? listNumber = null, int? listPosition = null)
-        //{
-        //    try
-        //    {
-        //        var url = $"http://www.bungie.net/Platform/Destiny/Manifest/inventoryItem/{id}/";
-        //        var result = await WebHelper.GetASync(url, _bungieHeader);
-        //        var responseModel = _businessLayer.GetItem(result);
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpGet]
+        public async Task<IHttpActionResult> GetItem(string id, int? listNumber = null, int? listPosition = null)
+        {
+            try
+            {
+                var responseModel = await _businessLayer.GetItem(id);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
-        //[HttpGet]
-        //public async Task<IHttpActionResult> GetCharacterInventory(int platform, ulong membershipId, ulong characterId, int? characterNumber = null)
-        //{
-        //    try
-        //    {
-        //        var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Character/{characterId}/Inventory/?definitions=false";
-        //        var result = await WebHelper.GetASync(url, _bungieHeader);
-        //        var responseModel = _businessLayer.GetCharacterInventory(result);
-        //        responseModel.Response.CharacterNumber = characterNumber;
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpGet]
+        public async Task<IHttpActionResult> GetCharacterInventory(int platform, ulong membershipId, ulong characterId, int? characterNumber = null)
+        {
+            try
+            {
+                var responseModel = await _businessLayer.GetCharacterInventory(platform, membershipId, characterId);
+                responseModel.CharacterNumber = characterNumber;
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
-        //[HttpGet]
-        //public async Task<IHttpActionResult> GetAccountTriumphs(int platform, ulong membershipId)
-        //{
-        //    try
-        //    {
-        //        var url = $"http://www.bungie.net/Platform/Destiny/{platform}/Account/{membershipId}/Triumphs/";
-        //        var result = await WebHelper.GetASync(url, _bungieHeader);
-        //        var responseModel = _businessLayer.GetAccountTriumphs(result);
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAccountTriumphs(int platform, ulong membershipId)
+        {
+            try
+            {
+                var responseModel = _businessLayer.GetAccountTriumphs(platform, membershipId);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
         //[HttpGet]
         //public async Task<IHttpActionResult> GetUniqueWeaponData(int platform, ulong membershipId)

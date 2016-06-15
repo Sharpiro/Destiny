@@ -1,5 +1,6 @@
 ﻿using DotnetCoreTools.Core.WebHelpers;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 
@@ -36,6 +37,20 @@ namespace Destiny.Core.DataLayer
         public async Task<string> GetItem(string id)
         {
             var url = string.Format(DestinyConstants.Urls.GetItem, id);
+            var jsonResult = await _webHelper.GetASync(url, _bungieHeader);
+            return jsonResult;
+        }
+
+        public async Task<string> GetCharacterInventory(int platform, ulong membershipId, ulong characterId)
+        {
+            var url = string.Format(DestinyConstants.Urls.GetCharacterInventory, platform, membershipId, characterId);
+            var jsonResult = await _webHelper.GetASync(url, _bungieHeader);
+            return jsonResult;
+        }
+
+        public async Task<string> GetAccountTriumphs(int platform, ulong membershipId)
+        {
+            var url = string.Format(DestinyConstants.Urls.GetAccountTriumphs, platform, membershipId);
             var jsonResult = await _webHelper.GetASync(url, _bungieHeader);
             return jsonResult;
         }

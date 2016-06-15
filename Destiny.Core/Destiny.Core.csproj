@@ -7,8 +7,8 @@
     <ProjectGuid>{B09E865D-9232-461F-B8C1-FF98ABBA77F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MasterSite.Core</RootNamespace>
-    <AssemblyName>MasterSite.Core</AssemblyName>
+    <RootNamespace>Destiny.Core</RootNamespace>
+    <AssemblyName>Destiny.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -89,12 +89,13 @@
     <Compile Include="BusinessLayer\DestinyBusinessService.cs" />
     <Compile Include="DataLayer\ApiHelper.cs" />
     <Compile Include="DataLayer\DestinyConstants.cs" />
-    <Compile Include="Models\Destiny\AccountInfoModel.cs" />
-    <Compile Include="Models\Destiny\CharacterInventoryModel.cs" />
-    <Compile Include="Models\Destiny\GrimoireCard.cs" />
-    <Compile Include="Models\Destiny\GrimoireCardBulkModel.cs" />
-    <Compile Include="Models\Destiny\ItemModel.cs" />
-    <Compile Include="Models\Destiny\ResponseModel.cs" />
+    <Compile Include="Models\AccountInfoModel.cs" />
+    <Compile Include="Models\CharacterInventoryModel.cs" />
+    <Compile Include="Models\CharacterModel.cs" />
+    <Compile Include="Models\GrimoireCard.cs" />
+    <Compile Include="Models\GrimoireCardBulkModel.cs" />
+    <Compile Include="Models\ItemModel.cs" />
+    <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SearchPlayerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

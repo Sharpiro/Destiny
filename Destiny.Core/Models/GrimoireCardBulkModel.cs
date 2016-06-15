@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Destiny.Core.Models.Destiny
+namespace Destiny.Core.Models
 {
     public class GrimoireCardBulkModel
     {

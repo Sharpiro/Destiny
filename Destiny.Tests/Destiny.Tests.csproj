@@ -6,8 +6,8 @@
     <ProjectGuid>{41DC7F69-BCDE-4011-8459-BBAFB53AC3F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MasterSite.Tests</RootNamespace>
-    <AssemblyName>MasterSite.Tests</AssemblyName>
+    <RootNamespace>Destiny.Tests</RootNamespace>
+    <AssemblyName>Destiny.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -106,7 +106,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Destiny\DestinyBusinessLayerTests.cs" />
+    <Compile Include="DestinyBusinessLayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

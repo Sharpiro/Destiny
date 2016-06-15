@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Destiny.Core.Models.Destiny
+namespace Destiny.Core.Models
 {
     public class CharacterInventoryModel
     {
-        public List<ItemModel> Items { get; set; }
+        public IEnumerable<ItemModel> Items { get; set; }
         public int? CharacterNumber { get; set; }
     }
 }

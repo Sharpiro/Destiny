@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Destiny.Core.Models.Destiny
+namespace Destiny.Core.Models
 {
     public class GrimoireCard
     {
