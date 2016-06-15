@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using MasterSite.Core.Models.Destiny;
+using Destiny.Core.Models.Destiny;
 using Newtonsoft.Json.Linq;
-using MasterSite.Core.DataLayer;
+using Destiny.Core.DataLayer;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using DotnetCoreTools.Core.Extensions;
 
-namespace MasterSite.Core.BusinessLogic
+namespace Destiny.Core.BusinessLogic
 {
     public class DestinyBusinessService
     {
@@ -32,7 +31,9 @@ namespace MasterSite.Core.BusinessLogic
         {
             var sourceJson = await _apiHelper.GetAccountInfo(platform, membershipId);
             var jData = GetJToken(sourceJson);
-            var itemHashes = new JObject((jData.SelectToken("definitions.items").Children<JProperty>())
+            var response = new AccountInfoModel
+            {
+                HashDefinitions = new JObject((jData.SelectToken("definitions.items").Children<JProperty>())
                 .Select(property => new JProperty(property.Name, new JObject
                     {
                         new JProperty("ItemHash", (string)property.Value["itemHash"]),
@@ -40,24 +41,20 @@ namespace MasterSite.Core.BusinessLogic
                         new JProperty("Icon", (string)property.Value["icon"]),
                         new JProperty("ItemDescription", (string)property.Value["itemDescription"]),
                         new JProperty("BucketHash", (string)property.Value["bucketTypeHash"])
-                    })));
-            var characters = jData.SelectToken("data.characters").Select(c => new CharacterModel
-            {
-                BackgroundPath = (string)c["backgroundPath"],
-                BaseCharacterLevel = (int?)c["baseCharacterLevel"],
-                EmblemHash = (string)c["emblemHash"],
-                EmblemPath = (string)c["emblemPath"],
-                CharacterId = (string)c.SelectToken("characterBase.characterId"),
-                ClassHash = (string)c.SelectToken("characterBase.classHash"),
-                GenderHash = (string)c.SelectToken("characterBase.genderHash"),
-                RaceHash = (string)c.SelectToken("characterBase.raceHash"),
-                PowerLevel = (int?)c.SelectToken("characterBase.powerLevel"),
-                EquipmentList = c.SelectToken("characterBase.peerView.equipment").Select(p => (string)p["itemHash"])
-            });
-            var response = new AccountInfoModel
-            {
-                HashDefinitions = itemHashes,
-                Characters = characters
+                    }))),
+                Characters = jData.SelectToken("data.characters").Select(c => new CharacterModel
+                {
+                    BackgroundPath = (string)c["backgroundPath"],
+                    BaseCharacterLevel = (int?)c["baseCharacterLevel"],
+                    EmblemHash = (string)c["emblemHash"],
+                    EmblemPath = (string)c["emblemPath"],
+                    CharacterId = (string)c.SelectToken("characterBase.characterId"),
+                    ClassHash = (string)c.SelectToken("characterBase.classHash"),
+                    GenderHash = (string)c.SelectToken("characterBase.genderHash"),
+                    RaceHash = (string)c.SelectToken("characterBase.raceHash"),
+                    PowerLevel = (int?)c.SelectToken("characterBase.powerLevel"),
+                    EquipmentList = c.SelectToken("characterBase.peerView.equipment").Select(p => (string)p["itemHash"])
+                })
             };
             return response;
         }

@@ -98,4 +98,4 @@ class DestinyApiService implements IDestinyApiService
     }
 
 }
-masterSite.service("destinyApiService", ["$http", "$q", DestinyApiService]); 
+destiny.service("destinyApiService", ["$http", "$q", DestinyApiService]); 

@@ -39,4 +39,4 @@ class TestController
 
 }
 
-masterSite.controller("testController", ["$scope", "destinyApiService", "destinyDataService", "$stateParams", "$state", TestController]); 
+destiny.controller("testController", ["$scope", "destinyApiService", "destinyDataService", "$stateParams", "$state", TestController]); 

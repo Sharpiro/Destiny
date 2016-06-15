@@ -23,4 +23,4 @@ class SharedFunctionsService implements ISharedFunctionsService
     }
 }
 
-masterSite.service("sharedFunctionsService", [SharedFunctionsService]); 
+destiny.service("sharedFunctionsService", [SharedFunctionsService]); 

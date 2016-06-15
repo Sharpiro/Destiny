@@ -2,10 +2,11 @@
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web.Http;
-using MasterSite.Core.BusinessLogic;
-using MasterSite.Core.DataLayer;
+using Destiny.Core.BusinessLogic;
+using Destiny.Core.DataLayer;
+using DotnetCoreTools.Core.WebHelpers;
 
-namespace MasterSite.Web.Api
+namespace Destiny.Web.Api
 {
     public class DestinyApiController : ApiController
     {
@@ -13,7 +14,7 @@ namespace MasterSite.Web.Api
 
         public DestinyApiController()
         {
-            _businessLayer = new DestinyBusinessService(new ApiHelper());
+            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper()));
         }
 
         [HttpGet]

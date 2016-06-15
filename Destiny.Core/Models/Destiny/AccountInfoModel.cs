@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace MasterSite.Core.Models.Destiny
+namespace Destiny.Core.Models.Destiny
 {
     public class AccountInfoModel
     {

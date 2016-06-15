@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using MasterSite.Core.BusinessLogic;
-using MasterSite.Core.Models.Destiny;
+using Destiny.Core.BusinessLogic;
+using Destiny.Core.Models.Destiny;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MasterSite.Core.DataLayer;
+using Destiny.Core.DataLayer;
+using DotnetCoreTools.Core.WebHelpers;
 
-namespace MasterSite.Tests.Destiny
+namespace Destiny.Tests.Destiny
 {
     [TestClass]
     public class DestinyBusinessLayerTests
@@ -15,7 +16,7 @@ namespace MasterSite.Tests.Destiny
 
         public DestinyBusinessLayerTests()
         {
-            _businessLayer = new DestinyBusinessService(new ApiHelper());
+            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper()));
         }
 
         [TestMethod]

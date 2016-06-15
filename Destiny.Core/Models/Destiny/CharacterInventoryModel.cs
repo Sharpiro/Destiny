@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MasterSite.Core.Models.Destiny
+namespace Destiny.Core.Models.Destiny
 {
     public class CharacterInventoryModel
     {

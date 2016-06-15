@@ -226,4 +226,4 @@ class DestinyDataService implements IDestinyDataService
     }
 }
 
-masterSite.service("destinyDataService", ["$http", "$q", DestinyDataService]); 
+destiny.service("destinyDataService", ["$http", "$q", DestinyDataService]); 

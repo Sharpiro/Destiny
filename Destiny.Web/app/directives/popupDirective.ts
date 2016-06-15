@@ -48,6 +48,6 @@ class PopupDirective implements ng.IDirective
     }
 }
 
-masterSite.directive("popup", PopupDirective.factory());
+destiny.directive("popup", PopupDirective.factory());
 
     

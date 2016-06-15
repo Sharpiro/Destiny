@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MasterSite.Core.Models.Destiny
+namespace Destiny.Core.Models.Destiny
 {
     public class ItemModel
     {

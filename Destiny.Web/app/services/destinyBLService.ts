@@ -198,4 +198,4 @@ class DestinyBlService implements IDestinyBlService
     //#endregion
 }
 
-masterSite.service("destinyBlService", ["destinyDataService", "sharedFunctionsService", DestinyBlService]); 
+destiny.service("destinyBlService", ["destinyDataService", "sharedFunctionsService", DestinyBlService]); 

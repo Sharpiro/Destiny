@@ -1,4 +1,4 @@
-﻿namespace MasterSite.Core.DataLayer
+﻿namespace Destiny.Core.DataLayer
 {
     public static class DestinyConstants
     {

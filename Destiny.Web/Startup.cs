@@ -5,7 +5,7 @@ using Ninject.Web.Common.OwinHost;
 using Ninject.Web.WebApi.OwinHost;
 using Owin;
 
-namespace MasterSite.Web
+namespace Destiny.Web
 {
     public class Startup
     {

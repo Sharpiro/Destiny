@@ -170,5 +170,5 @@ class DestinyPlayerController
 
 //#endregion
 
-masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",
+destiny.controller("destinyPlayerController", ["$scope", "destinyApiService",
     "destinyDataService", "$stateParams", "$state", "destinyBlService", "sharedFunctionsService", DestinyPlayerController]); 
