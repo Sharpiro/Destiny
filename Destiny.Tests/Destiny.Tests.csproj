@@ -73,7 +73,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Destiny\DestinyBusinessLayerTests.cs" />
+    <Compile Include="DestinyBusinessLayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

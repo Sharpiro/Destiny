@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
+﻿using System.Linq;
 using MasterSite.Core.BusinessLogic;
-using MasterSite.Core.Models.Destiny;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MasterSite.Core.DataLayer;
 
@@ -39,6 +36,8 @@ namespace MasterSite.Tests.Destiny
             Assert.IsNotNull(accountInfo.Characters);
             Assert.IsTrue(accountInfo.Characters.Any());
             Assert.IsTrue(accountInfo.Characters.FirstOrDefault().EquipmentList.Any());
+            Assert.IsNotNull(accountInfo.Characters.FirstOrDefault().ClassHash);
+            Assert.IsNotNull(accountInfo.Characters.FirstOrDefault().EquipmentList.FirstOrDefault());
         }
 
         [TestMethod]
