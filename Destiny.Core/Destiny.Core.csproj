@@ -34,8 +34,8 @@
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotnetCoreTools.Core, Version=1.3.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotnetCoreTools.Core.1.3.4\lib\net451\DotnetCoreTools.Core.dll</HintPath>
+    <Reference Include="DotnetCoreTools.Core, Version=1.3.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotnetCoreTools.Core.1.3.5\lib\net451\DotnetCoreTools.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">

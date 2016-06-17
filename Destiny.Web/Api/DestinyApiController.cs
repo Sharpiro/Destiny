@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Configuration;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Destiny.Core.BusinessLogic;
 using Destiny.Core.DataLayer;
 using DotnetCoreTools.Core.WebHelpers;
+using System.Configuration;
+using Destiny.Core.Models;
 
 namespace Destiny.Web.Api
 {
@@ -14,7 +15,8 @@ namespace Destiny.Web.Api
 
         public DestinyApiController()
         {
-            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper()));
+            var key = ConfigurationManager.AppSettings["bungieApiKey"];
+            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper(), key));
         }
 
         [HttpGet]
@@ -60,7 +62,7 @@ namespace Destiny.Web.Api
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> GetCharacterInventory(int platform, ulong membershipId, ulong characterId, int? characterNumber = null)
+        public async Task<IHttpActionResult> GetCharacterInventory(int platform, string membershipId, string characterId, int? characterNumber = null)
         {
             try
             {
@@ -75,11 +77,11 @@ namespace Destiny.Web.Api
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> GetAccountTriumphs(int platform, ulong membershipId)
+        public async Task<IHttpActionResult> GetAccountTriumphs(int platform, string membershipId)
         {
             try
             {
-                var responseModel = _businessLayer.GetAccountTriumphs(platform, membershipId);
+                var responseModel = await _businessLayer.GetAccountTriumphs(platform, membershipId);
                 return Ok(responseModel);
             }
             catch (Exception ex)
@@ -88,80 +90,60 @@ namespace Destiny.Web.Api
             }
         }
 
-        //[HttpGet]
-        //public async Task<IHttpActionResult> GetUniqueWeaponData(int platform, ulong membershipId)
-        //{
-        //    try
-        //    {
-        //        var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/0/";
-        //        var result = await WebHelper.GetASync(url, _bungieHeader);
-        //        var responseModel = _businessLayer.GetUniqueWeaponData(result);
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUniqueWeaponData(int platform, string membershipId)
+        {
+            try
+            {
+                var responseModel = await _businessLayer.GetUniqueWeaponData(platform, membershipId);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
-        //[HttpGet]
-        //public async Task<IHttpActionResult> GetPlayerGrimoire(int platform, ulong membershipId)
-        //{
-        //    try
-        //    {
-        //        var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/?definitions=true";
-        //        var result = await WebHelper.GetASync(url, _bungieHeader);
-        //        var responseModel = _businessLayer.GetPlayerGrimoire(result);
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpGet]
+        public async Task<IHttpActionResult> GetPlayerGrimoire(int platform, string membershipId)
+        {
+            try
+            {
+                var responseModel = await _businessLayer.GetPlayerGrimoire(platform, membershipId);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
-        //[HttpGet]
-        //public async Task<IHttpActionResult> GetGrimoireCard(int platform, ulong membershipId, int cardId, bool details = false)
-        //{
-        //    try
-        //    {
-        //        var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/?definitions=true&single={cardId}";
-        //        var result = await WebHelper.GetASync(url, _bungieHeader);
-        //        var responseModel = _businessLayer.GetGrimoireCard(cardId, result, details);
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpGet]
+        public async Task<IHttpActionResult> GetGrimoireCard(int platform, string membershipId, string cardId, bool details = false)
+        {
+            try
+            {
+                var responseModel = await _businessLayer.GetGrimoireCard(platform, membershipId, cardId, true);
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
-        //[HttpPost]
-        //public async Task<IHttpActionResult> GetGrimoireCardBulk(GrimoireCardBulkModel bulkModel)
-        //{
-        //    try
-        //    {
-        //        var grimoireCards = new List<GrimoireCard>();
-        //        foreach (var cardId in bulkModel.CardIds)
-        //        {
-        //            var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{bulkModel.Platform}/{bulkModel.MembershipId}/?definitions=true&single={cardId}";
-        //            var result = await WebHelper.GetASync(url, _bungieHeader);
-        //            var grimoireCard = _businessLayer.GetGrimoireCard(cardId, result, bulkModel.Details).Response;
-        //            grimoireCards.Add(grimoireCard);
-        //        }
-        //        var responseModel = new ResponseModel<List<GrimoireCard>>
-        //        {
-        //            ErrorCode = 1,
-        //            ErrorStatus = "Success",
-        //            Message = "Ok",
-        //            Response = grimoireCards
-        //        };
-        //        return Ok(responseModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
+        [HttpPost]
+        public async Task<IHttpActionResult> GetGrimoireCardBulk(GrimoireCardBulkModel bulkModel)
+        {
+            try
+            {
+                var model = await _businessLayer.GetGrimoireCards(bulkModel);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }

@@ -67,7 +67,7 @@ namespace Destiny.Core.BusinessLogic
             return itemModel;
         }
 
-        public async Task<CharacterInventoryModel> GetCharacterInventory(int platform, ulong membershipId, ulong characterId)
+        public async Task<CharacterInventoryModel> GetCharacterInventory(int platform, string membershipId, string characterId)
         {
             var jsonSource = await _apiHelper.GetCharacterInventory(platform, membershipId, characterId);
             var jData = GetBungieJToken(jsonSource);
@@ -85,7 +85,7 @@ namespace Destiny.Core.BusinessLogic
             return model;
         }
 
-        public async Task<IEnumerable<bool>> GetAccountTriumphs(int platform, ulong membershipId)
+        public async Task<IEnumerable<bool>> GetAccountTriumphs(int platform, string membershipId)
         {
             var jsonSource = await _apiHelper.GetAccountTriumphs(platform, membershipId);
             var jData = JObject.Parse(jsonSource);
@@ -94,56 +94,72 @@ namespace Destiny.Core.BusinessLogic
             return list;
         }
 
-        public ResponseModel<List<ulong>> GetUniqueWeaponData(string jsonSource)
+        public async Task<IEnumerable<string>> GetUniqueWeaponData(int platform, string membershipId)
         {
-            var jData = JObject.Parse(jsonSource);
-            var responseModel = new ResponseModel<List<ulong>>
-            {
-                ErrorCode = (int)jData["ErrorCode"],
-                ErrorStatus = (string)jData["ErrorStatus"],
-                Message = (string)jData["Message"],
-                Response = jData["Response"]?["data"]?["weapons"]?
-                    .Select(w => (ulong)w["referenceId"]).ToList()
-            };
-            return responseModel;
+            var jsonSource = await _apiHelper.GetUniqueWeaponData(platform, membershipId);
+            var jData = GetBungieJToken(jsonSource);
+            var model = jData.SelectToken("data.weapons")
+                .Select(weapon => weapon["referenceId"].Value<string>());
+            return model;
         }
 
-        public JToken GetPlayerGrimoire(string jsonSource)
+        public async Task<IEnumerable<GrimoireCard>> GetPlayerGrimoire(int platform, string membershipId)
         {
-            var jData = JObject.Parse(jsonSource);
-            var responseModel = new ResponseModel<List<ulong>>
-            {
-                ErrorCode = (int)jData["ErrorCode"],
-                ErrorStatus = (string)jData["ErrorStatus"],
-                Message = (string)jData["Message"],
-                Response = jData["Response"]?["data"]?["weapons"]?
-                    .Select(w => (ulong)w["referenceId"]).ToList()
-            };
-            return jData;
-        }
-
-        public ResponseModel<GrimoireCard> GetGrimoireCard(int cardId, string jsonSource, bool details = false)
-        {
-            var jData = JObject.Parse(jsonSource);
-            var grimoireData = jData["Response"]?["cardDefinitions"]?.First?
-                .Select(cd => new GrimoireCard
+            var jsonSource = await _apiHelper.GetPlayerGrimoire(platform, membershipId);
+            var jData = GetBungieJToken(jsonSource);
+            var model = jData.SelectToken("data.cardCollection")
+                .Select(cc => new GrimoireCard
                 {
-                    Name = (string)cd?["cardName"],
-                    Intro = (string)cd?["cardIntro"],
-                    Description = (string)cd?["cardDescription"]
+                    Id = cc["cardId"].Value<string>(),
+                    Score = cc["score"].Value<int>(),
+                    Points = cc["points"].Value<int>()
+                });
+            return model;
+        }
+
+        public async Task<GrimoireCard> GetGrimoireCard(int platform, string membershipId, string cardId = null, bool details = false)
+        {
+            var jsonSource = await _apiHelper.GetGrimoireCard(platform, membershipId, cardId, details);
+            var jData = GetBungieJToken(jsonSource);
+            var card = jData.SelectToken("data.cardCollection")
+                .Select(cc => new
+                {
+                    Id = cc["cardId"].Value<string>(),
+                    Score = cc["score"].Value<int>(),
+                    Points = cc["points"].Value<int>()
                 }).FirstOrDefault();
-            var responseModel = new ResponseModel<GrimoireCard>
+            GrimoireCard def;
+            if (!details)
+                def = new GrimoireCard();
+            else
+                def = jData["cardDefinitions"].First
+                    .Select(cd => new GrimoireCard
+                    {
+                        Name = (string)cd["cardName"],
+                        Intro = (string)cd["cardIntro"],
+                        Description = (string)cd["cardDescription"]
+                    }).FirstOrDefault();
+            var grimoireCard = new GrimoireCard
             {
-                ErrorCode = (int)jData["ErrorCode"],
-                ErrorStatus = (string)jData["ErrorStatus"],
-                Message = (string)jData["Message"],
-                Response = grimoireData
+                Id = card.Id,
+                Score = card.Score,
+                Points = card.Points,
+                Name = def.Name,
+                Intro = def.Intro,
+                Description = def.Description
             };
-            if (responseModel.Response == null || !details)
-                responseModel.Response = new GrimoireCard();
-            responseModel.Response.Id = cardId;
-            responseModel.Response.Acquired = grimoireData != null;
-            return responseModel;
+            return grimoireCard;
+        }
+
+        public async Task<IEnumerable<GrimoireCard>> GetGrimoireCards(GrimoireCardBulkModel bulkModel)
+        {
+            var grimoireCards = new List<GrimoireCard>();
+            foreach (var id in bulkModel.CardIds)
+            {
+                var grimoireCard = await GetGrimoireCard(bulkModel.Platform, bulkModel.MembershipId, id, bulkModel.Details);
+                grimoireCards.Add(grimoireCard);
+            }
+            return grimoireCards;
         }
 
         private JToken GetBungieJToken(string jsonResult)

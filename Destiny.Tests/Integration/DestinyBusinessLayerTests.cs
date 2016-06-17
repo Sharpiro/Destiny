@@ -3,6 +3,9 @@ using Destiny.Core.BusinessLogic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Destiny.Core.DataLayer;
 using DotnetCoreTools.Core.WebHelpers;
+using System.Configuration;
+using Destiny.Core.Models;
+using System.Collections.Generic;
 
 namespace Destiny.Tests.Destiny
 {
@@ -13,7 +16,8 @@ namespace Destiny.Tests.Destiny
 
         public DestinyBusinessLayerTests()
         {
-            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper()));
+            var key = ConfigurationManager.AppSettings["bungieApiKey"];
+            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper(), key));
         }
 
         [TestMethod]
@@ -55,8 +59,8 @@ namespace Destiny.Tests.Destiny
         public void GetCharacterInventoryTest()
         {
             const int platform = 1;
-            const ulong membershipId = 4611686018432239086;
-            const ulong characterId = 2305843009314356060;
+            const string membershipId = "4611686018432239086";
+            const string characterId = "2305843009314356060";
             var model = _businessLayer.GetCharacterInventory(platform, membershipId, characterId).Result;
             Assert.IsNotNull(model);
             Assert.AreEqual(model.Items.Any(), true);
@@ -67,53 +71,60 @@ namespace Destiny.Tests.Destiny
         public void GetAccountTriumphsTest()
         {
             const int platform = 1;
-            const ulong membershipId = 4611686018430697411;
+            const string membershipId = "4611686018430697411";
             var model = _businessLayer.GetAccountTriumphs(platform, membershipId).Result;
             Assert.IsNotNull(model);
             Assert.IsTrue(model.Any());
         }
 
-        //[TestMethod]
-        //public void GetUniqueWeaponDataTest()
-        //{
-        //    const int platform = 1;
-        //    const ulong membershipId = 4611686018432239086;
-        //    var url = $"http://www.bungie.net/Platform/Destiny/Stats/UniqueWeapons/{platform}/{membershipId}/0/";
-        //    //var result = WebHelper.GetASync(url, _bungieHeader).Result;
-        //    //var responseModel = _businessLayer.GetUniqueWeaponData(result);
-        //    //Assert.IsNotNull(responseModel);
-        //    //Assert.AreEqual(responseModel.Response.Any(), true);
-        //}
+        [TestMethod]
+        public void GetUniqueWeaponDataTest()
+        {
+            const int platform = 1;
+            const string membershipId = "4611686018432239086";
+            var weapons = _businessLayer.GetUniqueWeaponData(platform, membershipId).Result;
+            Assert.IsNotNull(weapons);
+            Assert.IsTrue(weapons.Any());
+            Assert.IsNotNull(weapons.FirstOrDefault());
+        }
 
-        //[TestMethod]
-        //public void GetGrimoireTest()
-        //{
-        //    const int platform = 1;
-        //    const ulong membershipId = 4611686018432239086;
-        //    //var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{platform}/{membershipId}/";
-        //    //var result = WebHelper.GetASync(url, _bungieHeader).Result;
-        //    //var responseModel = _businessLayer.GetGrimoireCard(123, result);
-        //    //Assert.IsNotNull(responseModel);
-        //    ////Assert.AreEqual(responseModel.Response.Any(), true);
-        //}
+        [TestMethod]
+        public void GetPlayerGrimoireTest()
+        {
+            const int platform = 1;
+            const string membershipId = "4611686018432239086";
+            var cards = _businessLayer.GetPlayerGrimoire(platform, membershipId).Result;
+            Assert.IsNotNull(cards);
+            Assert.IsTrue(cards.Any());
+            Assert.IsNotNull(cards.FirstOrDefault().Id);
+        }
 
-        //[TestMethod]
-        //public void GetGrimoireCardBulkTest()
-        //{
-        //    //var controller = new DestinyApiController();
-        //    //var model = new GrimoireCardBulkModel
-        //    //{
-        //    //    MembershipId = 4611686018432239086,
-        //    //    Platform = 1,
-        //    //    Details = false,
-        //    //    CardIds = new List<int> { 700470, 603070, 601076, 601904 }
-        //    //};
-        //    //var response = controller.GetGrimoireCardBulk(model);
-        //    //var url = $"http://www.bungie.net/Platform/Destiny/Vanguard/Grimoire/{model.Platform}/{model.MembershipId}/";
-        //    //var result = WebHelper.GetASync(url, _bungieHeader).Result;
-        //    //var responseModel = _businessLayer.GetGrimoireCard(123, result);
-        //    //Assert.IsNotNull(responseModel);
-        //    //Assert.AreEqual(responseModel.Response.Any(), true);
-        //}
+        [TestMethod]
+        public void GetGrimoireCardTest()
+        {
+            const int platform = 1;
+            const string membershipId = "4611686018432239086";
+            const string cardId = "101010";
+            var card = _businessLayer.GetGrimoireCard(platform, membershipId, cardId, true).Result;
+            Assert.IsNotNull(card);
+            Assert.AreEqual(5, card.Score);
+            Assert.IsNotNull(card.Description);
+        }
+
+        [TestMethod]
+        public void GetGrimoireCardBulkTest()
+        {
+            var model = new GrimoireCardBulkModel
+            {
+                MembershipId = "4611686018432239086",
+                Platform = 1,
+                Details = false,
+                CardIds = new List<string> { "700470", "603070", "601076", "601904" }
+            };
+            var cards = _businessLayer.GetGrimoireCards(model).Result;
+            Assert.IsNotNull(cards);
+            Assert.IsTrue(cards.Any());
+            Assert.AreEqual(model.CardIds.FirstOrDefault(), cards.FirstOrDefault().Id);
+        }
     }
 }
