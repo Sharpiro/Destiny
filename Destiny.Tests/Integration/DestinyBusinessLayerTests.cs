@@ -6,18 +6,19 @@ using DotnetCoreTools.Core.WebHelpers;
 using System.Configuration;
 using Destiny.Core.Models;
 using System.Collections.Generic;
+using DotnetCoreTools.Core.SimpleAutoMapper;
 
 namespace Destiny.Tests.Destiny
 {
     [TestClass]
     public class DestinyBusinessLayerTests
     {
-        private readonly DestinyBusinessService _businessLayer;
+        private readonly IDestinyBusinessService _businessLayer;
 
         public DestinyBusinessLayerTests()
         {
             var key = ConfigurationManager.AppSettings["bungieApiKey"];
-            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper(), key));
+            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper(), key), new SimpleMapper());
         }
 
         [TestMethod]
@@ -106,9 +107,10 @@ namespace Destiny.Tests.Destiny
             const string membershipId = "4611686018432239086";
             const string cardId = "101010";
             var card = _businessLayer.GetGrimoireCard(platform, membershipId, cardId, true).Result;
-            Assert.IsNotNull(card);
+            var cardNoDetails = _businessLayer.GetGrimoireCard(platform, membershipId, cardId, false).Result;
             Assert.AreEqual(5, card.Score);
             Assert.IsNotNull(card.Description);
+            Assert.IsNull(cardNoDetails.Description);
         }
 
         [TestMethod]

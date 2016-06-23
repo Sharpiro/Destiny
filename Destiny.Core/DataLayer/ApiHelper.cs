@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Destiny.Core.DataLayer
 {
-    public class ApiHelper
+    public class ApiHelper : IApiHelper
     {
         private const string XApiKeyHeaderName = "X-API-Key";
         private readonly IWebHelper _webHelper;

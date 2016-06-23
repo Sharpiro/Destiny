@@ -6,16 +6,19 @@ using Newtonsoft.Json.Linq;
 using Destiny.Core.DataLayer;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using DotnetCoreTools.Core.SimpleAutoMapper;
 
 namespace Destiny.Core.BusinessLogic
 {
-    public class DestinyBusinessService
+    public class DestinyBusinessService : IDestinyBusinessService
     {
-        private readonly ApiHelper _apiHelper;
+        private readonly IApiHelper _apiHelper;
+        private readonly SimpleMapper _mapper;
 
-        public DestinyBusinessService(ApiHelper apiHelper)
+        public DestinyBusinessService(IApiHelper apiHelper, SimpleMapper mapper)
         {
             _apiHelper = apiHelper;
+            _mapper = mapper;
         }
 
         public async Task<SearchPlayerModel> SearchDestinyPlayer(int platform, string displayName)
@@ -121,34 +124,22 @@ namespace Destiny.Core.BusinessLogic
         {
             var jsonSource = await _apiHelper.GetGrimoireCard(platform, membershipId, cardId, details);
             var jData = GetBungieJToken(jsonSource);
-            var card = jData.SelectToken("data.cardCollection")
+            var cardColl = jData.SelectToken("data.cardCollection")
                 .Select(cc => new
                 {
                     Id = cc["cardId"].Value<string>(),
                     Score = cc["score"].Value<int>(),
                     Points = cc["points"].Value<int>()
                 }).FirstOrDefault();
-            GrimoireCard def;
-            if (!details)
-                def = new GrimoireCard();
-            else
-                def = jData["cardDefinitions"].First
-                    .Select(cd => new GrimoireCard
-                    {
-                        Name = (string)cd["cardName"],
-                        Intro = (string)cd["cardIntro"],
-                        Description = (string)cd["cardDescription"]
-                    }).FirstOrDefault();
-            var grimoireCard = new GrimoireCard
-            {
-                Id = card.Id,
-                Score = card.Score,
-                Points = card.Points,
-                Name = def.Name,
-                Intro = def.Intro,
-                Description = def.Description
-            };
-            return grimoireCard;
+            var def = jData["cardDefinitions"]?.First
+                .Select(cd => new
+                {
+                    Name = (string)cd["cardName"],
+                    Intro = (string)cd["cardIntro"],
+                    Description = (string)cd["cardDescription"]
+                }).FirstOrDefault();
+            var card = _mapper.Map<GrimoireCard>(def, cardColl);
+            return card;
         }
 
         public async Task<IEnumerable<GrimoireCard>> GetGrimoireCards(GrimoireCardBulkModel bulkModel)

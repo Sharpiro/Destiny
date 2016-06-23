@@ -6,6 +6,7 @@ using Destiny.Core.DataLayer;
 using DotnetCoreTools.Core.WebHelpers;
 using System.Configuration;
 using Destiny.Core.Models;
+using DotnetCoreTools.Core.SimpleAutoMapper;
 
 namespace Destiny.Web.Api
 {
@@ -16,7 +17,7 @@ namespace Destiny.Web.Api
         public DestinyApiController()
         {
             var key = ConfigurationManager.AppSettings["bungieApiKey"];
-            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper(), key));
+            _businessLayer = new DestinyBusinessService(new ApiHelper(new WebHelper(), key), new SimpleMapper());
         }
 
         [HttpGet]
