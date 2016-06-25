@@ -95,6 +95,7 @@
     <Compile Include="DataLayer\ApiHelper.cs" />
     <Compile Include="DataLayer\DestinyConstants.cs" />
     <Compile Include="DataLayer\IApiHelper.cs" />
+    <Compile Include="LowercaseContractResolver.cs" />
     <Compile Include="Models\AccountInfoModel.cs" />
     <Compile Include="Models\CharacterInventoryModel.cs" />
     <Compile Include="Models\CharacterModel.cs" />

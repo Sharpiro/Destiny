@@ -6,7 +6,7 @@ class SharedFunctionsService implements ISharedFunctionsService
     {
     }
 
-    public getHashObject = (hashArray: Array<IHash>, hash: number): IHash =>
+    public getHashObject = (hashArray: Array<IHash>, hash: string): IHash =>
     {
         if (!hash)
         {

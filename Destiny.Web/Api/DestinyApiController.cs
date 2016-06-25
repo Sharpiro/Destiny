@@ -7,6 +7,7 @@ using DotnetCoreTools.Core.WebHelpers;
 using System.Configuration;
 using Destiny.Core.Models;
 using DotnetCoreTools.Core.SimpleAutoMapper;
+using Newtonsoft.Json.Linq;
 
 namespace Destiny.Web.Api
 {
@@ -25,8 +26,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.SearchDestinyPlayer(platform, displayName);
-                return Ok(responseModel);
+                var model = await _businessLayer.SearchDestinyPlayer(platform, displayName);
+                var jObject = JObject.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -39,8 +41,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var response = await _businessLayer.GetAccountInfo(platform, membershipId);
-                return Ok(response);
+                var model = await _businessLayer.GetAccountInfo(platform, membershipId);
+                var jObject = JObject.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -53,8 +56,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.GetItem(id);
-                return Ok(responseModel);
+                var model = await _businessLayer.GetItem(id);
+                var jObject = JObject.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -67,9 +71,10 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.GetCharacterInventory(platform, membershipId, characterId);
-                responseModel.CharacterNumber = characterNumber;
-                return Ok(responseModel);
+                var model = await _businessLayer.GetCharacterInventory(platform, membershipId, characterId);
+                model.CharacterNumber = characterNumber;
+                var jObject = JObject.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -82,8 +87,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.GetAccountTriumphs(platform, membershipId);
-                return Ok(responseModel);
+                var model = await _businessLayer.GetAccountTriumphs(platform, membershipId);
+                var jObject = JArray.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -96,8 +102,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.GetUniqueWeaponData(platform, membershipId);
-                return Ok(responseModel);
+                var model = await _businessLayer.GetUniqueWeaponData(platform, membershipId);
+                var jObject = JArray.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -110,8 +117,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.GetPlayerGrimoire(platform, membershipId);
-                return Ok(responseModel);
+                var model = await _businessLayer.GetPlayerGrimoire(platform, membershipId);
+                var jObject = JObject.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -124,8 +132,9 @@ namespace Destiny.Web.Api
         {
             try
             {
-                var responseModel = await _businessLayer.GetGrimoireCard(platform, membershipId, cardId, true);
-                return Ok(responseModel);
+                var model = await _businessLayer.GetGrimoireCard(platform, membershipId, cardId, true);
+                var jObject = JObject.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {
@@ -139,7 +148,8 @@ namespace Destiny.Web.Api
             try
             {
                 var model = await _businessLayer.GetGrimoireCards(bulkModel);
-                return Ok(model);
+                var jObject = JArray.FromObject(model);
+                return Ok(jObject);
             }
             catch (Exception ex)
             {

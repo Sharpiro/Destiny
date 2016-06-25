@@ -5,7 +5,7 @@
 
 interface IHash
 {
-    hash: number;
+    hash: string;
     value: string;
 }
 

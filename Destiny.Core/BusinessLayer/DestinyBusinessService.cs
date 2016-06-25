@@ -24,8 +24,8 @@ namespace Destiny.Core.BusinessLogic
         public async Task<SearchPlayerModel> SearchDestinyPlayer(int platform, string displayName)
         {
             var sourceJson = await _apiHelper.SearchDestinyPlayer(platform, displayName);
-            var jToken = ((JArray)GetBungieJToken(sourceJson)).FirstOrDefault().ToString();
-            var model = JsonConvert.DeserializeObject<SearchPlayerModel>(jToken);
+            var resultJson = ((JArray)GetBungieJToken(sourceJson)).FirstOrDefault().ToString();
+            var model = JsonConvert.DeserializeObject<SearchPlayerModel>(resultJson);
             return model;
         }
 
@@ -74,10 +74,11 @@ namespace Destiny.Core.BusinessLogic
         {
             var jsonSource = await _apiHelper.GetCharacterInventory(platform, membershipId, characterId);
             var jData = GetBungieJToken(jsonSource);
+            var temp = jData.SelectToken("data.buckets.Equippable").Select(equippable => equippable["items"].First);
             var model = new CharacterInventoryModel
             {
-                Items = jData.SelectToken("data.buckets.Equippable").Select(equippable => equippable["items"].First)
-                    .Select(item => new ItemModel
+                Items = jData.SelectToken("data.buckets.Equippable").Select(equippable => equippable["items"].FirstOrDefault())
+                    .Where(item => item != null).Select(item => new ItemModel
                     {
                         ItemHash = item["itemHash"].Value<string>(),
                         DamageType = item["damageType"].Value<int?>(),

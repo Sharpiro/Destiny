@@ -63,7 +63,7 @@
 
     public static achievementNameFilter(sce: any, destinyDataService: DestinyDataService)
     {
-        return (input: number) =>
+        return (input: string) =>
         {
             if (input !== undefined)
             {

@@ -14,7 +14,7 @@ class TestController
         this.membershipId = "4611686018432239086";
         this.cardId = 700470;
         this.cardDetails = false;
-        const cardIds = [700470, 603070, 601076, 601904];
+        const cardIds = ["700470", "603070", "601076", "601904"];
         destinyApiService.getGrimoireCardBulk(1, this.membershipId, cardIds, true).then((data: any) =>
         {
             this.data = data.data.Response;

@@ -10,9 +10,8 @@ class DestinyBlService implements IDestinyBlService
 
     //#region callbacks
 
-    public handleGetAccountTriumphsResponse = (data: any): Array<ITriumphs> =>
+    public handleGetAccountTriumphsResponse = (triumphs: boolean[]): Array<ITriumphs> =>
     {
-        const triumphs: Array<boolean> = data;
         const staticTriumphData = this.destinyDataService.getAccountTriumphs().yearOne;
         let triumphObjects: Array<ITriumphs> = [];
         for (let i = 0; i < triumphs.length; i++)
@@ -24,16 +23,15 @@ class DestinyBlService implements IDestinyBlService
 
     public handleGetAccountInfoResponse = (data: any): Array<ICharacterData> =>
     {
-        const accountInfoData = data.Response;
-        const itemDefinitions: any = accountInfoData.HashDefinitions;
+        const itemDefinitions: any = data.hashDefinitions;
         let characterData: Array<ICharacterData> = [];
-        for (let i = 0; i < accountInfoData.Characters.length; i++)
+        for (let i = 0; i < data.characters.length; i++)
         {
-            let currentCharacterData = accountInfoData.Characters[i];
-            const charactersOverview: string = this.getCharacterOverviewObject(currentCharacterData);
+            let currentCharacterData = data.characters[i];
+            const charactersOverview = this.getCharacterOverviewObject(currentCharacterData);
             const orderedEquipmentHashes: Array<number> = this.getEquipmentDataObject(currentCharacterData);
             const equipmentData: Array<IEquipmentData> = [];
-            const characterId = currentCharacterData.CharacterId;
+            const characterId = currentCharacterData.characterId;
             for (let j = 0; j < orderedEquipmentHashes.length; j++)
             {
                 if (orderedEquipmentHashes[j])
@@ -105,12 +103,11 @@ class DestinyBlService implements IDestinyBlService
 
     public handleSearchPlayerResponse = (data: any): IAccountDetails =>
     {
-        const dataResponse = data.Response[0];
         const accountDetails: IAccountDetails = {
-            membershipId: dataResponse.membershipId,
-            platform: dataResponse.membershipType,
-            displayName: dataResponse.displayName,
-            platformIcon: dataResponse.iconPath
+            membershipId: data.membershipId,
+            platform: data.membershipType,
+            displayName: data.displayName,
+            platformIcon: data.iconPath
         };
         this.destinyDataService.setStoredPlayerData(accountDetails);
         return accountDetails;
@@ -118,8 +115,8 @@ class DestinyBlService implements IDestinyBlService
 
     public handleGetCharactersInventoryResponse = (rawData: any, characterData: Array<ICharacterData>) =>
     {
-        const inventoryDataResponse = rawData.Response.Items;
-        const characterNumberResponse = rawData.Response.CharacterNumber;
+        const inventoryDataResponse = rawData.items;
+        const characterNumberResponse = rawData.characterNumber;
         for (let i = 0; i < inventoryDataResponse.length; i++)
         {
             const currentCharacterEquipment = characterData[characterNumberResponse].equipmentData;
@@ -169,11 +166,11 @@ class DestinyBlService implements IDestinyBlService
         const classHashes = this.destinyDataService.getClassHashes();
         const genderHashes = this.destinyDataService.getGenderHashes();
 
-        const Race = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.RaceHash).value;
-        const classType = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.ClassHash).value;
-        const gender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.GenderHash).value;
-        const level = charactersDataList.BaseCharacterLevel;
-        const powerLevel = charactersDataList.PowerLevel;
+        const Race = this.sharedFunctionsService.getHashObject(raceHashes, charactersDataList.raceHash).value;
+        const classType = this.sharedFunctionsService.getHashObject(classHashes, charactersDataList.classHash).value;
+        const gender = this.sharedFunctionsService.getHashObject(genderHashes, charactersDataList.genderHash).value;
+        const level = charactersDataList.baseCharacterLevel;
+        const powerLevel = charactersDataList.powerLevel;
         const characterOverview = `${level} ${Race} ${classType} - ${gender} ${powerLevel}`;
 
         return characterOverview;
@@ -181,7 +178,7 @@ class DestinyBlService implements IDestinyBlService
 
     private getEquipmentDataObject = (characterData: any): Array<number> =>
     {
-        const unorderedList: Array<number> = characterData.EquipmentList;
+        const unorderedList: Array<number> = characterData.equipmentList;
         if (unorderedList.length === 13)
             return unorderedList;
         let orderedList: Array<number> = [];
