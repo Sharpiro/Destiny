@@ -1,9 +1,9 @@
 ﻿///<reference path="../Scripts/definitelytyped/angular.d.ts"/>
 ///<reference path="../Scripts/definitelytyped/angular-ui-router.d.ts"/>
 
-var masterSite = angular.module("masterSite", ["ui.router", "ngAnimate", "ui.bootstrap"]);
+var destiny = angular.module("destiny", ["ui.router", "ngAnimate", "ui.bootstrap"]);
 
-masterSite.config(["$stateProvider", "$urlRouterProvider", ($stateProvider: any, $urlRouterProvider: any) =>
+destiny.config(["$stateProvider", "$urlRouterProvider", ($stateProvider: any, $urlRouterProvider: any) =>
 {
     $urlRouterProvider.otherwise("/player/xbox/sharpirox");
     //$urlRouterProvider.otherwise("/test");

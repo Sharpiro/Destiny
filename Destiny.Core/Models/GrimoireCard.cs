@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace MasterSite.Core.Models.Destiny
+namespace Destiny.Core.Models
 {
     public class GrimoireCard
     {
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public string Id { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("intro")]
@@ -14,5 +14,7 @@ namespace MasterSite.Core.Models.Destiny
         public string Description { get; set; }
         [JsonProperty("acquired")]
         public bool Acquired { get; set; }
+        public int Score { get; set; }
+        public int Points { get; set; }
     }
 }

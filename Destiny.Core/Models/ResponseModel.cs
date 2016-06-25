@@ -1,4 +1,4 @@
-﻿namespace MasterSite.Core.Models.Destiny
+﻿namespace Destiny.Core.Models
 {
     public class ResponseModel<T>
     {

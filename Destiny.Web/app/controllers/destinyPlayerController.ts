@@ -27,15 +27,19 @@ class DestinyPlayerController
                 },
                 (data: any) => this.setPageError(data.ExceptionMessage));
             //get Account triumphs
+            this.destinyApiService.getAccountTriumphs(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
+                (data: any) => this.scope.triumphs = destinyBlService.handleGetAccountTriumphsResponse(data.data),
+                (data: any) => this.setPageError(data));
+            //get grimoire cards
             this.destinyApiService.getGrimoireCardBulk(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId,
                 this.destinyDataService.getAchievementHashes(), true).then(
-                (data: any) => this.achievements = data.data.Response,
+                (data: any) => this.achievements = data.data,
                 (data: any) => this.setPageError(data));
             //get unique weapon data
             this.destinyApiService.getUniqueWeaponData(this.scope.accountDetails.platform, this.scope.accountDetails.membershipId).then(
                 (data: any) =>
                 {
-                    var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data.Response));
+                    var concatArray = this.scope.weaponScore.concat(destinyBlService.handleGetExoticWeapons(data.data));
                     this.scope.weaponScore = this.getDistinct(concatArray);
                 },
                 (data: any) => this.setPageError(data));
@@ -72,7 +76,7 @@ class DestinyPlayerController
                 {
                     //modifying this.scope.characterData as object is passed by reference
                     this.destinyBlService.handleGetCharactersInventoryResponse(data.data, this.scope.characterData);
-                    var uniqueEquippedWeapons = this.destinyBlService.handleLegendaries(data.data.Response.Items);
+                    var uniqueEquippedWeapons = this.destinyBlService.handleLegendaries(data.data.items);
                     let concatArray = this.scope.weaponScore.concat(uniqueEquippedWeapons);
                     this.scope.weaponScore = this.getDistinct(concatArray);
                 });
@@ -170,5 +174,5 @@ class DestinyPlayerController
 
 //#endregion
 
-masterSite.controller("destinyPlayerController", ["$scope", "destinyApiService",
+destiny.controller("destinyPlayerController", ["$scope", "destinyApiService",
     "destinyDataService", "$stateParams", "$state", "destinyBlService", "sharedFunctionsService", DestinyPlayerController]); 

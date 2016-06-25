@@ -16,7 +16,7 @@
 
 interface ICharacterData
 {
-    characterId: number;
+    characterId: string;
     charactersOverview: string;
     equipmentData: Array<IEquipmentData>;
 }
@@ -32,9 +32,9 @@ interface IEquipmentData
 {
     icon: string;
     itemName: string;
-    itemHash: number;
+    itemHash: string;
     details: IEquipmentDataDetails;
-    bucketHash: number;
+    bucketHash: string;
 }
 
 interface ITriumphs

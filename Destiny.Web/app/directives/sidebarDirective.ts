@@ -38,6 +38,6 @@ class SidebarDirective implements ng.IDirective
     }
 }
 
-masterSite.directive("sidebar", SidebarDirective.factory());
+destiny.directive("sidebar", SidebarDirective.factory());
 
     

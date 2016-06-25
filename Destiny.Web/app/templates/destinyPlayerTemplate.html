@@ -85,11 +85,15 @@
     </div>
     <div class="row gearscore">
         <div class="col-md-6 triumphs">
-            <h4>Achievements</h4>
+            <h4>Year 1 Triumphs</h4>
             <table class="table">
-                <tr ng-repeat="achievement in vm.achievements">
-                    <td ng-bind-html="achievement.id | achievementNameFilter"></td>
-                    <td ng-bind-html="achievement.acquired | booleanFilter"></td>
+                <tr ng-repeat="triumph in triumphs | limitTo: 7 | limitTo: -3">
+                    <td>{{triumph.title}}</td>
+                    <td ng-bind-html="triumph.complete | booleanFilter">{{triumph.complete}}</td>
+                </tr>
+                <tr>
+                    <td>{{triumphs[9].title}}</td>
+                    <td ng-bind-html="triumphs[9].complete | booleanFilter">{{triumphs[9].complete}}</td>
                 </tr>
             </table>
         </div>

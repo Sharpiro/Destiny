@@ -63,7 +63,7 @@
 
     public static achievementNameFilter(sce: any, destinyDataService: DestinyDataService)
     {
-        return (input: number) =>
+        return (input: string) =>
         {
             if (input !== undefined)
             {
@@ -85,9 +85,9 @@
     }
 }
 
-//masterSite.filter("damageTypeFilter", [DestinyFilter.damageTypeFilter]);
-masterSite.filter("damageTypeFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.damageTypeFilter($sce, destinyDataService));
-masterSite.filter("booleanFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.booleanFilter($sce, destinyDataService));
-masterSite.filter("itemNameFilter", () => DestinyFilter.itemNameFilter());
-masterSite.filter("bindHtmlFilter", ($sce: any) => DestinyFilter.bindHtmlFilter($sce));
-masterSite.filter("achievementNameFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.achievementNameFilter($sce, destinyDataService));
+//Destiny.filter("damageTypeFilter", [DestinyFilter.damageTypeFilter]);
+destiny.filter("damageTypeFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.damageTypeFilter($sce, destinyDataService));
+destiny.filter("booleanFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.booleanFilter($sce, destinyDataService));
+destiny.filter("itemNameFilter", () => DestinyFilter.itemNameFilter());
+destiny.filter("bindHtmlFilter", ($sce: any) => DestinyFilter.bindHtmlFilter($sce));
+destiny.filter("achievementNameFilter", ($sce: any, destinyDataService: DestinyDataService) => DestinyFilter.achievementNameFilter($sce, destinyDataService));

@@ -4,14 +4,18 @@ using Ninject;
 using Ninject.Web.Common.OwinHost;
 using Ninject.Web.WebApi.OwinHost;
 using Owin;
+using Newtonsoft.Json;
+using Destiny.Core;
 
-namespace MasterSite.Web
+namespace Destiny.Web
 {
     public class Startup
     {
         public readonly PathString ApiPath = new PathString("/api");
+
         public void Configuration(IAppBuilder app)
         {
+            JsonConvert.DefaultSettings = () => new CamelCaseSerializerSettings();
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
 

@@ -58,4 +58,4 @@ interface IDestinyHeaderScope
     message: string;
 }
 
-masterSite.controller("destinyHeaderController", ["$scope", "$location", "$stateParams", DestinyHeaderController]); 
+destiny.controller("destinyHeaderController", ["$scope", "$location", "$stateParams", DestinyHeaderController]); 

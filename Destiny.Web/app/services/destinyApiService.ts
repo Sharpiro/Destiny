@@ -16,7 +16,7 @@ class DestinyApiService implements IDestinyApiService
             this.$http.get(`/api/DestinyApi/SearchDestinyPlayer?platform=${platform}&displayName=${displayName}`).then((data: any) =>
             {
                 const dataObject = data.data;
-                if (dataObject.Response[0])
+                if (dataObject)
                 {
                     dfd.resolve(data);
                 }
@@ -53,7 +53,7 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public getItem(itemId: number, listNumber?: number, listPosition?: number): ng.IPromise<any>
+    public getItem(itemId: string, listNumber?: number, listPosition?: number): ng.IPromise<any>
     {
         if (itemId !== undefined)
             return this.$http.get(`/api/DestinyApi/GetItem?itemId=${itemId}&listNumber=${listNumber}&listPosition=${listPosition}`);
@@ -62,7 +62,7 @@ class DestinyApiService implements IDestinyApiService
         return dfd.promise;
     }
 
-    public getCharacterInventory = (platform: number, membershipId: string, characterId: number, characterNumber?: number): ng.IPromise<any> =>
+    public getCharacterInventory = (platform: number, membershipId: string, characterId: string, characterNumber?: number): ng.IPromise<any> =>
     {
         if (characterId !== undefined)
             return this.$http.get(`/api/DestinyApi/GetCharacterInventory?platform=${platform}&membershipId=${membershipId}&characterId=${characterId}&characterNumber=${characterNumber}`);
@@ -91,11 +91,11 @@ class DestinyApiService implements IDestinyApiService
         return this.$http.get(`/api/DestinyApi/GetGrimoireCard?platform=${platform}&membershipId=${membershipId}&cardId=${cardId}&details=${details}`);
     }
 
-    public getGrimoireCardBulk = (platform: number, membershipId: string, cardIds: Array<number>, details: boolean = false): ng.IPromise<any> =>
+    public getGrimoireCardBulk = (platform: number, membershipId: string, cardIds: string[], details: boolean = false): ng.IPromise<any> =>
     {
         var bulkData = { membershipId: membershipId, platform: platform, details: details, cardIds: cardIds };
         return this.$http.post("/api/DestinyApi/GetGrimoireCardBulk", bulkData);
     }
 
 }
-masterSite.service("destinyApiService", ["$http", "$q", DestinyApiService]); 
+destiny.service("destinyApiService", ["$http", "$q", DestinyApiService]); 
