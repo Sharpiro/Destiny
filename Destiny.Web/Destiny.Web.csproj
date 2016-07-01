@@ -176,7 +176,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="appCombined.js" />
     <Content Include="app\templates\testTemplate.html" />
     <Content Include="app\templates\destinyPlayerTemplate.html" />
     <Content Include="app\index.html" />
